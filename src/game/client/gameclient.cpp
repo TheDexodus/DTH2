@@ -78,7 +78,7 @@
 #include "prediction/entities/character.h"
 #include "prediction/entities/projectile.h"
 
-#include "Python.h"
+#include "game/client/python/ScriptsScanner.h"
 
 using namespace std::chrono_literals;
 
@@ -421,6 +421,10 @@ void CGameClient::OnInit()
 		int Size = m_vpAll[i]->Sizeof();
 		pChecksum->m_aComponentsChecksum[i] = Size;
 	}
+
+	ScriptsScanner* scriptsScanner = new ScriptsScanner;
+	auto scripts = scriptsScanner->scan();
+//	this->pythonController.StartExecuteScript(*scripts.begin());
 
 	m_Menus.FinishLoading();
 	log_trace("gameclient", "initialization finished after %.2fms", (time_get() - OnInitStart) * 1000.0f / (float)time_freq());
