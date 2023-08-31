@@ -615,6 +615,7 @@ protected:
 	void RenderSettingsSound(CUIRect MainView);
 	void RenderSettings(CUIRect MainView);
 	void RenderSettingsCustom(CUIRect MainView);
+	void RenderSettingsPython(CUIRect MainView);
 
 	class CMapListItem
 	{
@@ -716,6 +717,7 @@ public:
 		SETTINGS_SOUND,
 		SETTINGS_DDNET,
 		SETTINGS_ASSETS,
+		SETTINGS_PYTHON,
 
 		SETTINGS_LENGTH,
 
