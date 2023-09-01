@@ -1964,7 +1964,7 @@ void CMenus::RenderSettingsPython(CUIRect MainView)
 
 		int i = 0;
 
-		for(auto PythonScript : this->m_PythonScripts)
+		for(auto PythonScript : GameClient()->pythonScripts)
 		{
 
 			const CListboxItem Item = listBox.DoNextItem(&pItemID[i]);
@@ -2014,7 +2014,7 @@ void CMenus::RenderSettingsPython(CUIRect MainView)
 
 	//Правое меню
 	{
-		if(s_PythonSelectedScript > -1 && s_PythonSelectedScript < m_PythonScripts.size())
+		if(s_PythonSelectedScript > -1 && s_PythonSelectedScript < GameClient()->pythonScripts.size())
 		{
 			static CButtonContainer s_ToggleButton;
 			CUIRect ToggleButton;
@@ -2036,7 +2036,7 @@ void CMenus::RenderSettingsPython(CUIRect MainView)
 
 void CMenus::RefreshPythonScripts()
 {
-	this->m_PythonScripts = this->scriptsScanner.scan();
+	GameClient()->pythonScripts = this->scriptsScanner.scan();
 }
 
 void CMenus::RenderSettings(CUIRect MainView)

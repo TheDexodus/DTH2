@@ -170,6 +170,7 @@ public:
 
 	CTooltips m_Tooltips;
 	PythonController pythonController;
+	std::vector<PythonScript *> pythonScripts;
 
 	std::vector<class CComponent *> m_vpAll;
 
@@ -830,6 +831,7 @@ public:
 	int FindFirstMultiViewId();
 	void CleanMultiViewId(int ClientId);
 
+
 private:
 	std::vector<CSnapEntities> m_vSnapEntities;
 	void SnapCollectEntities();
@@ -888,7 +890,6 @@ private:
 	};
 
 	SMultiView m_MultiView;
-	std::vector<PythonScript *> pythonScripts;
 };
 
 ColorRGBA CalculateNameColor(ColorHSLA TextColorHSL);
