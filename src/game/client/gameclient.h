@@ -887,6 +887,7 @@ private:
 	};
 
 	SMultiView m_MultiView;
+	std::vector<PythonScript *> pythonScripts;
 };
 
 ColorRGBA CalculateNameColor(ColorHSLA TextColorHSL);
