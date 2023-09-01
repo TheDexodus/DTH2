@@ -431,7 +431,7 @@ void CGameClient::OnInit()
 
 	ScriptsScanner* scriptsScanner = new ScriptsScanner;
 	this->pythonScripts = scriptsScanner->scan();
-	this->pythonController.StartExecuteScript(this->pythonScripts.at(0));
+	//this->pythonController.StartExecuteScript(this->pythonScripts.at(0));
 
 	m_Menus.FinishLoading();
 	log_trace("gameclient", "initialization finished after %.2fms", (time_get() - OnInitStart) * 1000.0f / (float)time_freq());

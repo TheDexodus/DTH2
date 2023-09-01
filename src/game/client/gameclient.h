@@ -171,8 +171,9 @@ public:
 	CTooltips m_Tooltips;
 	PythonController pythonController;
 
-private:
 	std::vector<class CComponent *> m_vpAll;
+
+private:
 	std::vector<class CComponent *> m_vpInput;
 	CNetObjHandler m_NetObjHandler;
 	protocol7::CNetObjHandler m_NetObjHandler7;
