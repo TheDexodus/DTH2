@@ -2321,6 +2321,10 @@ if(CLIENT)
     warning.cpp
   )
   set_src(GAME_CLIENT GLOB_RECURSE src/game/client
+    aim/AimHelper.cpp
+    aim/AimHelper.h
+    aim/HumanLikeMouse.cpp
+    aim/HumanLikeMouse.h
     animstate.cpp
     animstate.h
     component.cpp

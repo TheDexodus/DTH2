@@ -114,9 +114,10 @@ void CGameClient::OnConsoleInit()
 	m_pUpdater = Kernel()->RequestInterface<IUpdater>();
 #endif
 	m_pHttp = Kernel()->RequestInterface<IHttp>();
-
 	// make a list of all the systems, make sure to add them in the correct render order
 	m_vpAll.insert(m_vpAll.end(), {&pythonController,
+					      &aimHelper,
+					      &humanLikeMouse,
 					      &m_Skins,
 					      &m_Skins7,
 					      &m_CountryFlags,
@@ -441,6 +442,8 @@ void CGameClient::OnUpdate()
 	HandleLanguageChanged();
 
 	CUIElementBase::Init(Ui()); // update static pointer because game and editor use separate UI
+
+	this->humanLikeMouse.OnUpdate();
 
 	// handle mouse movement
 	float x = 0.0f, y = 0.0f;

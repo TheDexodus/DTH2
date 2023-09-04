@@ -60,6 +60,8 @@
 #include "components/tooltips.h"
 #include "components/touch_controls.h"
 #include "components/voting.h"
+#include "game/client/aim/AimHelper.h"
+#include "game/client/aim/HumanLikeMouse.h"
 #include "game/client/python/PythonController.h"
 
 class CGameInfo
@@ -169,6 +171,9 @@ public:
 	CGhost m_Ghost;
 
 	CTooltips m_Tooltips;
+
+	HumanLikeMouse humanLikeMouse;
+	AimHelper aimHelper;
 	PythonController pythonController;
 	std::vector<PythonScript *> pythonScripts;
 
