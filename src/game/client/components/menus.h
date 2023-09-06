@@ -622,6 +622,8 @@ protected:
 	void RenderSettingsCustom(CUIRect MainView);
 	void RenderSettingsPython(CUIRect MainView);
 
+	bool NeedToggle = true;
+
 	class CMapListItem
 	{
 	public:
