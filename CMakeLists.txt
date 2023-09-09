@@ -40,7 +40,7 @@ else()
   set(TARGET_BITS "64")
 endif()
 
-if("${CMAKE_SYSTEM_PROCESSOR}" MATCHES "arm" 
+if("${CMAKE_SYSTEM_PROCESSOR}" MATCHES "arm"
   OR "${CMAKE_SYSTEM_PROCESSOR}" MATCHES "aarch64"
   OR "${CMAKE_SYSTEM_PROCESSOR}" MATCHES "ARM64")
   if(TARGET_BITS STREQUAL "32")
@@ -2365,6 +2365,7 @@ if(CLIENT)
     components/infomessages.h
     components/items.cpp
     components/items.h
+    components/login.cpp
     components/mapimages.cpp
     components/mapimages.h
     components/maplayers.cpp

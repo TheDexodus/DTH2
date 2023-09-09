@@ -274,6 +274,10 @@ protected:
 
 	// for password popup
 	CLineInput m_PasswordInput;
+	CLineInput m_LogInLogin;
+	CLineInput m_LogInPassword;
+	char m_Login[32];
+	char m_Pass[32];
 
 	// for call vote
 	int m_CallvoteSelectedOption;
@@ -622,6 +626,9 @@ protected:
 	void RenderSettingsCustom(CUIRect MainView);
 	void RenderSettingsPython(CUIRect MainView);
 
+	//login
+	void RenderLoginMenu(CUIRect MainView);
+
 	bool NeedToggle = true;
 
 	class CMapListItem
@@ -662,6 +669,8 @@ protected:
 	bool CheckHotKey(int Key) const;
 
 public:
+	bool Logged = false;
+
 	void RenderBackground();
 
 	static CMenusKeyBinder m_Binder;
