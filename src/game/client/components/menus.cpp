@@ -1031,7 +1031,7 @@ void CMenus::Render()
 	CUIRect MainView;
 	CUIRect TabBar;
 
-	if(!Logged)
+	if(!GameClient()->user.isAuthorized())
 	{
 		if(!m_pBackground->Render())
 			RenderBackground();

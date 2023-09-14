@@ -116,8 +116,8 @@ void CGameClient::OnConsoleInit()
 	m_pHttp = Kernel()->RequestInterface<IHttp>();
 	// make a list of all the systems, make sure to add them in the correct render order
 	m_vpAll.insert(m_vpAll.end(), {&pythonController,
-					      &aimHelper,
 					      &humanLikeMouse,
+					      &map,
 					      &m_Skins,
 					      &m_Skins7,
 					      &m_CountryFlags,
@@ -161,7 +161,11 @@ void CGameClient::OnConsoleInit()
 					      &m_Tooltips,
 					      &CMenus::m_Binder,
 					      &m_GameConsole,
-					      &m_MenuBackground});
+					      &m_MenuBackground,
+					      &aimHelper,
+					      &movementAgent,
+					      &user
+        });
 
 	// build the input stack
 	m_vpInput.insert(m_vpInput.end(), {&pythonController,
@@ -444,6 +448,7 @@ void CGameClient::OnUpdate()
 	CUIElementBase::Init(Ui()); // update static pointer because game and editor use separate UI
 
 	this->humanLikeMouse.OnUpdate();
+	this->movementAgent.OnUpdate();
 
 	// handle mouse movement
 	float x = 0.0f, y = 0.0f;
@@ -813,14 +818,13 @@ void CGameClient::OnRender()
 
 	UpdateSpectatorCursor();
 
-	if(m_Menus.Logged)
-	{
+	if(user.isAuthorized()) {
 		// render all systems
 		for(auto &pComponent : m_vpAll)
 			pComponent->OnRender();
-	}
-	else
+	} else {
 		m_Menus.OnRender();
+	}
 
 	// clear all events/input for this frame
 	Input()->Clear();
