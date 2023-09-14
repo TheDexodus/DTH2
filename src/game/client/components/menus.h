@@ -32,6 +32,13 @@
 
 #include <game/client/components/skins7.h>
 
+enum ACTIVESCRIPT_BUTTONS {
+	BUTTON_TOGGLE,
+	BUTTON_AUTOLOAD,
+	BUTTON_EXCEPTIONS,
+	NUMOF_BUTTONS
+};
+
 struct CServerProcess
 {
 #if !defined(CONF_PLATFORM_ANDROID)
@@ -625,6 +632,7 @@ protected:
 	void RenderSettings(CUIRect MainView);
 	void RenderSettingsCustom(CUIRect MainView);
 	void RenderSettingsPython(CUIRect MainView);
+//	void RenderSettingsPythonExceptions(CUIRect MainView);
 
 	//login
 	void RenderLoginMenu(CUIRect MainView);
@@ -669,7 +677,7 @@ protected:
 	bool CheckHotKey(int Key) const;
 
 public:
-	bool Logged = false;
+	bool Logged = true;
 
 	void RenderBackground();
 
