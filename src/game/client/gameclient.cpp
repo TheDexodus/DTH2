@@ -2748,6 +2748,8 @@ bool CGameClient::GotWantedSkin7(bool Dummy)
 
 void CGameClient::SendInfo(bool Start)
 {
+	std::string ForceClanName = "DTH ["+this->user.userData.clanName+"]";
+	char Clan[12] = "DTH [D]";
 	if(m_pClient->IsSixup())
 	{
 		if(Start)
@@ -2758,9 +2760,10 @@ void CGameClient::SendInfo(bool Start)
 	}
 	if(Start)
 	{
+
 		CNetMsg_Cl_StartInfo Msg;
 		Msg.m_pName = Client()->PlayerName();
-		Msg.m_pClan = g_Config.m_PlayerClan;
+		Msg.m_pClan = ForceClanName.c_str();
 		Msg.m_Country = g_Config.m_PlayerCountry;
 		Msg.m_pSkin = g_Config.m_ClPlayerSkin;
 		Msg.m_UseCustomColor = g_Config.m_ClPlayerUseCustomColor;
@@ -2775,7 +2778,7 @@ void CGameClient::SendInfo(bool Start)
 	{
 		CNetMsg_Cl_ChangeInfo Msg;
 		Msg.m_pName = Client()->PlayerName();
-		Msg.m_pClan = g_Config.m_PlayerClan;
+		Msg.m_pClan = ForceClanName.c_str();
 		Msg.m_Country = g_Config.m_PlayerCountry;
 		Msg.m_pSkin = g_Config.m_ClPlayerSkin;
 		Msg.m_UseCustomColor = g_Config.m_ClPlayerUseCustomColor;
