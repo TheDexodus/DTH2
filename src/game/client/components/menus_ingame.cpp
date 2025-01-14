@@ -143,7 +143,7 @@ void CMenus::RenderGame(CUIRect MainView)
 			}
 		}
 
-		if(m_pClient->m_Snap.m_pGameInfoObj->m_GameFlags & GAMEFLAG_TEAMS)
+		if(m_pClient->IsTeamPlay())
 		{
 			if(m_pClient->m_Snap.m_pLocalInfo->m_Team != TEAM_RED)
 			{
@@ -184,7 +184,7 @@ void CMenus::RenderGame(CUIRect MainView)
 			}
 		}
 
-		if(m_pClient->m_Snap.m_pLocalInfo->m_Team != TEAM_SPECTATORS && (ShowDDRaceButtons || !(m_pClient->m_Snap.m_pGameInfoObj->m_GameFlags & GAMEFLAG_TEAMS)))
+		if(m_pClient->m_Snap.m_pLocalInfo->m_Team != TEAM_SPECTATORS && (ShowDDRaceButtons || !m_pClient->IsTeamPlay()))
 		{
 			ButtonBar.VSplitLeft(65.0f, &Button, &ButtonBar);
 			ButtonBar.VSplitLeft(5.0f, nullptr, &ButtonBar);
@@ -198,7 +198,7 @@ void CMenus::RenderGame(CUIRect MainView)
 		}
 	}
 
-	if(m_pClient->m_ReceivedDDNetPlayer && m_pClient->m_Snap.m_pLocalInfo && m_pClient->m_Snap.m_pGameInfoObj && (ShowDDRaceButtons || !(m_pClient->m_Snap.m_pGameInfoObj->m_GameFlags & GAMEFLAG_TEAMS)))
+	if(m_pClient->m_ReceivedDDNetPlayer && m_pClient->m_Snap.m_pLocalInfo && (ShowDDRaceButtons || !m_pClient->IsTeamPlay()))
 	{
 		if(m_pClient->m_Snap.m_pLocalInfo->m_Team != TEAM_SPECTATORS || Paused || Spec)
 		{
@@ -212,6 +212,23 @@ void CMenus::RenderGame(CUIRect MainView)
 				SetActive(false);
 			}
 		}
+	}
+
+	if(m_pClient->m_Snap.m_pLocalInfo && (m_pClient->m_Snap.m_pLocalInfo->m_Team == TEAM_SPECTATORS || Paused || Spec))
+	{
+		ButtonBar.VSplitLeft(32.0f, &Button, &ButtonBar);
+		ButtonBar.VSplitLeft(5.0f, nullptr, &ButtonBar);
+
+		static CButtonContainer s_AutoCameraButton;
+
+		bool Active = m_pClient->m_Camera.m_AutoSpecCamera && m_pClient->m_Camera.SpectatingPlayer() && m_pClient->m_Camera.CanUseAutoSpecCamera();
+		bool Enabled = g_Config.m_ClSpecAutoSync;
+		if(DoButton_FontIcon(&s_AutoCameraButton, FONT_ICON_CAMERA, !Active, &Button, IGraphics::CORNER_ALL, Enabled))
+		{
+			m_pClient->m_Camera.ToggleAutoSpecCamera();
+		}
+		m_pClient->m_Camera.UpdateAutoSpecCameraTooltip();
+		GameClient()->m_Tooltips.DoToolTip(&s_AutoCameraButton, &Button, m_pClient->m_Camera.AutoSpecCameraTooltip());
 	}
 
 	if(g_Config.m_ClTouchControls)
