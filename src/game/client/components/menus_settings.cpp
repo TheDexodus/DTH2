@@ -32,10 +32,14 @@
 #include "menus.h"
 #include "skins.h"
 
+#include <SDL_clipboard.h>
+#include <algorithm>
 #include <array>
 #include <chrono>
+#include <iostream>
 #include <memory>
 #include <numeric>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -2007,16 +2011,16 @@ void CMenus::RenderSettingsPython(CUIRect MainView)
 
 				Row.HMargin(7.0f, &Row);
 				Row.HSplitTop(5.0f, 0, &Label);
-				UI()->DoLabel(&Label, PythonScript->name.c_str(), 24.0f, TEXTALIGN_LEFT);
+				Ui()->DoLabel(&Label, PythonScript->name.c_str(), 24.0f, TEXTALIGN_LEFT);
 
 				Row.VSplitRight(Row.h, &Row, &Button);
-				if(UI()->MouseInside(&Row) && Input()->KeyPress(KEY_MOUSE_1))
+				if(Ui()->MouseInside(&Row) && Input()->KeyPress(KEY_MOUSE_1))
 					s_PythonSelectedScript = i;
 
 				if(i == s_PythonSelectedScript)
 					Row.Draw(vec4(0.7f,0.7f,0.7f,0.5f), IGraphics::CORNER_L, 10.0f);
 
-				if(DoButton_Menu(&pIDButtonToggleScript[i], GameClient()->pythonController.isExecutedScript(PythonScript) ? "Deactivate" : "Activate", 0, &Button,  nullptr, IGraphics::CORNER_R, 5.0f, 0.0f, vec4(0.0f, 0.0f, 0.0f, 0.5f), vec4(0.0f, 0.0f, 0.0f, 0.5f)))
+				if(DoButton_Menu(&pIDButtonToggleScript[i], GameClient()->pythonController.isExecutedScript(PythonScript) ? "Deactivate" : "Activate", 0, &Button,  nullptr, IGraphics::CORNER_R, 5.0f, 0.0f, vec4(0.0f, 0.0f, 0.0f, 0.5f)))
 				{
 					bool toggle = GameClient()->pythonController.isExecutedScript(PythonScript);
 
@@ -2058,7 +2062,7 @@ void CMenus::RenderSettingsPython(CUIRect MainView)
 			CUIRect Lbl;
 
 			ListView.HSplitBottom(ListView.h/2+15.0f, 0, &Lbl);
-			UI()->DoLabel(&Lbl, "No Python scripts available. Try to click Refresh.", 20.0f, TEXTALIGN_CENTER);
+			Ui()->DoLabel(&Lbl, "No Python scripts available. Try to click Refresh.", 20.0f, TEXTALIGN_CENTER);
 		}
 
 	}
@@ -2110,6 +2114,30 @@ void CMenus::RenderSettingsPython(CUIRect MainView)
 	}
 }
 
+std::vector<std::string> split (const std::string &s, char delim) {
+	std::vector<std::string> result;
+	std::stringstream ss (s);
+	std::string item;
+
+	while (getline (ss, item, delim)) {
+		result.push_back (item);
+	}
+
+	return result;
+}
+
+// void TextToClipboard(const char *text)
+// {
+// 	if (OpenClipboard(0))
+// 	{
+// 		EmptyClipboard();
+// 		char *hBuff = (char *) GlobalAlloc(GMEM_FIXED, strlen(text) + 1);
+// 		strcpy(hBuff, text);
+// 		SetClipboardData(CF_TEXT, hBuff);
+// 		CloseClipboard();
+// 	}
+// }
+
 void CMenus::RenderSettingsPythonExceptions(CUIRect MainView, PythonScript *PS)
 {
 	static CListBox listBox;
@@ -2121,56 +2149,40 @@ void CMenus::RenderSettingsPythonExceptions(CUIRect MainView, PythonScript *PS)
 	str_format(Title, sizeof(Title), Localize("Script exceptions thrown by '%s'"), PS->name.c_str()); //TODO: Localize all this stuffs
 
 	listBox.DoStart(15.0f, PS->fileExceptions.size(), 1, 1, -1, &MainView, true, IGraphics::CORNER_ALL, true);
-
 	CButtonContainer s_ExcButtonIDs[101];
-
 
 	for(int i = 0; i < PS->fileExceptions.size(); i++)
 	{
-		CListboxItem Item = listBox.DoNextItem(s_ExcButtonIDs);
-		if(!Item.m_Visible)
-			continue;
+		std::vector<std::string> exceptionLines = split(PS->fileExceptions[i], '\n');
 
-		CUIRect Button;
-		str_format(Buf, sizeof(Buf), "#%i", i+1);
+		for(int line = 0; line < exceptionLines.size(); line++)
+		{
+			CListboxItem Item = listBox.DoNextItem(s_ExcButtonIDs, false, 0);
+			if(!Item.m_Visible)
+				continue;
 
-		Item.m_Rect.VSplitLeft(35.0f, &Button, &Item.m_Rect);
-		UI()->DoLabel(&Button, Buf, 15.f, TEXTALIGN_LEFT);
+			if(Ui()->MouseInside(&Item.m_Rect) && Input()->KeyPress(KEY_MOUSE_1))
+				SDL_SetClipboardText(PS->fileExceptions[i].c_str());
 
-		Item.m_Rect.VSplitLeft(10.0f, 0, &Item.m_Rect);
-		str_format(Buf, sizeof(Buf), "@@ %s", PS->fileExceptions[i].c_str());
-		UI()->DoLabel(&Item.m_Rect, Buf, 15.f, TEXTALIGN_CENTER);
+			CUIRect ExceptionLine;
+			Item.m_Rect.VSplitLeft(35.0f, &ExceptionLine, &Item.m_Rect);
+
+			if (line == 0)
+			{
+				str_format(Buf, sizeof(Buf), "#%i", i+1);
+				Ui()->DoLabel(&ExceptionLine, Buf, 15.f, TEXTALIGN_LEFT);
+			}
+			else
+			{
+				Ui()->DoLabel(&ExceptionLine, "", 15.f, TEXTALIGN_LEFT);
+			}
+
+			Item.m_Rect.VSplitLeft(10.0f, 0, &Item.m_Rect);
+			str_format(Buf, sizeof(Buf), "%s", exceptionLines[line].c_str());
+			Ui()->DoLabel(&Item.m_Rect, Buf, 15.f, TEXTALIGN_LEFT);
+		}
 	}
 	listBox.DoEnd();
-	//				static int ActiveExceptions = -1;
-	//				char Title[256];
-	//				char BottomText[32];
-	//				char Buf[256];
-	//
-	//				CUIRect ExceptionList = ScriptBox;
-	//				CButtonContainer s_ButtonIDs[101];
-	//				static CListBox ExcListBox;
-	//				ExcListBox.DoStart(11.0f, ActiveExceptions, 1, 1, -1, &ExceptionList, true, 0, true);
-	//				for(int i = 0; i < PS->fileExceptions.size(); i++)
-	//				{
-	//					ActiveExceptions++;
-	//					const CListboxItem Item = ExcListBox.DoNextItem(&s_ButtonIDs[i]);
-	//					CUIRect button;
-	//					if(!Item.m_Visible)
-	//						continue;
-	//
-	//					CUIRect CRow = Item.m_Rect;
-	//					str_format(aBuf, sizeof(aBuf), "#%i", i+1);
-	//					CRow.HMargin(10.0f, &CRow);
-	//					ExceptionList.VSplitLeft(10.0f, &CRow, &ExceptionList);
-	//					CRow.VSplitLeft(35.0f, &button, &CRow);
-	//					UI()->DoLabel(&button, aBuf, 16.0f, TEXTALIGN_CENTER);
-	//
-	//					CRow.VSplitLeft(10.0f, nullptr, &button);
-	//					str_format(aBuf, sizeof(aBuf), "@@ %s", PS->fileExceptions[i].c_str());
-	//					UI()->DoLabel(&button, aBuf, 16.0f, TEXTALIGN_CENTER);
-	//				}
-	//				ExcListBox.DoEnd();
 }
 
 void CMenus::RefreshPythonScripts()
@@ -2284,7 +2296,7 @@ void CMenus::RenderSettings(CUIRect MainView)
 	}
         else if(g_Config.m_UiSettingsPage == SETTINGS_PYTHON)
         {
-                m_pBackground->ChangePosition(CMenuBackground::POS_SETTINGS_PYTHON);
+                GameClient()->m_MenuBackground.ChangePosition(CMenuBackground::POS_SETTINGS_PYTHON);
                 RenderSettingsPython(MainView);
         }
 	else

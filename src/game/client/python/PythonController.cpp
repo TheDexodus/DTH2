@@ -1,6 +1,7 @@
 #include "PythonController.h"
 #include "Python.h"
 #include "game/client/python/api/api.h"
+#include <windows.h>
 
 PythonController::PythonController()
 {
@@ -41,9 +42,16 @@ bool PythonController::isScriptAutoloading(PythonScript *pythonScript)
 
 void PythonController::StartExecuteScript(PythonScript* pythonScript)
 {
+	GameClient()->pythonRender.SetScriptRender(pythonScript->filepath);
 	ResetInput();
 
 	pythonScript->init();
+
+	if (LoadLibrary(LPCWSTR("torch_cpu.dll")) == NULL) {
+		GameClient()->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "load_library", "Failed to load torch_cpu.dll");
+	} else {
+		GameClient()->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "load_library", "torch_cpu.dll loaded successfully");
+	}
 
 	if (!pythonScript->isInitialized() || this->isExecutedScript(pythonScript)) {
 		return;
@@ -72,6 +80,7 @@ void PythonController::StartExecuteScript(PythonScript* pythonScript)
 
 void PythonController::StopExecuteScript(PythonScript* pythonScript)
 {
+	GameClient()->pythonRender.ResetScriptObjects(pythonScript->filepath);
 	pythonScript->fileExceptions = vector<string>(0);
 
 	for (auto iterator = this->executedPythonScripts.begin(); iterator != this->executedPythonScripts.end(); iterator++) {
@@ -107,54 +116,48 @@ void PythonController::StopExecuteScript(PythonScript* pythonScript)
 
 bool PythonController::OnInput(const IInput::CEvent &Event)
 {
-	std::string keyName = this->m_pClient->Input()->KeyName(Event.m_Key);
+	std::string KeyName = this->m_pClient->Input()->KeyName(Event.m_Key);
+	bool NeedBrakeInput = false;
 
-	if (keyName == "l") {
-		vec2 playerPos = this->m_pClient->m_aClients[this->m_pClient->m_aLocalIDs[g_Config.m_ClDummy]].m_Predicted.m_Pos;
-		vec2 pos = this->m_pClient->m_Controls.m_aMousePos[g_Config.m_ClDummy] * GameClient()->m_Camera.m_Zoom + playerPos;
-		this->m_pClient->movementAgent.moveTo(pos);
-	}
-
-	bool needBrakeInput = false;
-
-	for (auto executedPythonScript : this->executedPythonScripts) {
-		if (!PyObject_HasAttrString(executedPythonScript->module, "onInput")) {
-			executedPythonScript->updateExceptions();
+	for (auto ExecutedPythonScript : this->executedPythonScripts) {
+		if (!PyObject_HasAttrString(ExecutedPythonScript->module, "onInput")) {
+			ExecutedPythonScript->updateExceptions();
 			continue;
 		}
 
-		PyObject* function = PyObject_GetAttrString(executedPythonScript->module, "onInput");
+		PyObject* Function = PyObject_GetAttrString(ExecutedPythonScript->module, "onInput");
 
-		if (function != nullptr && PyCallable_Check(function)) {
-			PyObject* keyCodeObject = PyLong_FromLong(Event.m_Key);
-			PyObject* keyFlagsObject = PyLong_FromLong(Event.m_Flags);
-			PyObject* keyNameObject = PyUnicode_DecodeUTF8(keyName.c_str(), keyName.size(), "strict");
-			PyObject* args = PyTuple_Pack(3, keyCodeObject, keyFlagsObject, keyNameObject);
-			PyObject* result = PyObject_CallObject(function, args);
+		if (Function != nullptr && PyCallable_Check(Function)) {
+			GameClient()->pythonRender.SetScriptRender(ExecutedPythonScript->filepath);
+			PyObject* KeyCodeObject = PyLong_FromLong(Event.m_Key);
+			PyObject* KeyFlagsObject = PyLong_FromLong(Event.m_Flags);
+			PyObject* KeyNameObject = PyUnicode_DecodeUTF8(KeyName.c_str(), KeyName.size(), "strict");
+			PyObject* args = PyTuple_Pack(3, KeyCodeObject, KeyFlagsObject, KeyNameObject);
+			PyObject* result = PyObject_CallObject(Function, args);
 
 			if (result != nullptr && PyObject_IsTrue(result)) {
-				needBrakeInput = true;
+				NeedBrakeInput = true;
 			}
 
 			PyOS_InterruptOccurred();
 			Py_XDECREF(args);
-			Py_XDECREF(keyCodeObject);
-			Py_XDECREF(keyFlagsObject);
-			Py_XDECREF(keyNameObject);
+			Py_XDECREF(KeyCodeObject);
+			Py_XDECREF(KeyFlagsObject);
+			Py_XDECREF(KeyNameObject);
 		} else {
 			PyErr_Clear();
 		}
 
-		executedPythonScript->updateExceptions();
+		ExecutedPythonScript->updateExceptions();
 	}
 
-	return needBrakeInput;
+	return NeedBrakeInput;
 }
 
 bool PythonController::isExecutedScript(PythonScript *pythonScript)
 {
-	for (auto executedPythonScript : this->executedPythonScripts) {
-		if (executedPythonScript->filepath == pythonScript->filepath) {
+	for (auto ExecutedPythonScript : this->executedPythonScripts) {
+		if (ExecutedPythonScript->filepath == pythonScript->filepath) {
 			return true;
 		}
 	}
@@ -180,48 +183,48 @@ bool PythonController::needForceInput(int inputId)
 
 int PythonController::SnapInput(int *pData, int inputId)
 {
-	int sizeData;
-	CNetObj_PlayerInput input;
+	int SizeData;
+	CNetObj_PlayerInput Input;
 
 	if (inputId == g_Config.m_ClDummy) {
-		sizeData = this->m_pClient->m_Controls.SnapInput(pData);
-		mem_copy(&input, pData, sizeData);
+		SizeData = this->m_pClient->m_Controls.SnapInput(pData);
+		mem_copy(&Input, pData, SizeData);
 	} else {
-		input.m_Direction = 0;
-		input.m_TargetX = 0;
-		input.m_TargetY = 0;
-		input.m_Jump = 0;
-		input.m_Fire = 0;
-		input.m_Hook = 0;
-		input.m_PlayerFlags = 0;
-		input.m_WantedWeapon = 0;
-		input.m_NextWeapon = 0;
-		input.m_PrevWeapon = 0;
-		sizeData = sizeof(input);
+		Input.m_Direction = 0;
+		Input.m_TargetX = 0;
+		Input.m_TargetY = 0;
+		Input.m_Jump = 0;
+		Input.m_Fire = 0;
+		Input.m_Hook = 0;
+		Input.m_PlayerFlags = 0;
+		Input.m_WantedWeapon = 0;
+		Input.m_NextWeapon = 0;
+		Input.m_PrevWeapon = 0;
+		SizeData = sizeof(Input);
 	}
 
-	if (input.m_Direction == 0 || this->blockUserInput) {
-		input.m_Direction = this->inputs[inputId].m_Direction;
+	if (Input.m_Direction == 0 || this->blockUserInput) {
+		Input.m_Direction = this->inputs[inputId].m_Direction;
 	}
 
-	if (input.m_Jump == 0 || this->blockUserInput) {
+	if (Input.m_Jump == 0 || this->blockUserInput) {
 		if (this->inputs[inputId].m_Jump > 0) {
-			input.m_Jump = 1;
+			Input.m_Jump = 1;
 		}
 	}
 
-	if (input.m_Hook == 0 || this->blockUserInput) {
-		input.m_Hook = this->inputs[inputId].m_Hook;
+	if (Input.m_Hook == 0 || this->blockUserInput) {
+		Input.m_Hook = this->inputs[inputId].m_Hook;
 	}
 
-	int hookState = this->m_pClient->m_aClients[this->m_pClient->m_aLocalIDs[inputId]].m_Predicted.m_HookState;
+	int HookState = this->m_pClient->m_aClients[this->m_pClient->m_aLocalIds[inputId]].m_Predicted.m_HookState;
 
-	if (hookState == -1) {
+	if (HookState == -1) {
 		this->inputs[inputId].m_Hook = 0;
 	}
 
 	if (this->inputs[inputId].m_Fire > 0 || this->blockUserInput) {
-		input.m_Fire = this->inputs[inputId].m_Fire;
+		Input.m_Fire = this->inputs[inputId].m_Fire;
 		if (this->inputs[inputId].m_Fire > 0 && !this->blockUserInput) {
 			this->m_pClient->m_Controls.m_aInputData[inputId].m_Fire = (this->m_pClient->m_Controls.m_aInputData[inputId].m_Fire + 1) % 64;
 		}
@@ -230,22 +233,22 @@ int PythonController::SnapInput(int *pData, int inputId)
 	}
 
 	if (this->inputs[inputId].m_TargetX != 0 || this->inputs[inputId].m_TargetY != 0) {
-		input.m_TargetX = this->inputs[inputId].m_TargetX;
-		input.m_TargetY = this->inputs[inputId].m_TargetY;
+		Input.m_TargetX = this->inputs[inputId].m_TargetX;
+		Input.m_TargetY = this->inputs[inputId].m_TargetY;
 	}
 
 	if (this->inputs[inputId].m_WantedWeapon != -1) {
-		input.m_WantedWeapon = this->inputs[inputId].m_WantedWeapon;
-		this->m_pClient->m_Controls.m_aInputData[inputId].m_WantedWeapon = input.m_WantedWeapon;
+		Input.m_WantedWeapon = this->inputs[inputId].m_WantedWeapon;
+		this->m_pClient->m_Controls.m_aInputData[inputId].m_WantedWeapon = Input.m_WantedWeapon;
 	}
 
-	mem_copy(pData, &input, sizeof(input));
+	mem_copy(pData, &Input, sizeof(Input));
 	if (this->inputs[inputId].m_Jump > 0) {
 		this->inputs[inputId].m_Jump--;
 	}
 
 
-	return sizeData;
+	return SizeData;
 }
 
 void PythonController::InputFire(int id)
@@ -257,8 +260,6 @@ void PythonController::InputFire(int id)
 	GameClient()->m_Controls.m_aInputData[id].m_Fire = (GameClient()->m_Controls.m_aInputData[id].m_Fire + 1) % 64;
 	GameClient()->pythonController.inputs[id].m_Fire = GameClient()->m_Controls.m_aInputData[id].m_Fire;
 }
-
-int fps = 60;
 
 void PythonController::OnUpdate()
 {
@@ -272,6 +273,7 @@ void PythonController::OnUpdate()
 		PyObject* function = PyObject_GetAttrString(executedPythonScript->module, "onUpdate");
 
 		if (function != nullptr && PyCallable_Check(function)) {
+			GameClient()->pythonRender.SetScriptRender(executedPythonScript->filepath);
 			PyObject* args = PyTuple_Pack(0);
 			PyObject* result = PyObject_CallObject(function, args);
 			executedPythonScript->updateExceptions();

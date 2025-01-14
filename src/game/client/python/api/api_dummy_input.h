@@ -5,8 +5,8 @@
 #ifndef DDNET_API_DUMMY_DummyInput_H
 #define DDNET_API_DUMMY_DummyInput_H
 
-#include <functional>
 #include "api.h"
+#include "api_input.h"
 #include "api_vector2.h"
 
 // ============ API.DummyInput Module ============ //

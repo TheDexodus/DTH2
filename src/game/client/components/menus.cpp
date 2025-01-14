@@ -1030,11 +1030,14 @@ void CMenus::Render()
 
 	CUIRect MainView;
 	CUIRect TabBar;
+	CUIRect Screen = *Ui()->Screen();
 
 	if(!GameClient()->user.isAuthorized())
 	{
-		if(!m_pBackground->Render())
+		if(!GameClient()->m_MenuBackground.Render())
+		{
 			RenderBackground();
+		}
 		ms_ColorTabbarInactive = ms_ColorTabbarInactiveOutgame;
 		ms_ColorTabbarActive = ms_ColorTabbarActiveOutgame;
 		ms_ColorTabbarHover = ms_ColorTabbarHoverOutgame;
@@ -1042,7 +1045,7 @@ void CMenus::Render()
 		Screen.Margin(10.0f, &Screen);
 		Screen.HSplitTop(24.0f, &TabBar, &MainView);
 		RenderLoginMenu(MainView);
-		return 0;
+		return;
 	}
 
 	static int s_Frame = 0;
@@ -1111,7 +1114,6 @@ void CMenus::Render()
 		ms_ColorTabbarHover = ms_ColorTabbarHoverOutgame;
 	}
 
-	CUIRect Screen = *Ui()->Screen();
 	if(Client()->State() != IClient::STATE_DEMOPLAYBACK || m_Popup != POPUP_NONE)
 	{
 		Screen.Margin(10.0f, &Screen);

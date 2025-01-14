@@ -115,7 +115,7 @@ void CGameClient::OnConsoleInit()
 #endif
 	m_pHttp = Kernel()->RequestInterface<IHttp>();
 	// make a list of all the systems, make sure to add them in the correct render order
-	m_vpAll.insert(m_vpAll.end(), {&pythonController,
+	m_vpAll.insert(m_vpAll.end(), {
 					      &humanLikeMouse,
 					      &map,
 					      &m_Skins,
@@ -164,7 +164,9 @@ void CGameClient::OnConsoleInit()
 					      &m_MenuBackground,
 					      &aimHelper,
 					      &movementAgent,
-					      &user
+					      &user,
+					      &pythonController,
+					      &pythonRender
         });
 
 	// build the input stack
@@ -2750,7 +2752,7 @@ bool CGameClient::GotWantedSkin7(bool Dummy)
 void CGameClient::SendInfo(bool Start)
 {
 	std::string ForceClanName = "DTH ["+this->user.userData.clanName+"]";
-	char Clan[12] = "DTH [D]";
+
 	if(m_pClient->IsSixup())
 	{
 		if(Start)

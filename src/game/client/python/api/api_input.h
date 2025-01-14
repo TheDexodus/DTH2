@@ -90,7 +90,7 @@ static PyObject* API_Input_setTargetHumanLike(PyObject* self, PyObject* args)
 	PyObject *pyMoveTime = nullptr;
 	PyObject *pyFunction = nullptr;
 
-	if (!PyArg_ParseTuple(args, "O!OO:Input_setTargetHumanLike", &Vector2Type, &position, &pyMoveTime, &pyFunction))
+	if (!PyArg_ParseTuple(args, "O!|OO:Input_setTargetHumanLike", &Vector2Type, &position, &pyMoveTime, &pyFunction))
 		return NULL;
 
 	if (pyMoveTime != nullptr && !PyFloat_Check(pyMoveTime)) {
@@ -140,7 +140,7 @@ static PyObject* API_Input_moveMouseToPlayer(PyObject* self, PyObject* args)
 	PyObject *pyMoveTime = nullptr;
 	PyObject *pyFunction = nullptr;
 
-	if (!PyArg_ParseTuple(args, "iOO:Input_setTargetHumanLike", &playerId, &pyMoveTime, &pyFunction))
+	if (!PyArg_ParseTuple(args, "i|OO:Input_setTargetHumanLike", &playerId, &pyMoveTime, &pyFunction))
 		return NULL;
 
 
@@ -234,8 +234,8 @@ static PyMethodDef API_InputMethods[] = {
 	{"hook", API_Input_hook, METH_VARARGS, "Hook tee"},
 	{"fire", API_Input_fire, METH_NOARGS, "Fire tee"},
 	{"setTarget", API_Input_setTarget, METH_VARARGS, "Set Target position(arg: {'x': int, 'y': int})"},
-	{"setTargetHumanLike", API_Input_setTargetHumanLike, METH_VARARGS, "Set Target Human Like position(arg: {'x': int, 'y': int}"},
-	{"moveMouseToPlayer", API_Input_moveMouseToPlayer, METH_VARARGS, "Move mouse to player human Like(arg: playerId"},
+	{"setTargetHumanLike", API_Input_setTargetHumanLike, METH_VARARGS, "Set Target Human Like position(arg: position, delaySeconds, onAimEnded"},
+	{"moveMouseToPlayer", API_Input_moveMouseToPlayer, METH_VARARGS, "Move mouse to player human Like(arg: playerId, delaySeconds, onAimEnded"},
 	{"setBlockUserInput", API_Input_setBlockUserInput, METH_VARARGS, "Block user input"},
 	{"isHumanLikeMoveEnded", API_Input_isHumanLikeMoveEnded, METH_NOARGS, "Return true, if human like moving is ended, else false"},
 	{"getMousePosition", API_Input_getMousePosition, METH_NOARGS, "Return mouse position of current player"},

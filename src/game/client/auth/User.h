@@ -6,6 +6,7 @@
 #define DDNET_USER_H
 
 #include "engine/client.h"
+#include "engine/shared/http.h"
 #include "game/client/component.h"
 
 #define BACKEND_URL "https://backend.dth.dexodus.ru/"
@@ -17,7 +18,7 @@ using namespace std;
 class UserData
 {
 public:
-	string clanName;
+	string clanName = "DTH";
 };
 
 class User : public CComponent
@@ -31,11 +32,14 @@ public:
 
 	void saveCredentials(string login, string password);
 	void eraseCredentials();
+	bool isLoginLoading();
 	pair<string, string> getCredentials();
 	UserData userData;
 private:
 	string token = "";
-	void requestUserData();
+	bool requestUserData();
+	std::shared_ptr<CHttpRequest> loginRequest = nullptr;
+	std::shared_ptr<CHttpRequest> gettingUserRequest = nullptr;
 };
 
 #endif // DDNET_USER_H

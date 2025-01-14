@@ -9,8 +9,8 @@
 #include "api_time.h"
 #include "api_predict.h"
 #include "api_character.h"
+#include "api_graphics.h"
 #include "game/client/gameclient.h"
-#include "structmember.h"
 
 // ============ API Module ============ //
 
@@ -21,15 +21,57 @@ static PyObject* API_LocalID(PyObject* self, PyObject* args) {
 	if(clientId == -1)
 		clientId = g_Config.m_ClDummy;
 
-	auto localId = PythonAPI_GameClient->m_aLocalIDs[clientId];
+	auto localId = PythonAPI_GameClient->m_aLocalIds[clientId];
 
 	PyObject* localIdObject = PyLong_FromLong(localId);
 
 	return localIdObject;
 }
 
+// Таймер-обертка для вызова callback через заданное время
+static PyObject* API_Timeout(PyObject* self, PyObject* args) {
+	double timeout;
+	PyObject* pyCallback;
+
+	// Разбор аргументов: ожидание в секундах (float) и callback (callable)
+	if (!PyArg_ParseTuple(args, "dO:Timeout", &timeout, &pyCallback)) {
+		return NULL;
+	}
+
+	// Проверка, что передан callback
+	if (!PyCallable_Check(pyCallback)) {
+		PyErr_SetString(PyExc_TypeError, "Expected a callable as the second argument");
+		return NULL;
+	}
+
+	// Увеличиваем ссылку на callback, чтобы Python не удалил его
+	Py_INCREF(pyCallback);
+
+	// Создаём новый поток для таймера
+	std::thread([timeout, pyCallback]() {
+	    // Задержка
+	    std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(timeout * 1000)));
+
+	    // Выполняем callback в главном потоке Python
+	    PyGILState_STATE gilState = PyGILState_Ensure(); // Захватываем GIL
+	    PyObject* result = PyObject_CallObject(pyCallback, NULL); // Вызываем callback
+
+	    if (!result) {
+		PyErr_Print(); // Печатаем ошибку, если вызов не удался
+	    } else {
+		Py_DECREF(result); // Уменьшаем ссылку на результат
+	    }
+
+	    Py_DECREF(pyCallback); // Уменьшаем ссылку на callback
+	    PyGILState_Release(gilState); // Освобождаем GIL
+	}).detach(); // Отсоединяем поток
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef APIMethods[] = {
 	{"LocalID", API_LocalID, METH_VARARGS, "Get Local ID"},
+	{"Timeout", API_Timeout, METH_VARARGS, "Call a function after a timeout"},
 	{NULL, NULL, 0, NULL}
 };
 
@@ -49,6 +91,7 @@ PyMODINIT_FUNC PyInit_API(void) {
 	PyModule_AddObject(APIModule, "Collision", PyInit_API_Collision());
 	PyModule_AddObject(APIModule, "Time", PyInit_API_Time());
 	PyModule_AddObject(APIModule, "Predict", PyInit_API_Predict());
+	PyModule_AddObject(APIModule, "Graphics", PyInit_API_Graphics());
 
 	while (PyType_Ready(&Vector2Type) < 0 || PyType_Ready(&PlayerType) < 0 || PyType_Ready(&TeeType) < 0 || PyType_Ready(&CharacterType) < 0)
 	{

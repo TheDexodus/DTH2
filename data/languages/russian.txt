@@ -65,6 +65,9 @@ Remember me
 Invalid credentials
 == Недействительные учётные данные
 
+Is logging
+== Авторизация...
+
 Add Friend
 == Добавить друга
 

@@ -117,13 +117,14 @@ void HumanLikeMouse::moveToPoint(Point* targetPoint, float moveTime, function<vo
 
 void HumanLikeMouse::moveToPlayer(int id, float moveTime, function<void()> onArrival)
 {
-	if (id == this->m_pClient->m_aLocalIDs[g_Config.m_ClDummy]) {
+	if (id == this->m_pClient->m_aLocalIds[g_Config.m_ClDummy]) {
 		return;
 	}
 
 	Point point;
+
 	vec2 playerPos = this->m_pClient->m_aClients[id].m_Predicted.m_Pos + this->m_pClient->m_aClients[id].m_Predicted.m_Vel;// + vec2(randomNumber(-8, 8), randomNumber(-8, 8)); // TODO : CHANGE TO PROXIMITY RADIUS
-	vec2 diff = (playerPos - this->m_pClient->m_aClients[this->m_pClient->m_aLocalIDs[g_Config.m_ClDummy]].m_Predicted.m_Pos);// * ((float)(randomNumber(50, 200)) / 100);
+	vec2 diff = (playerPos - this->m_pClient->m_aClients[this->m_pClient->m_aLocalIds[g_Config.m_ClDummy]].m_Predicted.m_Pos);// * ((float)(randomNumber(50, 200)) / 100);
 	point.x = diff.x;
 	point.y = diff.y;
 
@@ -142,11 +143,12 @@ void HumanLikeMouse::processMouseMoving()
 	float timeToAim = leftTimeToAim / leftIterations;
 
 	if (this->movingToUser != -1 && !this->targetWay.empty()) {
-		auto localPlayer = GameClient()->m_aClients[GameClient()->m_aLocalIDs[g_Config.m_ClDummy]];
-		auto player = GameClient()->m_aClients[GameClient()->m_aLocalIDs[this->movingToUser]];
+		auto localPlayer = this->m_pClient->m_aClients[this->m_pClient->m_aLocalIds[g_Config.m_ClDummy]];
 		auto lastPoint = this->targetWay.back();
+		auto player = this->m_pClient->m_aClients[this->movingToUser];
+		GameClient()->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "distance", to_string(distance(vec2(lastPoint.x, lastPoint.y), player.m_Predicted.m_Pos + player.m_Predicted.m_Vel - localPlayer.m_Predicted.m_Pos)).c_str());
 
-		if (distance(vec2(lastPoint.x, lastPoint.y), player.m_Predicted.m_Pos - localPlayer.m_Predicted.m_Pos) > 14) {
+		if (distance(vec2(lastPoint.x, lastPoint.y), player.m_Predicted.m_Pos + player.m_Predicted.m_Vel - localPlayer.m_Predicted.m_Pos) > 14) {
 			this->moveToPlayer(this->movingToUser, this->endMoveTime - Client()->LocalTime(), this->onArrival);
 			moveIteration = 1;
 			return;
@@ -167,13 +169,10 @@ void HumanLikeMouse::processMouseMoving()
 	timer = Client()->LocalTime();
 	Point point = this->targetWay.front();
 
-	int toX = prevPoint.x + (point.x - prevPoint.x) / countIterationsForOnePoint * moveIteration;
-	int toY = prevPoint.y + (point.y - prevPoint.y) / countIterationsForOnePoint * moveIteration;
-
-	this->m_pClient->pythonController.inputs[g_Config.m_ClDummy].m_TargetX = toX;
-	this->m_pClient->pythonController.inputs[g_Config.m_ClDummy].m_TargetY = toY;
-
 	if (moveIteration == countIterationsForOnePoint) {
+		this->m_pClient->pythonController.inputs[g_Config.m_ClDummy].m_TargetX = point.x;
+		this->m_pClient->pythonController.inputs[g_Config.m_ClDummy].m_TargetY = point.y;
+
 		this->targetWay.pop();
 		prevPoint = point;
 		moveIteration = 1;
@@ -181,7 +180,13 @@ void HumanLikeMouse::processMouseMoving()
 		if (this->targetWay.empty()) {
 			this->onArrival();
 		}
+	} else if (moveIteration + 1 == countIterationsForOnePoint) {
+		this->m_pClient->pythonController.inputs[g_Config.m_ClDummy].m_TargetX = point.x;
+		this->m_pClient->pythonController.inputs[g_Config.m_ClDummy].m_TargetY = point.y;
+		moveIteration++;
 	} else {
+		this->m_pClient->pythonController.inputs[g_Config.m_ClDummy].m_TargetX = prevPoint.x + (point.x - prevPoint.x) / countIterationsForOnePoint * moveIteration;
+		this->m_pClient->pythonController.inputs[g_Config.m_ClDummy].m_TargetY = prevPoint.y + (point.y - prevPoint.y) / countIterationsForOnePoint * moveIteration;
 		moveIteration++;
 	}
 }
@@ -189,6 +194,14 @@ void HumanLikeMouse::processMouseMoving()
 void HumanLikeMouse::OnUpdate()
 {
 	this->processMouseMoving();
+
+	// if (Input()->KeyIsPressed(KEY_MOUSE_5))
+	// {
+	// 	Point point;
+	// 	point.x = randomNumber(-1, 1);
+	// 	point.y = randomNumber(-1, 1);
+	// 	this->moveToPoint(&point, 1);
+	// }
 }
 
 bool HumanLikeMouse::isMoveEnded()

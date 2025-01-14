@@ -123,6 +123,8 @@ class Player:
 def LocalID(clientId: int) -> int:
     pass
 
+def Timeout(timeoutSeconds: float, callback: Callable[[], None]) -> None:
+    pass
 
 class Collision:
     @staticmethod
@@ -267,6 +269,21 @@ class Character:
     def __init__(self, playerId: int):
         pass
 
+class Graphics:
+    def drawCircle(position: Vector2, radius: float, color: int = 0xffffffff) -> int:
+        pass
+
+    def drawLine(fromPosition: Vector2, toPosition: Vector2, color: int = 0xffffffff) -> int:
+        pass
+
+    def rgba(red: int, green: int, blue: int, alpha: int = 255) -> int:
+        pass
+
+    def getScreenSize() -> Vector2:
+        pass
+
+    def removeDrawObject(objectId: int) -> None:
+        pass;
 
 #######################################################
 # For using events, just write in your code function. #

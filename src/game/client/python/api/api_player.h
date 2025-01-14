@@ -7,9 +7,9 @@
 
 #include "Python.h"
 #include "game/client/gameclient.h"
+#include "api_tee.h"
 #include "api.h"
 #include "api_vector2.h"
-#include "api_tee.h"
 
 using namespace std;
 
@@ -150,7 +150,6 @@ static int Player_init(Player *self, PyObject *args, PyObject *kwds)
 	self->tee.hookTeleBase = Vector2(clientData.m_Predicted.m_HookTeleBase);
 	self->tee.hookTick = clientData.m_Predicted.m_HookTick;
 	self->tee.hookState = clientData.m_Predicted.m_HookState;
-	self->tee.hookedPlayer = clientData.m_Predicted.m_HookedPlayer;
 	self->tee.activeWeapon = clientData.m_Predicted.m_ActiveWeapon;
 	self->tee.isNewHook = clientData.m_Predicted.m_NewHook;
 	self->tee.jumped = clientData.m_Predicted.m_Jumped;
@@ -161,7 +160,6 @@ static int Player_init(Player *self, PyObject *args, PyObject *kwds)
 	self->tee.triggeredEvents = clientData.m_Predicted.m_TriggeredEvents;
 	self->tee.id = clientData.m_Predicted.m_Id;
 	self->tee.isReset = clientData.m_Predicted.m_Reset;
-	self->tee.lastVel = Vector2(clientData.m_Predicted.m_LastVel);
 	self->tee.colliding = clientData.m_Predicted.m_Colliding;
 	self->tee.isLeftWall = clientData.m_Predicted.m_LeftWall;
 	self->tee.isSolo = clientData.m_Predicted.m_Solo;

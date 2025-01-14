@@ -69,7 +69,7 @@ void PythonScript::init()
 	this->updateExceptions();
 
 	if (this->module == nullptr) {
-		this->fileExceptions.push_back(getError());
+		// this->fileExceptions.push_back(getError());
 		return;
 	}
 

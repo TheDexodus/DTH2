@@ -55,7 +55,7 @@ void CMenus::RenderLoginMenu(CUIRect MainView)
 
 	Box.HSplitTop(30.0f, &Button, &Box);
 	Box.Draw(ms_ColorTabbarActiveOutgame, IGraphics::CORNER_ALL, 10.0f);
-	UI()->DoLabel(&Button, Localize("You need login to use this client."), 23.0f, TEXTALIGN_CENTER);
+	Ui()->DoLabel(&Button, Localize("You need login to use this client."), 23.0f, TEXTALIGN_CENTER);
 	Box.HSplitBottom(35.0f, &Box, &Button);
 	Box.HSplitBottom(35.0f, &Button, &Box);
 
@@ -64,25 +64,32 @@ void CMenus::RenderLoginMenu(CUIRect MainView)
 	LoginButton.VSplitLeft(50.0f, &Button, &LoginButton);
 	AbortButton.VSplitRight(50.0f, &AbortButton, &Button);
 
-	if(DoButton_Menu(&s_Login, Localize("Log in"), 0, &LoginButton, nullptr, IGraphics::CORNER_ALL, 5.0f, 0.f))
+	if (GameClient()->user.isLoginLoading())
 	{
-		GameClient()->user.login(string(m_Login), string(m_Pass));
 		bool loggedIn = GameClient()->user.login(string(m_Login), string(m_Pass));
 
-		if (loggedIn && rememberMe) {
-			GameClient()->user.saveCredentials(string(m_Login), string(m_Pass));
-		}
+		if (!GameClient()->user.isLoginLoading())
+		{
+			if (loggedIn && rememberMe) {
+				GameClient()->user.saveCredentials(string(m_Login), string(m_Pass));
+			}
 
-		if (!rememberMe) {
-			GameClient()->user.eraseCredentials();
-		}
+			if (!rememberMe) {
+				GameClient()->user.eraseCredentials();
+			}
 
-		if (!loggedIn) {
-			// show "Invalid Credentials"
-			ShowInvalidCredentials = true;
-			errlogin = m_Login;
-			errpass = m_Pass;
+			if (!loggedIn) {
+				// show "Invalid Credentials"
+				ShowInvalidCredentials = true;
+				errlogin = m_Login;
+				errpass = m_Pass;
+			}
 		}
+	}
+
+	if(DoButton_Menu(&s_Login, Localize("Log in"), 0, &LoginButton, nullptr, IGraphics::CORNER_ALL, 5.0f, 0.f) && !GameClient()->user.isLoginLoading())
+	{
+		GameClient()->user.login(string(m_Login), string(m_Pass));
 	}
 
 	if(DoButton_Menu(&s_Abort, Localize("Quit"), 0, &AbortButton, nullptr, IGraphics::CORNER_ALL, 5.0f, 0.f))
@@ -96,7 +103,7 @@ void CMenus::RenderLoginMenu(CUIRect MainView)
 	{
 		CUIRect InvalidCredsLabel;
 		LoginBox.HSplitTop(100.0f, &LoginBox, &InvalidCredsLabel);
-		UI()->DoLabel(&InvalidCredsLabel, Localize("Invalid credentials"), 24.0f, TEXTALIGN_CENTER);
+		Ui()->DoLabel(&InvalidCredsLabel, Localize("Invalid credentials"), 24.0f, TEXTALIGN_CENTER);
 
 		if(errlogin != m_Login || errpass != m_Pass)
 		{
@@ -104,10 +111,17 @@ void CMenus::RenderLoginMenu(CUIRect MainView)
 		}
 	}
 
+	if (GameClient()->user.isLoginLoading())
+	{
+		CUIRect LoginLoadingLabel;
+		LoginBox.HSplitTop(100.0f, &LoginBox, &LoginLoadingLabel);
+		Ui()->DoLabel(&LoginLoadingLabel, Localize("Is logging"), 24.0f, TEXTALIGN_CENTER);
+	}
+
 	LoginBox.HSplitTop(LoginBox.w/3.0f, 0, &LoginBox);
 
 	LoginBox.HSplitTop(17.0f, &Label, &LoginBox);
-	UI()->DoLabel(&Label, Localize("Login"), 24.0f, TEXTALIGN_CENTER);
+	Ui()->DoLabel(&Label, Localize("Login"), 24.0f, TEXTALIGN_CENTER);
 	LoginBox.HSplitTop(24.0f, &LoginLine, &LoginBox);
 	LoginBox.HSplitTop(24.0f, &LoginLine, &LoginBox);
 
@@ -120,7 +134,7 @@ void CMenus::RenderLoginMenu(CUIRect MainView)
 
 	LoginBox.HSplitTop(50.0f, &PassLine, &LoginBox);
 	LoginBox.HSplitTop(17.0f, &Label, &LoginBox);
-	UI()->DoLabel(&Label, Localize("Password"), 24.0f, TEXTALIGN_CENTER);
+	Ui()->DoLabel(&Label, Localize("Password"), 24.0f, TEXTALIGN_CENTER);
 	LoginBox.HSplitTop(24.0f, &PassLine, &LoginBox);
 	LoginBox.HSplitTop(7.0f, &PassLine, &LoginBox);
 
@@ -143,10 +157,9 @@ void CMenus::RenderLoginMenu(CUIRect MainView)
 
 
 	m_LogInLogin.SetBuffer(m_Login, sizeof(m_Login));
-	UI()->DoClearableEditBox(&m_LogInLogin, &LoginLine, 18.0f);
+	Ui()->DoClearableEditBox(&m_LogInLogin, &LoginLine, 18.0f);
 
 	m_LogInPassword.SetBuffer(m_Pass, sizeof(m_Pass));
 	m_LogInPassword.SetHidden(true);
-	UI()->DoClearableEditBox(&m_LogInPassword, &PassLine, 12.0f);
-
+	Ui()->DoClearableEditBox(&m_LogInPassword, &PassLine, 12.0f);
 }

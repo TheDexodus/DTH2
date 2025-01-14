@@ -3,26 +3,35 @@
 //
 
 #include "User.h"
+
+#include "engine/engine.h"
 #include "engine/shared/http.h"
-#include <engine/shared/json.h>
 #include "game/client/gameclient.h"
-#include <fstream>
+#include <engine/shared/json.h>
 #include <filesystem>
+#include <fstream>
 
 bool User::login(string login, string password)
 {
-	string body = "{\"email\": \"" + login + "\", \"password\": \"" + password + "\"}";
+	if (loginRequest == nullptr)
+	{
+		string body = "{\"email\": \"" + login + "\", \"password\": \"" + password + "\"}";
 
-	string url = string(BACKEND_URL) + BACKEND_LOGIN_ACTION;
-	CHttpRequest* request = new CHttpRequest(url.c_str());
-	request->PostJson(body.c_str());
-	request->LogProgress(HTTPLOG::FAILURE);
+		string url = string(BACKEND_URL) + BACKEND_LOGIN_ACTION;
+		loginRequest = HttpPostJson(url.c_str(), body.c_str());
+		loginRequest->LogProgress(HTTPLOG::FAILURE);
+		Http()->Run(loginRequest);
+		return false;
+	}
 
-	Engine()->RunJobBlocking(request);
+	if (loginRequest != nullptr && !loginRequest->Done()) {
+		return false;
+	}
 
-	json_value* resultJson = request->ResultJson();
+	json_value* resultJson = loginRequest->ResultJson();
 
 	if (!resultJson) {
+		loginRequest = nullptr;
 		return false;
 	}
 
@@ -30,9 +39,8 @@ bool User::login(string login, string password)
 	const json_value &TokenString = Json["token"];
 
 	this->token = json_string_get(&TokenString);
-	this->requestUserData();
 
-	return true;
+	return this->requestUserData();
 }
 
 bool User::isAuthorized()
@@ -68,12 +76,20 @@ void User::saveCredentials(string login, string password)
 
 void User::eraseCredentials()
 {
-	const std::filesystem::path file_path { "auth.cfg" };
+	const std::filesystem::path file_path{"auth.cfg"};
 
-	try {
+	try
+	{
 		std::filesystem::remove(file_path);
-	} catch (const std::filesystem::filesystem_error& e) {
 	}
+	catch(const std::filesystem::filesystem_error &e)
+	{
+	}
+}
+
+bool User::isLoginLoading()
+{
+	return loginRequest != nullptr;
 }
 
 pair<string, string> User::getCredentials()
@@ -96,23 +112,34 @@ void User::logout()
 	this->token = "";
 }
 
-void User::requestUserData()
+bool User::requestUserData()
 {
-	string url = string(BACKEND_URL) + BACKEND_ME_ACTION;
-	CHttpRequest* request = new CHttpRequest(url.c_str());
-	string authHeader = "Bearer " + this->token;
-	request->HeaderString("Authorization", authHeader.c_str());
-	request->LogProgress(HTTPLOG::FAILURE);
+	if (gettingUserRequest == nullptr)
+	{
+		string url = string(BACKEND_URL) + BACKEND_ME_ACTION;
+		gettingUserRequest = HttpGet(url.c_str());
+		string authHeader = "Bearer " + this->token;
+		gettingUserRequest->HeaderString("Authorization", authHeader.c_str());
+		gettingUserRequest->LogProgress(HTTPLOG::FAILURE);
+		Http()->Run(gettingUserRequest);
+		return false;
+	}
 
-	Engine()->RunJobBlocking(request);
+	if (gettingUserRequest != nullptr && !gettingUserRequest->Done())
+	{
+		return false;
+	}
 
-	json_value* resultJson = request->ResultJson();
+	json_value* resultJson = gettingUserRequest->ResultJson();
+	loginRequest = nullptr;
+	gettingUserRequest = nullptr;
 
 	if (!resultJson) {
-		return;
+		return false;
 	}
 
 	const json_value &Json = *resultJson;
-
 	this->userData.clanName = json_string_get(&Json["clanName"]);
+
+	return true;
 }

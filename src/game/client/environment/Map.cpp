@@ -201,14 +201,15 @@ void Map::buildGraph()
 {
 	graph = MapGraph (GameClient()->Collision()->GetWidth(), MapGraphLine (GameClient()->Collision()->GetHeight(), MapGraphCell(0)));
 
+	return;
 
-	auto clientData = GameClient()->m_aClients[GameClient()->m_aLocalIDs[g_Config.m_ClDummy]];
+	auto clientData = GameClient()->m_aClients[GameClient()->m_aLocalIds[g_Config.m_ClDummy]];
 	int airJumpImpulse = clientData.m_Predicted.m_Tuning.m_AirJumpImpulse.Get(); // 1200
 	int gravity = clientData.m_Predicted.m_Tuning.m_Gravity.Get(); // 50
 	int airControlAccel = clientData.m_Predicted.m_Tuning.m_AirControlAccel.Get(); // 150
 	int airControlSpeed = clientData.m_Predicted.m_Tuning.m_AirControlSpeed.Get(); // 500
 	int airFriction = clientData.m_Predicted.m_Tuning.m_AirFriction.Get(); // 95
-	int jumpHeight = ceil(airJumpImpulse / gravity / 2.25); // 2.25 подоброное значение
+	int jumpHeight = ceil(airJumpImpulse / gravity / 2.25); // 2.25 пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
 	// 10
 
@@ -420,7 +421,7 @@ std::vector<Node*> Map::aStar(ivec2 startPosition, ivec2 endPosition)
 
 vec2 Map::convertWorldToUI(vec2 worldPos)
 {
-	return vec2(GameClient()->UI()->Screen()->w / 2, GameClient()->UI()->Screen()->h / 2) + ((worldPos - GameClient()->m_Camera.m_Center) / GameClient()->m_Camera.m_Zoom * 0.75);
+	return vec2(GameClient()->Ui()->Screen()->w / 2, GameClient()->Ui()->Screen()->h / 2) + ((worldPos - GameClient()->m_Camera.m_Center) / GameClient()->m_Camera.m_Zoom * 0.75);
 }
 
 vec2 Map::convertMapToUI(vec2 mapPos)

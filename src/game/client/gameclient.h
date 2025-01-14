@@ -66,6 +66,7 @@
 #include "game/client/auth/User.h"
 #include "game/client/environment/Map.h"
 #include "game/client/python/PythonController.h"
+#include "game/client/python/PythonRender.h"
 
 class CGameInfo
 {
@@ -178,6 +179,7 @@ public:
 	HumanLikeMouse humanLikeMouse;
 	AimHelper aimHelper;
 	PythonController pythonController;
+	PythonRender pythonRender;
 
 	std::vector<PythonScript*> pythonScripts;
 	MovementAgent movementAgent;

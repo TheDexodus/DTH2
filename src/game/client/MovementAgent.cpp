@@ -7,9 +7,14 @@
 #include "game/client/gameclient.h"
 #include <engine/shared/http.h>
 
+void MovementAgent()
+{
+	
+}
+
 void MovementAgent::moveTo(vec2 position)
 {
-	CGameClient::CClientData localClientData = this->m_pClient->m_aClients[this->m_pClient->m_aLocalIDs[g_Config.m_ClDummy]];
+	CGameClient::CClientData localClientData = this->m_pClient->m_aClients[this->m_pClient->m_aLocalIds[g_Config.m_ClDummy]];
 	path = GameClient()->map.aStar(floor(localClientData.m_Predicted.m_Pos / 32), floor(position / 32));
 
 	this->moveToPosition = position;
@@ -23,7 +28,7 @@ void MovementAgent::OnUpdate()
 	}
 
 	CNetObj_PlayerInput* input = &this->m_pClient->pythonController.inputs[g_Config.m_ClDummy];
-	CGameClient::CClientData localClientData = this->m_pClient->m_aClients[this->m_pClient->m_aLocalIDs[g_Config.m_ClDummy]];
+	CGameClient::CClientData localClientData = this->m_pClient->m_aClients[this->m_pClient->m_aLocalIds[g_Config.m_ClDummy]];
 
 	ivec2 startMapPosition = floor(localClientData.m_Predicted.m_Pos / 32);
 	ivec2 endMapPosition = floor(this->moveToPosition / 32);
@@ -45,7 +50,7 @@ void MovementAgent::OnUpdate()
 
 void MovementAgent::moveToOnGround(vec2 position)
 {
-	CGameClient::CClientData localClientData = this->m_pClient->m_aClients[this->m_pClient->m_aLocalIDs[g_Config.m_ClDummy]];
+	CGameClient::CClientData localClientData = this->m_pClient->m_aClients[this->m_pClient->m_aLocalIds[g_Config.m_ClDummy]];
 	CNetObj_PlayerInput* input = &this->m_pClient->pythonController.inputs[g_Config.m_ClDummy];
 
 	if (localClientData.m_Predicted.m_Pos.x + localClientData.m_Predicted.m_Vel.x - 4 > position.x) {
@@ -63,7 +68,7 @@ void MovementAgent::OnRender()
 		return;
 	}
 
-	UI()->MapScreen();
+	Ui()->MapScreen();
 	Graphics()->TextureClear();
 	Graphics()->LinesBegin();
 	Graphics()->SetColor(1.0f, 0.0f, 0.0f, 1.0f);

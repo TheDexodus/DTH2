@@ -1462,6 +1462,22 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 		return;
 	}
 
+	if (Msg != 16)
+	{
+		// char aBuf[256];
+		// str_format(aBuf, sizeof(aBuf), "Msg: %s, Packet flags: %s; Packet dataSize: %s", std::to_string(Msg).c_str(), std::to_string(pPacket->m_Flags).c_str(), std::to_string(pPacket->m_DataSize).c_str());
+		// Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
+
+		constexpr int MaxDumpedDataSize = 32;
+		char aBuf[MaxDumpedDataSize * 3 + 1];
+		str_hex(aBuf, sizeof(aBuf), pPacket->m_pData, minimum(pPacket->m_DataSize, MaxDumpedDataSize));
+
+		char aBufMsg[256];
+		str_format(aBufMsg, sizeof(aBufMsg), "strange message ClientId=%d msg=%d data_size=%d", ClientId, Msg, pPacket->m_DataSize);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server dump", aBufMsg);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server dump", aBuf);
+	}
+
 	if(m_aClients[ClientId].m_Sixup && (Msg = MsgFromSixup(Msg, Sys)) < 0)
 	{
 		return;
@@ -1622,7 +1638,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 				net_addr_str(m_NetServer.ClientAddr(ClientId), aAddrStr, sizeof(aAddrStr), true);
 
 				char aBuf[256];
-				str_format(aBuf, sizeof(aBuf), "player has entered the game. ClientId=%d addr=<{%s}> sixup=%d. Version: '%s'", ClientId, aAddrStr, IsSixup(ClientId), m_aClients[ClientID].m_aDDNetVersionStr);
+				str_format(aBuf, sizeof(aBuf), "player has entered the game. ClientId=%d addr=<{%s}> sixup=%d. Version: '%s'", ClientId, aAddrStr, IsSixup(ClientId), m_aClients[ClientId].m_aDDNetVersionStr);
 				Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
 				m_aClients[ClientId].m_State = CClient::STATE_INGAME;
 				if(!IsSixup(ClientId))
@@ -1716,7 +1732,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 				if(GameServer()->PlayerExists(ClientId))
 				{
 					char aBuf[256];
-					str_format(aBuf, sizeof(aBuf), "ClientId=%d rcon='%s'. Version: '%s'", ClientId, pCmd, m_aClients[ClientID].m_DDNetVersion);
+					str_format(aBuf, sizeof(aBuf), "ClientId=%d rcon='%s'. Version: '%s'", ClientId, pCmd, m_aClients[ClientId].m_DDNetVersion);
 					Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
 					m_RconClientId = ClientId;
 					m_RconAuthLevel = m_aClients[ClientId].m_Authed;
@@ -1870,17 +1886,17 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 		}
 		else
 		{
-			if(Config()->m_Debug)
-			{
+			// if(Config()->m_Debug)
+			// {
 				constexpr int MaxDumpedDataSize = 32;
 				char aBuf[MaxDumpedDataSize * 3 + 1];
 				str_hex(aBuf, sizeof(aBuf), pPacket->m_pData, minimum(pPacket->m_DataSize, MaxDumpedDataSize));
 
 				char aBufMsg[256];
 				str_format(aBufMsg, sizeof(aBufMsg), "strange message ClientId=%d msg=%d data_size=%d", ClientId, Msg, pPacket->m_DataSize);
-				Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBufMsg);
-				Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBuf);
-			}
+				Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server dump", aBufMsg);
+				Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server dump", aBuf);
+			// }
 		}
 	}
 	else if((pPacket->m_Flags & NET_CHUNKFLAG_VITAL) != 0 && m_aClients[ClientId].m_State >= CClient::STATE_READY)

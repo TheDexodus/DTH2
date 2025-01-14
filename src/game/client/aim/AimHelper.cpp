@@ -8,7 +8,7 @@
 
 int AimHelper::getLocalClientId()
 {
-	return this->m_pClient->m_aLocalIDs[g_Config.m_ClDummy];
+	return this->m_pClient->m_aLocalIds[g_Config.m_ClDummy];
 }
 
 std::vector<int> AimHelper::getPlayers(bool includeLocalPlayer)
@@ -48,7 +48,7 @@ std::vector<int> AimHelper::filterPlayersByTeam(std::vector<int> playersIds, int
 
 std::vector<int> AimHelper::filterPlayersByDistance(std::vector<int> playersIds, int maxDistance)
 {
-	CGameClient::CClientData localClientData = this->m_pClient->m_aClients[this->m_pClient->m_aLocalIDs[g_Config.m_ClDummy]];
+	CGameClient::CClientData localClientData = this->m_pClient->m_aClients[this->m_pClient->m_aLocalIds[g_Config.m_ClDummy]];
 	std::vector<int> filteredPlayers;
 
 	for (auto playerId : playersIds)
