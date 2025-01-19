@@ -29,6 +29,10 @@ jobs:
       with:
         python-version: '3.11.9'
 
+    - name: Set Python paths for CMake
+      run: |
+        echo "Python3_LIBRARY_DEBUG=${{ env.pythonLocation }}\\libs\\python311.lib" >> $env:GITHUB_ENV
+
       #    - name: Prepare Vulkan SDK
 #      uses: humbletim/setup-vulkan-sdk@v1.2.0
 #      with:
