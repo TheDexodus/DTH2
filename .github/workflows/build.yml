@@ -26,21 +26,12 @@ jobs:
       with:
         submodules: true
 
-    - name: Install Vulkan SDK
-      run: |
-        $VulkanVersion = "1.3.261.1"
-        Invoke-WebRequest -Uri "https://sdk.lunarg.com/sdk/download/$VulkanVersion/windows/VulkanSDK-$VulkanVersion-Installer.exe" -OutFile "VulkanSDK-Installer.exe"
-        Start-Process -FilePath "VulkanSDK-Installer.exe" -ArgumentList "/S" -Wait
-        echo "VULKAN_SDK=C:\VulkanSDK\$VulkanVersion" >> $env:GITHUB_ENV
-        echo "PATH=C:\VulkanSDK\$VulkanVersion\Bin;$env:PATH" >> $env:GITHUB_ENV
-      shell: pwsh
-
-    - name: Setup Vulkan PATH
-      run: |
-        echo "Setting Vulkan SDK environment variables..."
-        echo "VULKAN_SDK=$env:ProgramFiles\VulkanRT\1.3.261.1" >> $env:GITHUB_ENV
-        echo "PATH=$env:ProgramFiles\VulkanRT\1.3.261.1\Bin;$env:PATH" >> $env:GITHUB_ENV
-      shell: pwsh
+    - name: Prepare Vulkan SDK
+      uses: humbletim/setup-vulkan-sdk@v1.2.0
+      with:
+        vulkan-query-version: 1.3.204.0
+        vulkan-components: Vulkan-Headers, Vulkan-Loader
+        vulkan-use-cache: true
 
     - name: Cache Rust dependencies
       uses: Swatinem/rust-cache@v2
