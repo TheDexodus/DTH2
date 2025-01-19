@@ -23,10 +23,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
       with:
         submodules: true
-        python-version: '3.11.9'
+
+    - name: Set up Python with Debug
+      uses: danyeaw/setup-github-debug/action.yml@main
+      with:
+        python-version: 3.11.9
 
       #    - name: Prepare Vulkan SDK
 #      uses: humbletim/setup-vulkan-sdk@v1.2.0
