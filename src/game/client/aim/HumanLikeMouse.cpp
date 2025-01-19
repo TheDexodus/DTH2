@@ -94,9 +94,19 @@ Point HumanLikeMouse::getCurrentMousePosition()
 	return point;
 }
 
+void HumanLikeMouse::cancel()
+{
+	this->targetWay = std::queue<Point>();
+	this->countPointsInWay = 0;
+	this->onArrival = nullptr;
+	this->endMoveTime = 0;
+	this->countIterationsForOnePoint = 0;
+	this->movingToUser = -1;
+}
+
 void HumanLikeMouse::moveToPoint(Point* targetPoint, float moveTime, function<void()> onArrival)
 {
-	Point startPoint = HumanLikeMouse::getCurrentMousePosition();
+	Point startPoint = getCurrentMousePosition();
 	std::vector<Point> points = this->getPoints(startPoint.x, startPoint.y, targetPoint->x, targetPoint->y);
 	this->countPointsInWay = points.size();
 
@@ -146,7 +156,6 @@ void HumanLikeMouse::processMouseMoving()
 		auto localPlayer = this->m_pClient->m_aClients[this->m_pClient->m_aLocalIds[g_Config.m_ClDummy]];
 		auto lastPoint = this->targetWay.back();
 		auto player = this->m_pClient->m_aClients[this->movingToUser];
-		GameClient()->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "distance", to_string(distance(vec2(lastPoint.x, lastPoint.y), player.m_Predicted.m_Pos + player.m_Predicted.m_Vel - localPlayer.m_Predicted.m_Pos)).c_str());
 
 		if (distance(vec2(lastPoint.x, lastPoint.y), player.m_Predicted.m_Pos + player.m_Predicted.m_Vel - localPlayer.m_Predicted.m_Pos) > 14) {
 			this->moveToPlayer(this->movingToUser, this->endMoveTime - Client()->LocalTime(), this->onArrival);

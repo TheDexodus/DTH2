@@ -39,8 +39,8 @@ void Map::scanTiles()
 
 void Map::OnMapLoad()
 {
-	this->scanTiles();
-	this->buildGraph();
+	// this->scanTiles();
+	// this->buildGraph();
 }
 
 int Map::getTile(int mapX, int mapY)

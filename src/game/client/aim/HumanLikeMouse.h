@@ -31,6 +31,7 @@ public:
 	void moveToPlayer(int id, float moveTime = 0.02, function<void()> onArrival = [](){});
 	virtual int Sizeof() const override { return sizeof(*this); }
 	void OnUpdate();
+	void cancel();
 	bool isMoveEnded();
 protected:
 	Point HumanLikeMouse::getCurrentMousePosition();

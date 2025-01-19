@@ -328,6 +328,7 @@ public:
 	void SendMapData(int ClientId, int Chunk);
 	void SendMapReload(int ClientId);
 	void SendConnectionReady(int ClientId);
+	void ChecksumRequest(int ClientId);
 	void SendRconLine(int ClientId, const char *pLine);
 	// Accepts -1 as ClientId to mean "all clients with at least auth level admin"
 	void SendRconLogLine(int ClientId, const CLogMessage *pMessage);

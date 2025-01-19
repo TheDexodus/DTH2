@@ -1305,6 +1305,20 @@ void CServer::SendConnectionReady(int ClientId)
 	SendMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientId);
 }
 
+void CServer::ChecksumRequest(int ClientId)
+{
+	CMsgPacker Msg(NETMSG_CHECKSUM_REQUEST, true);
+	CUuid uuid;
+	for (int i = 0; i < 16; i++)
+	{
+		uuid.m_aData[i] = i;
+	}
+	Msg.AddRaw(&uuid, sizeof(uuid));
+	Msg.AddInt(20480);
+	Msg.AddInt(1024);
+	SendMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientId);
+}
+
 void CServer::SendRconLine(int ClientId, const char *pLine)
 {
 	CMsgPacker Msg(NETMSG_RCON_LINE, true);
@@ -1458,6 +1472,87 @@ bool CServer::CheckReservedSlotAuth(int ClientId, const char *pPassword)
 	return false;
 }
 
+#include <iomanip>
+#include <sstream>
+#include <string>
+
+std::string halfCharToHex(char ch)
+{
+	if (ch == 0)
+	{
+		return std::string("0");
+	}
+	if (ch == 1)
+	{
+		return std::string("1");
+	}
+	if (ch == 2)
+	{
+		return std::string("2");
+	}
+	if (ch == 3)
+	{
+		return std::string("3");
+	}
+	if (ch == 4)
+	{
+		return std::string("4");
+	}
+	if (ch == 5)
+	{
+		return std::string("5");
+	}
+	if (ch == 6)
+	{
+		return std::string("6");
+	}
+	if (ch == 7)
+	{
+		return std::string("7");
+	}
+	if (ch == 8)
+	{
+		return std::string("8");
+	}
+	if (ch == 9)
+	{
+		return std::string("9");
+	}
+	if (ch == 10)
+	{
+		return std::string("A");
+	}
+	if (ch == 11)
+	{
+		return std::string("B");
+	}
+	if (ch == 12)
+	{
+		return std::string("C");
+	}
+	if (ch == 13)
+	{
+		return std::string("D");
+	}
+	if (ch == 14)
+	{
+		return std::string("E");
+	}
+	if (ch == 15)
+	{
+		return std::string("F");
+	}
+	return std::string("-");
+}
+
+std::string charToHex(char ch)
+{
+	char first = (ch >> 4) & 0x0F;
+	char last = ch & 0x0F;
+
+	return std::string("0x") + halfCharToHex(first) + halfCharToHex(last) + std::string(" ");
+}
+
 void CServer::ProcessClientPacket(CNetChunk *pPacket)
 {
 	int ClientId = pPacket->m_ClientId;
@@ -1474,22 +1569,6 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 	if(Result == UNPACKMESSAGE_ERROR)
 	{
 		return;
-	}
-
-	if (Msg != 16)
-	{
-		// char aBuf[256];
-		// str_format(aBuf, sizeof(aBuf), "Msg: %s, Packet flags: %s; Packet dataSize: %s", std::to_string(Msg).c_str(), std::to_string(pPacket->m_Flags).c_str(), std::to_string(pPacket->m_DataSize).c_str());
-		// Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
-
-		constexpr int MaxDumpedDataSize = 32;
-		char aBuf[MaxDumpedDataSize * 3 + 1];
-		str_hex(aBuf, sizeof(aBuf), pPacket->m_pData, minimum(pPacket->m_DataSize, MaxDumpedDataSize));
-
-		char aBufMsg[256];
-		str_format(aBufMsg, sizeof(aBufMsg), "strange message ClientId=%d msg=%d data_size=%d", ClientId, Msg, pPacket->m_DataSize);
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server dump", aBufMsg);
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server dump", aBuf);
 	}
 
 	if(m_aClients[ClientId].m_Sixup && (Msg = MsgFromSixup(Msg, Sys)) < 0)
@@ -1523,6 +1602,16 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 
 	if(Sys)
 	{
+		if (Msg == NETMSG_CHECKSUM_RESPONSE)
+		{
+			CUuid *pUuid = (CUuid *)Unpacker.GetRaw(16);
+			SHA256_DIGEST *Sha256 = (SHA256_DIGEST*) Unpacker.GetRaw(32);
+			Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "checksum", "UUID:");
+			Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "checksum", (charToHex(pUuid->m_aData[0]) +  charToHex(pUuid->m_aData[1]) +  charToHex(pUuid->m_aData[2]) +  charToHex(pUuid->m_aData[3]) +  charToHex(pUuid->m_aData[4]) +  charToHex(pUuid->m_aData[5]) +  charToHex(pUuid->m_aData[6]) +  charToHex(pUuid->m_aData[7]) +  charToHex(pUuid->m_aData[8]) +  charToHex(pUuid->m_aData[9]) +  charToHex(pUuid->m_aData[10]) +  charToHex(pUuid->m_aData[11]) +  charToHex(pUuid->m_aData[12]) +  charToHex(pUuid->m_aData[13]) +  charToHex(pUuid->m_aData[14]) +  charToHex(pUuid->m_aData[15])).c_str());
+			Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "checksum", "Sha256: ");
+			Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "checksum", (charToHex(Sha256->data[0]) +  charToHex(Sha256->data[1]) +  charToHex(Sha256->data[2]) +  charToHex(Sha256->data[3]) +  charToHex(Sha256->data[4]) +  charToHex(Sha256->data[5]) +  charToHex(Sha256->data[6]) +  charToHex(Sha256->data[7]) +  charToHex(Sha256->data[8]) +  charToHex(Sha256->data[9]) +  charToHex(Sha256->data[10]) +  charToHex(Sha256->data[11]) +  charToHex(Sha256->data[12]) +  charToHex(Sha256->data[13]) +  charToHex(Sha256->data[14]) +  charToHex(Sha256->data[15]) +  charToHex(Sha256->data[16]) +  charToHex(Sha256->data[17]) +  charToHex(Sha256->data[18]) +  charToHex(Sha256->data[19]) +  charToHex(Sha256->data[20]) +  charToHex(Sha256->data[21]) +  charToHex(Sha256->data[22]) +  charToHex(Sha256->data[23]) +  charToHex(Sha256->data[24]) +  charToHex(Sha256->data[25]) +  charToHex(Sha256->data[26]) +  charToHex(Sha256->data[27]) +  charToHex(Sha256->data[28]) +  charToHex(Sha256->data[29]) +  charToHex(Sha256->data[30]) +  charToHex(Sha256->data[31])).c_str());
+		}
+
 		// system message
 		if(Msg == NETMSG_CLIENTVER)
 		{
@@ -1541,6 +1630,8 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 				m_aClients[ClientId].m_DDNetVersionSettled = true;
 				m_aClients[ClientId].m_GotDDNetVersionPacket = true;
 				m_aClients[ClientId].m_State = CClient::STATE_AUTH;
+				Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "checksum", "request checksum...");
+				ChecksumRequest(ClientId);
 			}
 		}
 		else if(Msg == NETMSG_INFO)

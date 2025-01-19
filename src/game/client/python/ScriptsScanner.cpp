@@ -23,6 +23,10 @@ vector<PythonScript*> ScriptsScanner::scan()
 				continue;
 			}
 
+			if (path.length() >= 5 && path.substr(path.length() - 5) == ".idea") {
+				continue;
+			}
+
 			if (path.length() >= 6 && path.substr(path.length() - 6) == "API.py") {
 				continue;
 			}

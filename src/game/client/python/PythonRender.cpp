@@ -47,6 +47,7 @@ void PythonRender::OnRender()
 			Graphics()->LinesDraw(lineItems, 1);
 		}
 	}
+
 	Graphics()->LinesEnd();
 	Graphics()->WrapClamp();
 }

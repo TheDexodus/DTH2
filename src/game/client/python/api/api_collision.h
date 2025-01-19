@@ -35,8 +35,29 @@ static PyObject* API_Collision_IntersectLine(PyObject* self, PyObject* args) {
 	return Py_BuildValue("iOO", tileId, outCollision, outBeforeCollision);
 }
 
+static PyObject* API_Collision_GetTile(PyObject* self, PyObject* args)
+{
+	Vector2 *position;
+
+	if (!PyArg_ParseTuple(args, "O!", &Vector2Type, &position))
+		return NULL;
+
+	return Py_BuildValue("i", PythonAPI_GameClient->Collision()->GetTileIndex(PythonAPI_GameClient->Collision()->GetPureMapIndex(position->x, position->y)));
+}
+
+static PyObject* API_Collision_GetMapSize(PyObject* self, PyObject* args)
+{
+	Vector2* mapSize = (Vector2 *)PyObject_New(Vector2, &Vector2Type);
+	mapSize->x = PythonAPI_GameClient->Collision()->GetWidth();
+	mapSize->y = PythonAPI_GameClient->Collision()->GetHeight();
+
+	return (PyObject*) mapSize;
+}
+
 static PyMethodDef API_CollisionMethods[] = {
 	{"intersectLine", API_Collision_IntersectLine, METH_VARARGS, "Intersect Line"},
+	{"getTile", API_Collision_GetTile, METH_VARARGS, "Get Tile"},
+	{"getMapSize", API_Collision_GetMapSize, METH_VARARGS, "Return Vector2 that is map size"},
 	{NULL, NULL, 0, NULL}
 };
 

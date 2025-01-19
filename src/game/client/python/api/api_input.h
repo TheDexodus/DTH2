@@ -228,6 +228,13 @@ static PyObject* API_Input_setWantedWeapon(PyObject* self, PyObject* args)
 	Py_RETURN_NONE;
 }
 
+static PyObject* API_Input_cancelHumanLike(PyObject* self, PyObject* args)
+{
+	PythonAPI_GameClient->humanLikeMouse.cancel();
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef API_InputMethods[] = {
 	{"move", API_Input_move, METH_VARARGS, "Move tee. Takes a value from (API.Direction['Left'], API.Direction['None'], API.Direction['Right'])."},
 	{"jump", API_Input_jump, METH_NOARGS, "Jump tee"},
@@ -242,6 +249,7 @@ static PyMethodDef API_InputMethods[] = {
 	{"getTargetPosition", API_Input_getTargetPosition, METH_NOARGS, "Return Python target position of current player"},
 	{"removeMoving", API_Input_removeMoving, METH_NOARGS, "Remove human like moving"},
 	{"setWantedWeapon", API_Input_setWantedWeapon, METH_VARARGS, "Set wanted weapon for current player"},
+	{"cancelHumanLike", API_Input_cancelHumanLike, METH_VARARGS, "Cancel HumanLike"},
 	{"reset", API_Input_reset, METH_VARARGS, "Reset input for current player"},
 	{NULL, NULL, 0, NULL}
 };

@@ -9,5 +9,5 @@ import subprocess
 # 	definition = f'"{git_hash}"'
 # else:
 # 	definition = "0"
-definition = f'"56340afbf34f7876c1f4e63491d29f806848850b"'
+definition = f'"91fc9d3f4deedbe28495e69c4aac4e6680cc8b07"'
 print(f"const char *GIT_SHORTREV_HASH = {definition};")

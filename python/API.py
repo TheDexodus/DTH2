@@ -11,6 +11,9 @@ class Vector2:
     def distance(self, vector: 'Vector2') -> float:
         pass
 
+    def normalize(self) -> 'Vector2':
+        pass
+
     def __add__(self, other: 'Vector2') -> 'Vector2':
         pass
 
@@ -65,6 +68,12 @@ class Tee:
     isInFreeze: bool
     isDeepFrozen: bool
     isLiveFrozen: bool
+
+    def getSize(self) -> float:
+        pass
+
+    def predict(self, ticksOffset: int) -> 'Tee':
+        pass
 
 
 class Player:
@@ -129,6 +138,14 @@ def Timeout(timeoutSeconds: float, callback: Callable[[], None]) -> None:
 class Collision:
     @staticmethod
     def intersectLine(position0: Vector2, position1: Vector2) -> Tuple[int, Vector2, Vector2]:
+        pass
+
+    @staticmethod
+    def getMapSize() -> Vector2:
+        pass
+
+    @staticmethod
+    def getTile(position: Vector2) -> int:
         pass
 
 
@@ -197,6 +214,11 @@ class Input:
 
     @staticmethod
     def reset():
+        pass
+        pass
+
+    @staticmethod
+    def cancelHumanLike():
         pass
 
 
@@ -270,20 +292,218 @@ class Character:
         pass
 
 class Graphics:
+    @staticmethod
     def drawCircle(position: Vector2, radius: float, color: int = 0xffffffff) -> int:
         pass
 
+    @staticmethod
     def drawLine(fromPosition: Vector2, toPosition: Vector2, color: int = 0xffffffff) -> int:
         pass
 
+    @staticmethod
     def rgba(red: int, green: int, blue: int, alpha: int = 255) -> int:
         pass
 
+    @staticmethod
     def getScreenSize() -> Vector2:
         pass
 
+    @staticmethod
     def removeDrawObject(objectId: int) -> None:
-        pass;
+        pass
+
+    @staticmethod
+    def mapWorldPositionToUI(worldPosition: Vector2) -> Vector2:
+        pass
+
+class Tuning:
+    @staticmethod
+    def getGroundControlSpeed() -> float:
+        pass
+
+    @staticmethod
+    def getGroundControlAccel() -> float:
+        pass
+
+    @staticmethod
+    def getGroundFriction() -> float:
+        pass
+
+    @staticmethod
+    def getGroundJumpImpulse() -> float:
+        pass
+
+    @staticmethod
+    def getAirJumpImpulse() -> float:
+        pass
+
+    @staticmethod
+    def getAirControlSpeed() -> float:
+        pass
+
+    @staticmethod
+    def getAirControlAccel() -> float:
+        pass
+
+    @staticmethod
+    def getAirFriction() -> float:
+        pass
+
+    @staticmethod
+    def getHookLength() -> float:
+        pass
+
+    @staticmethod
+    def getHookFireSpeed() -> float:
+        pass
+
+    @staticmethod
+    def getHookDragAccel() -> float:
+        pass
+
+    @staticmethod
+    def getHookDragSpeed() -> float:
+        pass
+
+    @staticmethod
+    def getGravity() -> float:
+        pass
+
+    @staticmethod
+    def getVelrampStart() -> float:
+        pass
+
+    @staticmethod
+    def getVelrampRange() -> float:
+        pass
+
+    @staticmethod
+    def getVelrampCurvature() -> float:
+        pass
+
+    @staticmethod
+    def getGunCurvature() -> float:
+        pass
+
+    @staticmethod
+    def getGunSpeed() -> float:
+        pass
+
+    @staticmethod
+    def getGunLifetime() -> float:
+        pass
+
+    @staticmethod
+    def getShotgunCurvature() -> float:
+        pass
+
+    @staticmethod
+    def getShotgunSpeed() -> float:
+        pass
+
+    @staticmethod
+    def getShotgunSpeeddiff() -> float:
+        pass
+
+    @staticmethod
+    def getShotgunLifetime() -> float:
+        pass
+
+    @staticmethod
+    def getGrenadeCurvature() -> float:
+        pass
+
+    @staticmethod
+    def getGrenadeSpeed() -> float:
+        pass
+
+    @staticmethod
+    def getGrenadeLifetime() -> float:
+        pass
+
+    @staticmethod
+    def getLaserReach() -> float:
+        pass
+
+    @staticmethod
+    def getLaserBounceDelay() -> float:
+        pass
+
+    @staticmethod
+    def getLaserBounceNum() -> float:
+        pass
+
+    @staticmethod
+    def getLaserBounceCost() -> float:
+        pass
+
+    @staticmethod
+    def getLaserDamage() -> float:
+        pass
+
+    @staticmethod
+    def getPlayerCollision() -> float:
+        pass
+
+    @staticmethod
+    def getPlayerHooking() -> float:
+        pass
+
+    @staticmethod
+    def getJetpackStrength() -> float:
+        pass
+
+    @staticmethod
+    def getShotgunStrength() -> float:
+        pass
+
+    @staticmethod
+    def getExplosionStrength() -> float:
+        pass
+
+    @staticmethod
+    def getHammerStrength() -> float:
+        pass
+
+    @staticmethod
+    def getHookDuration() -> float:
+        pass
+
+    @staticmethod
+    def getHammerFireDelay() -> float:
+        pass
+
+    @staticmethod
+    def getGunFireDelay() -> float:
+        pass
+
+    @staticmethod
+    def getShotgunFireDelay() -> float:
+        pass
+
+    @staticmethod
+    def getGrenadeFireDelay() -> float:
+        pass
+
+    @staticmethod
+    def getLaserFireDelay() -> float:
+        pass
+
+    @staticmethod
+    def getNinjaFireDelay() -> float:
+        pass
+
+    @staticmethod
+    def getHammerHitFireDelay() -> float:
+        pass
+
+    @staticmethod
+    def getGroundElasticityX() -> float:
+        pass
+
+    @staticmethod
+    def getGroundElasticityY() -> float:
+        pass
 
 #######################################################
 # For using events, just write in your code function. #

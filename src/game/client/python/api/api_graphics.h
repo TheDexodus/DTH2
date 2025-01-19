@@ -75,12 +75,29 @@ static PyObject* API_Graphics_getScreenSize(PyObject* self, PyObject* args)
 	return reinterpret_cast<PyObject *>(screenSize);
 }
 
+static PyObject* API_Graphics_mapWorldPositionToUI(PyObject* self, PyObject* args)
+{
+	Vector2 *worldPosition;
+
+	if (!PyArg_ParseTuple(args, "O!", &Vector2Type, &worldPosition))
+		return NULL;
+
+	vec2 screenCenter(PythonAPI_GameClient->Ui()->Screen()->w / 2, PythonAPI_GameClient->Ui()->Screen()->h / 2);
+	vec2 diff = worldPosition->toVec2() - PythonAPI_GameClient->m_Camera.m_Center;
+	vec2 uiPosition = screenCenter + diff / PythonAPI_GameClient->m_Camera.m_Zoom *  0.75;
+	Vector2 *result = (Vector2 *)PyObject_New(Vector2, &Vector2Type);
+	result->x = uiPosition.x;
+	result->y = uiPosition.y;
+	return reinterpret_cast<PyObject *>(result);
+}
+
 static PyMethodDef API_GraphicsMethods[] = {
 	{"drawCircle", API_Graphics_drawCircle, METH_VARARGS, "Return Draw Object id"},
 	{"drawLine", API_Graphics_drawLine, METH_VARARGS, "Return Draw Object id"},
 	{"rgba", API_Graphics_rgba, METH_VARARGS, "Return color from RGBA"},
 	{"removeDrawObject", API_Graphics_removeDrawObject, METH_VARARGS, "RemoveDrawObject(arg: ObjectId)"},
 	{"getScreenSize", API_Graphics_getScreenSize, METH_VARARGS, "getScreenSize"},
+	{"mapWorldPositionToUI", API_Graphics_mapWorldPositionToUI, METH_VARARGS, "Mapping world position to UI position"},
 	{NULL, NULL, 0, NULL}
 };
 

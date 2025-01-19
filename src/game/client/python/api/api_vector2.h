@@ -49,8 +49,19 @@ static PyObject *Vector2_distance(Vector2* self, PyObject *args)
 	return PyFloat_FromDouble(distance);
 }
 
+static PyObject *Vector2_normalize(Vector2* self, PyObject *args)
+{
+	vec2 normalizedVector = normalize(self->toVec2());
+	Vector2 *vector = (Vector2 *)PyObject_New(Vector2, &Vector2Type);
+	vector->x = normalizedVector.x;
+	vector->y = normalizedVector.y;
+
+	return (PyObject*) vector;
+}
+
 static PyMethodDef Vector2_methods[] = {
 	{"distance", (PyCFunction)Vector2_distance, METH_VARARGS, "distance(vector: Vector2)\nCalculate distance between two vectors"},
+	{"normalize", (PyCFunction)Vector2_normalize, METH_VARARGS, "normalize()\nNormalize current vector"},
 	{NULL}  /* Sentinel */
 };
 

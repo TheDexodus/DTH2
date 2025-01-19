@@ -527,7 +527,7 @@ find_package(Ogg)
 find_package(Opus)
 find_package(Opusfile)
 find_package(PNG)
-find_package(Python3 COMPONENTS Interpreter Development NumPy REQUIRED)
+find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
 find_package(Rust)
 find_package(SDL2)
 find_package(SQLite3)
@@ -2460,6 +2460,7 @@ if(CLIENT)
     python/api/api_player.h
     python/api/api_predict.h
     python/api/api_tee.h
+    python/api/api_tuning.h
     python/api/api_time.h
     python/api/api_vector2.h
     race.cpp
@@ -2569,7 +2570,6 @@ if(CLIENT)
     ${WAVPACK_LIBRARIES}
     ${FFMPEG_LIBRARIES}
     ${Python3_LIBRARIES}
-    ${Python3_NumPy_LIBRARIES}
 
     # Order of these three is important.
     ${OPUSFILE_LIBRARIES}
@@ -2655,7 +2655,6 @@ if(CLIENT)
     ${FFMPEG_INCLUDE_DIRS}
     ${DISCORDSDK_INCLUDE_DIRS}
     ${Python3_INCLUDE_DIRS}
-    ${Python3_NumPy_INCLUDE_DIRS}
 
     ${VULKAN_INCLUDE_DIRS}
 

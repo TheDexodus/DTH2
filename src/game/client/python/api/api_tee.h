@@ -6,10 +6,7 @@
 #define DDNET_API_TEE_H
 
 #include "Python.h"
-#include "game/client/gameclient.h"
-#include "api.h"
 #include "api_vector2.h"
-#include "api_player.h"
 
 using namespace std;
 
@@ -72,7 +69,125 @@ typedef struct {
 
 extern PyTypeObject TeeType;
 
+static PyObject* Tee_getSize(Tee* self, void* closure)
+{
+	return PyFloat_FromDouble(28.0);
+}
+
+static Tee *Tee_predict(Tee *self, PyObject *args)
+{
+	int ticksOffset;
+
+	if (args == nullptr || !PyArg_ParseTuple(args, "i", &ticksOffset)) {
+		return NULL;
+	}
+
+	CCharacterCore original = PythonAPI_GameClient->m_aClients[self->id].m_Predicted;
+
+	CCharacterCore clone;
+
+	clone.m_Pos = self->pos.toVec2();
+	clone.m_Vel = self->vel.toVec2();
+	clone.m_HookPos = self->hookPos.toVec2();
+	clone.m_HookDir = self->hookDir.toVec2();
+	clone.m_HookTeleBase = self->hookTeleBase.toVec2();
+	clone.m_HookTick = self->hookTick;
+	clone.m_HookState = self->hookState;
+	clone.m_AttachedPlayers = original.m_AttachedPlayers;
+	clone.m_ActiveWeapon = self->activeWeapon;
+	clone.m_aWeapons[0] = original.m_aWeapons[0];
+	clone.m_aWeapons[1] = original.m_aWeapons[1];
+	clone.m_aWeapons[2] = original.m_aWeapons[2];
+	clone.m_aWeapons[3] = original.m_aWeapons[3];
+	clone.m_aWeapons[4] = original.m_aWeapons[4];
+	clone.m_aWeapons[5] = original.m_aWeapons[5];
+	clone.m_Ninja = original.m_Ninja;
+	clone.m_NewHook = self->isNewHook;
+	clone.m_Jumped = self->jumped;
+	clone.m_JumpedTotal = self->jumpedTotal;
+	clone.m_Jumps = self->jumps;
+	clone.m_Direction = self->direction;
+	clone.m_Angle = self->angle;
+	clone.m_Input = original.m_Input;
+	clone.m_TriggeredEvents = self->triggeredEvents;
+	clone.m_Id = self->id;
+	clone.m_Reset = self->isReset;
+	clone.m_Colliding = self->colliding;
+	clone.m_LeftWall = self->isLeftWall;
+	clone.m_Solo = self->isSolo;
+	clone.m_Jetpack = self->isJetpack;
+	clone.m_CollisionDisabled = self->isCollisionDisabled;
+	clone.m_EndlessHook = self->isEndlessHook;
+	clone.m_EndlessJump = self->isEndlessJump;
+	clone.m_HammerHitDisabled = self->isHammerHitDisabled;
+	clone.m_GrenadeHitDisabled = self->isGrenadeHitDisabled;
+	clone.m_LaserHitDisabled = self->isLaserHitDisabled;
+	clone.m_ShotgunHitDisabled = self->isShotgunHitDisabled;
+	clone.m_HookHitDisabled = self->isHookHitDisabled;
+	clone.m_Super = self->isSuper;
+	clone.m_HasTelegunGun = self->hasTelegunGun;
+	clone.m_HasTelegunGrenade = self->hasTelegunGrenade;
+	clone.m_HasTelegunLaser = self->hasTelegunLaser;
+	clone.m_FreezeStart = self->freezeStart;
+	clone.m_FreezeEnd = self->freezeEnd;
+	clone.m_IsInFreeze = self->isInFreeze;
+	clone.m_DeepFrozen = self->isDeepFrozen;
+	clone.m_LiveFrozen = self->isLiveFrozen;
+	clone.m_isClone = true;
+	clone.ForceSetHookedPlayer(original.HookedPlayer());
+	clone.SetTeamsCore(original.getTeams());
+	clone.m_Tuning = original.m_Tuning;
+	clone.m_pWorld = original.m_pWorld;
+	clone.m_pCollision = original.m_pCollision;
+
+	CCharacterCore predictedCore = clone.PredictTicks(ticksOffset);
+
+	Tee *tee = (Tee *)PyObject_New(Tee, &TeeType);
+	tee->pos = Vector2(predictedCore.m_Pos);
+	tee->vel = Vector2(predictedCore.m_Vel);
+	tee->hookPos = Vector2(predictedCore.m_HookPos);
+	tee->hookDir = Vector2(predictedCore.m_HookDir);
+	tee->hookTeleBase = Vector2(predictedCore.m_HookTeleBase);
+	tee->hookTick = predictedCore.m_HookTick;
+	tee->hookState = predictedCore.m_HookState;
+	tee->activeWeapon = predictedCore.m_ActiveWeapon;
+	tee->isNewHook = predictedCore.m_NewHook;
+	tee->jumped = predictedCore.m_Jumped;
+	tee->jumpedTotal = predictedCore.m_JumpedTotal;
+	tee->jumps = predictedCore.m_Jumps;
+	tee->direction = predictedCore.m_Direction;
+	tee->angle = predictedCore.m_Angle;
+	tee->triggeredEvents = predictedCore.m_TriggeredEvents;
+	tee->id = predictedCore.m_Id;
+	tee->isReset = predictedCore.m_Reset;
+	tee->colliding = predictedCore.m_Colliding;
+	tee->isLeftWall = predictedCore.m_LeftWall;
+	tee->isSolo = predictedCore.m_Solo;
+	tee->isJetpack = predictedCore.m_Jetpack;
+	tee->isCollisionDisabled = predictedCore.m_CollisionDisabled;
+	tee->isEndlessHook = predictedCore.m_EndlessHook;
+	tee->isEndlessJump = predictedCore.m_EndlessJump;
+	tee->isHammerHitDisabled = predictedCore.m_HammerHitDisabled;
+	tee->isGrenadeHitDisabled = predictedCore.m_GrenadeHitDisabled;
+	tee->isLaserHitDisabled = predictedCore.m_LaserHitDisabled;
+	tee->isShotgunHitDisabled = predictedCore.m_ShotgunHitDisabled;
+	tee->isHookHitDisabled = predictedCore.m_HookHitDisabled;
+	tee->isSuper = predictedCore.m_Super;
+	tee->hasTelegunGun = predictedCore.m_HasTelegunGun;
+	tee->hasTelegunGrenade = predictedCore.m_HasTelegunGrenade;
+	tee->hasTelegunLaser = predictedCore.m_HasTelegunLaser;
+	tee->freezeStart = predictedCore.m_FreezeStart;
+	tee->freezeEnd = predictedCore.m_FreezeEnd;
+	tee->isInFreeze = predictedCore.m_IsInFreeze;
+	tee->isDeepFrozen = predictedCore.m_DeepFrozen;
+	tee->isLiveFrozen = predictedCore.m_LiveFrozen;
+
+	return tee;
+}
+
 static PyMethodDef Tee_methods[] = {
+	{"getSize", (PyCFunction)Tee_getSize, METH_NOARGS, "Return the size of the tee"},
+	{"predict", (PyCFunction)Tee_predict, METH_VARARGS, "Predict current tee on ticksOffset"},
 	{NULL}  /* Sentinel */
 };
 
@@ -351,6 +466,7 @@ static PyGetSetDef Tee_getseters[] = {
 	{"isInFreeze", (getter) Tee_getisInFreeze, NULL, "Check if player is in freeze or not (boolean)", NULL},
 	{"isDeepFrozen", (getter) Tee_getisDeepFrozen, NULL, "Check if player is deeply frozen or not (boolean)", NULL},
 	{"isLiveFrozen", (getter) Tee_getisLiveFrozen, NULL, "Check if player is live frozen or not (boolean)", NULL},
+
 	{NULL}  /* Sentinel */
 };
 

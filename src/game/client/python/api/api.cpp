@@ -10,6 +10,7 @@
 #include "api_predict.h"
 #include "api_character.h"
 #include "api_graphics.h"
+#include "api_tuning.h"
 #include "game/client/gameclient.h"
 
 // ============ API Module ============ //
@@ -92,6 +93,7 @@ PyMODINIT_FUNC PyInit_API(void) {
 	PyModule_AddObject(APIModule, "Time", PyInit_API_Time());
 	PyModule_AddObject(APIModule, "Predict", PyInit_API_Predict());
 	PyModule_AddObject(APIModule, "Graphics", PyInit_API_Graphics());
+	PyModule_AddObject(APIModule, "Tuning", PyInit_API_Tuning());
 
 	while (PyType_Ready(&Vector2Type) < 0 || PyType_Ready(&PlayerType) < 0 || PyType_Ready(&TeeType) < 0 || PyType_Ready(&CharacterType) < 0)
 	{
