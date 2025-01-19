@@ -26,10 +26,14 @@ jobs:
       with:
         submodules: true
 
-    - name: Set up Python with Debug
-      uses: danyeaw/setup-github-debug/action.yml@main
-      with:
-        python-version: 3.11.9
+    - name: Download Python source
+      run: |
+        curl -O https://www.python.org/ftp/python/3.11.9/Python-3.11.9.tgz
+        tar -xvzf Python-3.11.9.tgz
+        cd Python-3.11.9
+        ./configure --with-pydebug
+        make
+        sudo make install
 
       #    - name: Prepare Vulkan SDK
 #      uses: humbletim/setup-vulkan-sdk@v1.2.0
