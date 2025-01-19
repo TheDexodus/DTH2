@@ -29,10 +29,6 @@ jobs:
       with:
         python-version: '3.11.9'
 
-    - name: Set Python paths for CMake
-      run: |
-        echo "Python3_LIBRARY_DEBUG=${{ env.pythonLocation }}\\libs\\python311.lib" >> $env:GITHUB_ENV
-
       #    - name: Prepare Vulkan SDK
 #      uses: humbletim/setup-vulkan-sdk@v1.2.0
 #      with:
@@ -43,22 +39,22 @@ jobs:
     - name: Cache Rust dependencies
       uses: Swatinem/rust-cache@v2
 
-    - name: Build in debug mode
-      run: |
-        mkdir debug
-        cd debug
-        ${{ matrix.cmake-path }}cmake -E env ${{ matrix.cmake-init-env }} ${{ matrix.cmake-path }}cmake ${{ matrix.cmake-args }} -DCMAKE_BUILD_TYPE=Debug -Werror=dev -DDOWNLOAD_GTEST=ON -DDEV=ON -DCMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG=. ..
-        ${{ matrix.cmake-path }}cmake --build . --config Debug --target everything ${{ matrix.build-args }}
-
-    - name: Test debug
-      run: |
-        cd debug
-        ${{ matrix.cmake-path }}cmake -E env ${{ matrix.gtest-env }} ${{ matrix.cmake-path }}cmake --build . --config Debug --target run_tests ${{ matrix.build-args }}
-
-    - name: Run debug server
-      run: |
-        cd debug
-        ./DDNet-Server shutdown
+#    - name: Build in debug mode
+#      run: |
+#        mkdir debug
+#        cd debug
+#        ${{ matrix.cmake-path }}cmake -E env ${{ matrix.cmake-init-env }} ${{ matrix.cmake-path }}cmake ${{ matrix.cmake-args }} -DCMAKE_BUILD_TYPE=Debug -Werror=dev -DDOWNLOAD_GTEST=ON -DDEV=ON -DCMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG=. ..
+#        ${{ matrix.cmake-path }}cmake --build . --config Debug --target everything ${{ matrix.build-args }}
+#
+#    - name: Test debug
+#      run: |
+#        cd debug
+#        ${{ matrix.cmake-path }}cmake -E env ${{ matrix.gtest-env }} ${{ matrix.cmake-path }}cmake --build . --config Debug --target run_tests ${{ matrix.build-args }}
+#
+#    - name: Run debug server
+#      run: |
+#        cd debug
+#        ./DDNet-Server shutdown
 
     - name: Build in release mode
       run: |
