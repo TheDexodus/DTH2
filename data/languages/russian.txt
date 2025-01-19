@@ -647,8 +647,8 @@ Messages
 New random timeout code
 == Сгенерировать новый тайм-аут код
 
-Loading DDNet Client
-== Загрузка DDNet Client
+Loading DTH Client
+== Загрузка DTH Client
 
 Normal message
 == Обычное

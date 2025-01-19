@@ -565,8 +565,8 @@ Browser
 Ghost
 == Duh
 
-Loading DDNet Client
-== Učitavam DDNet klijent
+Loading DTH Client
+== Učitavam DTH klijent
 
 Reconnect in %d sec
 == Ponovo povezivanje za %d sekundi

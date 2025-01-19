@@ -556,8 +556,8 @@ Browser
 Ghost
 == Fantasma
 
-Loading DDNet Client
-== Cargando el cliente DDNet
+Loading DTH Client
+== Cargando el cliente DTH
 
 Reconnect in %d sec
 == Reconectando en %d seg

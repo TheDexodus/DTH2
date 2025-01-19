@@ -547,8 +547,8 @@ Browser
 Ghost
 == Spook
 
-Loading DDNet Client
-== DDNet Client laden
+Loading DTH Client
+== DTH Client laden
 
 Reconnect in %d sec
 == Opnieuw verbinden in %d sec

@@ -739,8 +739,8 @@ Suicides
 Show clan above name plates
 == Pokazuj klan nad nazwą gracza
 
-Loading DDNet Client
-== Ładowanie klienta DDNet
+Loading DTH Client
+== Ładowanie klienta DTH
 
 HUD
 == HUD

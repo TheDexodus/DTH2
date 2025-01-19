@@ -610,8 +610,8 @@ Loading demo file from storage
 Some fonts could not be loaded. Check the local console for details.
 == Unele fonturi nu au putut fi încărcate. Verificați consola pentru detalii.
 
-Loading DDNet Client
-== Se încarcă client-ul DDNet
+Loading DTH Client
+== Se încarcă client-ul DTH
 
 Initializing components
 == Se inițializează componentele

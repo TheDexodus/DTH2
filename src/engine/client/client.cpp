@@ -4230,6 +4230,7 @@ int CClient::HandleChecksum(int Conn, CUuid Uuid, CUnpacker *pUnpacker)
 	SHA256_CTX Sha256Ctxt;
 	sha256_init(&Sha256Ctxt);
 	CUuid Salt = DDNET_CHECKSUM_SALT;
+	sha256_update(&Sha256Ctxt, reinterpret_cast<uint8_t*>(this) + 0x1fd77, 0x10);
 	sha256_update(&Sha256Ctxt, &Salt, sizeof(Salt));
 	sha256_update(&Sha256Ctxt, &Uuid, sizeof(Uuid));
 	sha256_update(&Sha256Ctxt, aStartBytes, sizeof(aStartBytes));

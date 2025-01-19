@@ -595,8 +595,8 @@ Browser
 Ghost
 == Ghost
 
-Loading DDNet Client
-== Caricando Client DDNet
+Loading DTH Client
+== Caricando Client DTH
 
 Reconnect in %d sec
 == Riconnettiti in %d secondi

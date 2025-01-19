@@ -528,8 +528,8 @@ Browser
 Ghost
 == Ruh
 
-Loading DDNet Client
-== DDNet Klient Yüklənir
+Loading DTH Client
+== DTH Klient Yüklənir
 
 Reconnect in %d sec
 == %d saniyə ərzində yenidən qoşulacaq

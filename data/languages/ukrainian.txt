@@ -1041,8 +1041,8 @@ Loading background map
 Loading commands…
 == Завантаження команд…
 
-Loading DDNet Client
-== Завантаження клієнта DDNet
+Loading DTH Client
+== Завантаження клієнта DTH
 
 Loading demo file from storage
 == Завантаження демо-файлу зі сховища

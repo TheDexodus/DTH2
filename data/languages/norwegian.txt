@@ -536,8 +536,8 @@ Browser
 Ghost
 == Skygge
 
-Loading DDNet Client
-== Laster DDNet-klient
+Loading DTH Client
+== Laster DTH-klient
 
 Reconnect in %d sec
 == Koble til igjen om %d sek

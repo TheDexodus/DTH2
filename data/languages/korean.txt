@@ -552,8 +552,8 @@ Browser
 Ghost
 == 고스트
 
-Loading DDNet Client
-== DDNet 클라이언트 로딩 중
+Loading DTH Client
+== DTH 클라이언트 로딩 중
 
 Reconnect in %d sec
 == %d 초 후 재접속

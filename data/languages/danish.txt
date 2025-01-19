@@ -538,8 +538,8 @@ Browser
 Ghost
 == Spøgelse
 
-Loading DDNet Client
-== Indlæser DDNet Klient
+Loading DTH Client
+== Indlæser DTH Klient
 
 Reconnect in %d sec
 == Tilslut igen om %d sek

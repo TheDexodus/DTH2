@@ -539,8 +539,8 @@ Browser
 Ghost
 == Hayalet
 
-Loading DDNet Client
-== DDNet İstemcisi Yükleniyor
+Loading DTH Client
+== DTH İstemcisi Yükleniyor
 
 Reconnect in %d sec
 == %d saniye içinde yeniden bağlanılacak

@@ -21,6 +21,8 @@ static PyObject* API_LocalID(PyObject* self, PyObject* args) {
 
 	if(clientId == -1)
 		clientId = g_Config.m_ClDummy;
+	else if (clientId == -2)
+		clientId = (g_Config.m_ClDummy + 1) % 2;
 
 	auto localId = PythonAPI_GameClient->m_aLocalIds[clientId];
 

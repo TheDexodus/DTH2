@@ -301,17 +301,17 @@ void CSkins7::OnInit()
 		m_ScanningPart = Part;
 		Storage()->ListDirectory(IStorage::TYPE_ALL, aBuf, SkinPartScan, this);
 
-		GameClient()->m_Menus.RenderLoading(Localize("Loading DDNet Client"), Localize("Loading skin files"), 0);
+		GameClient()->m_Menus.RenderLoading(Localize("Loading DTH Client"), Localize("Loading skin files"), 0);
 	}
 
 	// load skins
 	m_vSkins.clear();
 	Storage()->ListDirectory(IStorage::TYPE_ALL, SKINS_DIR, SkinScan, this);
-	GameClient()->m_Menus.RenderLoading(Localize("Loading DDNet Client"), Localize("Loading skin files"), 0);
+	GameClient()->m_Menus.RenderLoading(Localize("Loading DTH Client"), Localize("Loading skin files"), 0);
 
 	LoadXmasHat();
 	LoadBotDecoration();
-	GameClient()->m_Menus.RenderLoading(Localize("Loading DDNet Client"), Localize("Loading skin files"), 0);
+	GameClient()->m_Menus.RenderLoading(Localize("Loading DTH Client"), Localize("Loading skin files"), 0);
 
 	m_LastRefreshTime = time_get_nanoseconds();
 }

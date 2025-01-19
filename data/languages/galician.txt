@@ -535,8 +535,8 @@ Browser
 Ghost
 == Pantasma
 
-Loading DDNet Client
-== Cargando o cliente DDNet
+Loading DTH Client
+== Cargando o cliente DTH
 
 Reconnect in %d sec
 == Reconectando en %d seg

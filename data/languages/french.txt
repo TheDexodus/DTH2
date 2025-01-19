@@ -842,8 +842,8 @@ FPM
 Enable replays
 == Activer les replays
 
-Loading DDNet Client
-== Chargement du client DDNet
+Loading DTH Client
+== Chargement du client DTH
 
 Zoom in
 == Zoomer

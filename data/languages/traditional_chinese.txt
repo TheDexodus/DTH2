@@ -687,8 +687,8 @@ No updates available
 Check now
 == 檢查更新
 
-Loading DDNet Client
-== 正在載入 DDNet 客戶端
+Loading DTH Client
+== 正在載入 DTH 客戶端
 
 Browser
 == 瀏覽

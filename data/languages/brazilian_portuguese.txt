@@ -698,8 +698,8 @@ Net
 Miscellaneous
 == Diversos
 
-Loading DDNet Client
-== Carregando DDNet Client
+Loading DTH Client
+== Carregando DTH Client
 
 FPM
 == FPM

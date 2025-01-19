@@ -698,8 +698,8 @@ No updates available
 Check now
 == 检查更新
 
-Loading DDNet Client
-== 加载 DDNet 客户端中…
+Loading DTH Client
+== 加载 DTH 客户端中…
 
 Browser
 == 浏览

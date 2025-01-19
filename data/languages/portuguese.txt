@@ -642,8 +642,8 @@ New random timeout code
 Suicides
 == Suicídios
 
-Loading DDNet Client
-== A carregar o cliente DDNet
+Loading DTH Client
+== A carregar o cliente DTH
 
 Default zoom
 == Zoom predefinido
