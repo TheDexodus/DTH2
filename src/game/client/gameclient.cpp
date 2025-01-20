@@ -2838,8 +2838,15 @@ void CGameClient::SendDummyInfo(bool Start)
 	}
 }
 
-void CGameClient::SendKill(int ClientId) const
+void CGameClient::SendKill(int ClientId, bool KillDummy) const
 {
+	if (KillDummy)
+	{
+		CMsgPacker MsgP(NETMSGTYPE_CL_KILL, false);
+		Client()->SendMsg(!g_Config.m_ClDummy, &MsgP, MSGFLAG_VITAL);
+		return;
+	}
+
 	CNetMsg_Cl_Kill Msg;
 	Client()->SendPackMsgActive(&Msg, MSGFLAG_VITAL);
 

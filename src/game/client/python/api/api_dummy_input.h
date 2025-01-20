@@ -93,6 +93,12 @@ static PyObject* API_DummyInput_enableControl(PyObject* self, PyObject* args)
 	Py_RETURN_NONE;
 }
 
+static PyObject* API_DummyInput_kill(PyObject* self, PyObject* args)
+{
+	PythonAPI_GameClient->SendKill(-1, true);
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef API_DummyInputMethods[] = {
 	{"move", API_DummyInput_move, METH_VARARGS, "Move tee. Takes a value from (API.Direction['Left'], API.Direction['None'], API.Direction['Right'])."},
 	{"jump", API_DummyInput_jump, METH_NOARGS, "Jump tee"},
@@ -103,6 +109,7 @@ static PyMethodDef API_DummyInputMethods[] = {
 	{"getTargetPosition", API_DummyInput_getTargetPosition, METH_NOARGS, "Return Python target position of current player"},
 	{"setWantedWeapon", API_DummyInput_setWantedWeapon, METH_VARARGS, "Set wanted weapon for current player"},
 	{"enableControl", API_DummyInput_enableControl, METH_VARARGS, "Enable/Disable control of dummy"},
+	{"kill", API_DummyInput_kill, METH_VARARGS, "Kill the dummy"},
 	{NULL, NULL, 0, NULL}
 };
 

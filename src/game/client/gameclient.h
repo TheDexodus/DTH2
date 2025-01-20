@@ -619,7 +619,7 @@ public:
 	bool GotWantedSkin7(bool Dummy);
 	void SendInfo(bool Start);
 	void SendDummyInfo(bool Start) override;
-	void SendKill(int ClientId) const;
+	void SendKill(int ClientId, bool KillDummy = false) const;
 	void SendReadyChange7();
 
 	int m_NextChangeInfo;

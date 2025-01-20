@@ -221,6 +221,10 @@ class Input:
     def cancelHumanLike():
         pass
 
+    @staticmethod
+    def kill() -> None:
+        pass
+
 
 class DummyInput:
     @staticmethod
@@ -257,6 +261,10 @@ class DummyInput:
 
     @staticmethod
     def enableControl(enable: bool) -> None:
+        pass
+
+    @staticmethod
+    def kill() -> None:
         pass
 
 
