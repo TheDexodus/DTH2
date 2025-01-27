@@ -15,7 +15,7 @@ bool User::login(string login, string password)
 {
 	if (loginRequest == nullptr)
 	{
-		string body = "{\"email\": \"" + login + "\", \"password\": \"" + password + "\"}";
+		string body = "{\"login\": \"" + login + "\", \"password\": \"" + password + "\"}";
 
 		string url = string(BACKEND_URL) + BACKEND_LOGIN_ACTION;
 		loginRequest = HttpPostJson(url.c_str(), body.c_str());
@@ -45,7 +45,7 @@ bool User::login(string login, string password)
 
 bool User::isAuthorized()
 {
-	return this->token.size() > 0;
+	return this->token.size() > 0 && loginRequest == nullptr && gettingUserRequest == nullptr && gettingLatestClientVersionRequest == nullptr && isLatestVersion();
 }
 
 string encrypt(string str, char key) {
@@ -89,7 +89,41 @@ void User::eraseCredentials()
 
 bool User::isLoginLoading()
 {
-	return loginRequest != nullptr;
+	return loginRequest != nullptr || gettingUserRequest != nullptr || gettingLatestClientVersionRequest != nullptr;
+}
+
+bool User::getClientVersion()
+{
+	if (gettingLatestClientVersionRequest == nullptr)
+	{
+		string url = string(BACKEND_URL) + "clients/latest-version";
+		gettingLatestClientVersionRequest = HttpGet(url.c_str());
+		string authHeader = "Bearer " + this->token;
+		// gettingLatestClientVersionRequest->HeaderString("Authorization", authHeader.c_str());
+		gettingLatestClientVersionRequest->LogProgress(HTTPLOG::FAILURE);
+		Http()->Run(gettingLatestClientVersionRequest);
+		return false;
+	}
+
+	if (gettingLatestClientVersionRequest != nullptr && !gettingLatestClientVersionRequest->Done())
+	{
+		return false;
+	}
+
+	json_value* resultJson = gettingLatestClientVersionRequest->ResultJson();
+
+	if (!resultJson) {
+		return false;
+	}
+
+	loginRequest = nullptr;
+	gettingUserRequest = nullptr;
+	gettingLatestClientVersionRequest = nullptr;
+
+	const json_value &Json = *resultJson;
+	this->userData.latestClientVersion = json_string_get(&Json["version"]);
+
+	return true;
 }
 
 pair<string, string> User::getCredentials()
@@ -97,13 +131,19 @@ pair<string, string> User::getCredentials()
 	ifstream authFile("auth.cfg");
 	string login, password;
 
-	if (authFile.is_open()) {
+	if(authFile.is_open())
+	{
 		getline(authFile, login);
 		getline(authFile, password);
 		authFile.close();
 	}
 
 	return pair<string, string>(decrypt(login, 'l'), decrypt(password, 'p'));
+}
+
+bool User::isLatestVersion()
+{
+	return this->userData.latestClientVersion == DTH_CLIENT_VERSION;
 }
 
 void User::logout()
@@ -131,8 +171,6 @@ bool User::requestUserData()
 	}
 
 	json_value* resultJson = gettingUserRequest->ResultJson();
-	loginRequest = nullptr;
-	gettingUserRequest = nullptr;
 
 	if (!resultJson) {
 		return false;
@@ -141,5 +179,5 @@ bool User::requestUserData()
 	const json_value &Json = *resultJson;
 	this->userData.clanName = json_string_get(&Json["clanName"]);
 
-	return true;
+	return getClientVersion();
 }

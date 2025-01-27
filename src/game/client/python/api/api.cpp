@@ -11,6 +11,8 @@
 #include "api_character.h"
 #include "api_graphics.h"
 #include "api_tuning.h"
+#include "api_chat.h"
+#include "api_world.h"
 #include "game/client/gameclient.h"
 
 // ============ API Module ============ //
@@ -96,8 +98,9 @@ PyMODINIT_FUNC PyInit_API(void) {
 	PyModule_AddObject(APIModule, "Predict", PyInit_API_Predict());
 	PyModule_AddObject(APIModule, "Graphics", PyInit_API_Graphics());
 	PyModule_AddObject(APIModule, "Tuning", PyInit_API_Tuning());
+	PyModule_AddObject(APIModule, "Chat", PyInit_API_Chat());
 
-	while (PyType_Ready(&Vector2Type) < 0 || PyType_Ready(&PlayerType) < 0 || PyType_Ready(&TeeType) < 0 || PyType_Ready(&CharacterType) < 0)
+	while (PyType_Ready(&Vector2Type) < 0 || PyType_Ready(&PlayerType) < 0 || PyType_Ready(&TeeType) < 0 || PyType_Ready(&CharacterType) < 0 || PyType_Ready(&WorldType) < 0)
 	{
 	}
 
@@ -105,6 +108,7 @@ PyMODINIT_FUNC PyInit_API(void) {
 	PyModule_AddObject(APIModule, "Player", (PyObject *)&PlayerType);
 	PyModule_AddObject(APIModule, "Tee", (PyObject *)&TeeType);
 	PyModule_AddObject(APIModule, "Character", (PyObject *)&CharacterType);
+	PyModule_AddObject(APIModule, "World", (PyObject *)&WorldType);
 
 	return APIModule;
 }

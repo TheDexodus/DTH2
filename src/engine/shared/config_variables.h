@@ -11,7 +11,7 @@
 #endif
 
 // DTH
-MACRO_CONFIG_INT(DTHPython, dth_python, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Toggle python scripts")
+// MACRO_CONFIG_INT(DTHPython, dth_python, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Toggle python scripts")
 
 
 // client

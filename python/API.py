@@ -26,6 +26,27 @@ class Vector2:
     def __div__(self, other: float) -> 'Vector2':
         pass
 
+class World:
+    def getGameTick(self) -> int:
+        pass
+
+    def predict(self, ticks: int) -> 'World':
+        pass
+
+    def getPlayer(self, playerId: int) -> 'Player':
+        pass
+
+    def inputMove(self, playerId: int, direction: int) -> None:
+        pass
+    def inputSetTarget(self, playerId: int, targetPos: 'Vector2') -> None:
+        pass
+    def inputJump(self, playerId: int) -> None:
+        pass
+    def inputFire(self, playerId: int) -> None:
+        pass
+    def inputHook(self, playerId: int, hook: bool) -> None:
+        pass
+
 
 class Tee:
     pos: Vector2
@@ -68,6 +89,15 @@ class Tee:
     isInFreeze: bool
     isDeepFrozen: bool
     isLiveFrozen: bool
+    inputDirection: int
+    inputTarget: Vector2
+    inputJump: int
+    inputFire: int
+    inputHook: int
+    inputPlayerFlags: int
+    inputWantedWeapon: int
+    inputNextWeapon: int
+    inputPrevWeapon: int
 
     def getSize(self) -> float:
         pass
@@ -148,6 +178,10 @@ class Collision:
     def getTile(position: Vector2) -> int:
         pass
 
+class Chat:
+    @staticmethod
+    def sendLocalMessage(message: str):
+        pass;
 
 class Console:
     @staticmethod

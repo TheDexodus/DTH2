@@ -2452,6 +2452,7 @@ if(CLIENT)
     python/api/api.cpp
     python/api/api.h
     python/api/api_character.h
+    python/api/api_chat.h
     python/api/api_collision.h
     python/api/api_console.h
     python/api/api_dummy_input.h
@@ -2463,6 +2464,7 @@ if(CLIENT)
     python/api/api_tuning.h
     python/api/api_time.h
     python/api/api_vector2.h
+    python/api/api_world.h
     race.cpp
     race.h
     render.cpp

@@ -1,5 +1,4 @@
 #include "ScriptsScanner.h"
-#include "base/system.h"
 #include <filesystem>
 #include <queue>
 
@@ -8,6 +7,11 @@ namespace fs = filesystem;
 vector<PythonScript*> ScriptsScanner::scan()
 {
 	vector<PythonScript*> scripts(0);
+
+	if (!fs::exists(this->directoryForScanning)) {
+		return scripts;
+	}
+
 	queue<string> directories;
 	directories.push(this->directoryForScanning);
 

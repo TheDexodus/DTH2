@@ -30,6 +30,7 @@ void CMenus::RenderLoginMenu(CUIRect MainView)
 	static int init = 0;
 	static int rememberMe = 0;
 	static bool ShowInvalidCredentials = false;
+	static bool ShowNotLatestVersion = false;
 
 	static std::string errlogin = "";
 	static std::string errpass = "";
@@ -84,6 +85,10 @@ void CMenus::RenderLoginMenu(CUIRect MainView)
 				errlogin = m_Login;
 				errpass = m_Pass;
 			}
+			else if (!GameClient()->user.isLatestVersion())
+			{
+				ShowNotLatestVersion = true;
+			}
 		}
 	}
 
@@ -109,6 +114,13 @@ void CMenus::RenderLoginMenu(CUIRect MainView)
 		{
 			ShowInvalidCredentials = false;
 		}
+	}
+
+	if (ShowNotLatestVersion)
+	{
+		CUIRect InvalidCredsLabel;
+		LoginBox.HSplitTop(100.0f, &LoginBox, &InvalidCredsLabel);
+		Ui()->DoLabel(&InvalidCredsLabel, Localize("Not latest version of DTH Client"), 24.0f, TEXTALIGN_CENTER);
 	}
 
 	if (GameClient()->user.isLoginLoading())

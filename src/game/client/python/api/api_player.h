@@ -182,6 +182,16 @@ static int Player_init(Player *self, PyObject *args, PyObject *kwds)
 	self->tee.isDeepFrozen = clientData.m_Predicted.m_DeepFrozen;
 	self->tee.isLiveFrozen = clientData.m_Predicted.m_LiveFrozen;
 
+	self->tee.inputDirection = clientData.m_Predicted.m_Input.m_Direction;
+	self->tee.inputTarget = Vector2(vec2(clientData.m_Predicted.m_Input.m_TargetX, clientData.m_Predicted.m_Input.m_TargetY));
+	self->tee.inputJump = clientData.m_Predicted.m_Input.m_Jump;
+	self->tee.inputFire = clientData.m_Predicted.m_Input.m_Fire;
+	self->tee.inputHook = clientData.m_Predicted.m_Input.m_Hook;
+	self->tee.inputPlayerFlags = clientData.m_Predicted.m_Input.m_PlayerFlags;
+	self->tee.inputWantedWeapon = clientData.m_Predicted.m_Input.m_WantedWeapon;
+	self->tee.inputNextWeapon = clientData.m_Predicted.m_Input.m_NextWeapon;
+	self->tee.inputPrevWeapon = clientData.m_Predicted.m_Input.m_PrevWeapon;
+
 	return 0;
 }
 

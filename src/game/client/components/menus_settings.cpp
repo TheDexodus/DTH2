@@ -1917,7 +1917,7 @@ void CMenus::RenderSettingsPython(CUIRect MainView)
 	static int s_PythonSelectedScript = -1;
 	static int s_ActiveScriptException = -1;
 
-	if(g_Config.m_DTHPython)
+	if(true)
 	{
 		if(NeedToggle)
 		{
@@ -1930,7 +1930,7 @@ void CMenus::RenderSettingsPython(CUIRect MainView)
 			static CButtonContainer sCloseButton;
 			CUIRect CloseButton;
 			MainView.HSplitBottom(20.0f, &MainView, &CloseButton);
-			if(DoButton_Menu(&sCloseButton, Localize("Close"), 0, &CloseButton, 0, IGraphics::CORNER_ALL) || !g_Config.m_DTHPython)
+			if(DoButton_Menu(&sCloseButton, Localize("Close"), 0, &CloseButton, 0, IGraphics::CORNER_ALL))
 			{
 				s_ActiveScriptException = -1;
 			}
@@ -1953,17 +1953,17 @@ void CMenus::RenderSettingsPython(CUIRect MainView)
 	ListView.HSplitBottom(60.0f + 5.0f, &ListView, &BottomBar);
 	ListView.HSplitTop(20.0f, &Button, &ListView);
 
-	if(DoButton_CheckBox(&g_Config.m_DTHPython, "Enable Python Scripts", g_Config.m_DTHPython, &Button))
-	{
-		g_Config.m_DTHPython ^= 1;
+	// if(DoButton_CheckBox(&g_Config.m_DTHPython, "Enable Python Scripts", g_Config.m_DTHPython, &Button))
+	// {
+	// 	g_Config.m_DTHPython ^= 1;
+	//
+	// 	if (!g_Config.m_DTHPython) {
+	//
+	// 	}
+	// }
 
-		if (!g_Config.m_DTHPython) {
-
-		}
-	}
-
-	if(!g_Config.m_DTHPython)
-		return;
+	// if(!g_Config.m_DTHPython)
+	// 	return;
 
 	ListView.HSplitTop(13.0f, &MainView, &ListView); //Отступ
 	//Кнопка обновления

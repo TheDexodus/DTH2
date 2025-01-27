@@ -10,8 +10,9 @@
 #include "game/client/component.h"
 
 #define BACKEND_URL "https://backend.dth.dexodus.ru/"
-#define BACKEND_LOGIN_ACTION "authentication_token"
+#define BACKEND_LOGIN_ACTION "login/authentication_token"
 #define BACKEND_ME_ACTION "me"
+#define DTH_CLIENT_VERSION "1.0.0"
 
 using namespace std;
 
@@ -19,6 +20,7 @@ class UserData
 {
 public:
 	string clanName = "DTH";
+	string latestClientVersion = "";
 };
 
 class User : public CComponent
@@ -33,13 +35,16 @@ public:
 	void saveCredentials(string login, string password);
 	void eraseCredentials();
 	bool isLoginLoading();
+	bool getClientVersion();
 	pair<string, string> getCredentials();
+	bool isLatestVersion();
 	UserData userData;
 private:
 	string token = "";
 	bool requestUserData();
 	std::shared_ptr<CHttpRequest> loginRequest = nullptr;
 	std::shared_ptr<CHttpRequest> gettingUserRequest = nullptr;
+	std::shared_ptr<CHttpRequest> gettingLatestClientVersionRequest = nullptr;
 };
 
 #endif // DDNET_USER_H

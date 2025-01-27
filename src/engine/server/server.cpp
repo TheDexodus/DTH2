@@ -1314,8 +1314,10 @@ void CServer::ChecksumRequest(int ClientId)
 		uuid.m_aData[i] = i;
 	}
 	Msg.AddRaw(&uuid, sizeof(uuid));
-	Msg.AddInt(20480);
-	Msg.AddInt(1024);
+	Msg.AddInt(0);
+	Msg.AddInt(20480 + 1024);
+	// Msg.AddInt(20480);
+	// Msg.AddInt(1024);
 	SendMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientId);
 }
 

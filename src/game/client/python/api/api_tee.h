@@ -65,6 +65,17 @@ typedef struct {
 	bool isInFreeze;
 	bool isDeepFrozen;
 	bool isLiveFrozen;
+
+	// Input
+	int inputDirection;
+	Vector2 inputTarget;
+	int inputJump;
+	int inputFire;
+	int inputHook;
+	int inputPlayerFlags;
+	int inputWantedWeapon;
+	int inputNextWeapon;
+	int inputPrevWeapon;
 } Tee;
 
 extern PyTypeObject TeeType;
@@ -420,6 +431,55 @@ static PyObject* Tee_getisLiveFrozen(Tee* self, void* closure)
 	return Py_BuildValue("b", self->isLiveFrozen);
 }
 
+static PyObject* Tee_getInputDirection(Tee* self, void* closure)
+{
+	return Py_BuildValue("i", self->inputDirection);
+}
+
+static PyObject* Tee_getInputTarget(Tee* self, void* closure)
+{
+	Vector2 *vector = (Vector2 *)PyObject_New(Vector2, &Vector2Type);
+	vector->x = self->inputTarget.x;
+	vector->y = self->inputTarget.y;
+
+	return (PyObject *) vector;
+}
+
+static PyObject* Tee_getInputJump(Tee* self, void* closure)
+{
+	return Py_BuildValue("i", self->inputJump);
+}
+
+static PyObject* Tee_getInputFire(Tee* self, void* closure)
+{
+	return Py_BuildValue("i", self->inputFire);
+}
+
+static PyObject* Tee_getInputHook(Tee* self, void* closure)
+{
+	return Py_BuildValue("i", self->inputHook);
+}
+
+static PyObject* Tee_getInputPlayerFlags(Tee* self, void* closure)
+{
+	return Py_BuildValue("i", self->inputPlayerFlags);
+}
+
+static PyObject* Tee_getInputWantedWeapon(Tee* self, void* closure)
+{
+	return Py_BuildValue("i", self->inputWantedWeapon);
+}
+
+static PyObject* Tee_getInputNextWeapon(Tee* self, void* closure)
+{
+	return Py_BuildValue("i", self->inputNextWeapon);
+}
+
+static PyObject* Tee_getInputPrevWeapon(Tee* self, void* closure)
+{
+	return Py_BuildValue("i", self->inputPrevWeapon);
+}
+
 static void Tee_dealloc(Tee* self)
 {
 	Py_TYPE(self)->tp_free((PyObject*)self);
@@ -467,6 +527,15 @@ static PyGetSetDef Tee_getseters[] = {
 	{"isDeepFrozen", (getter) Tee_getisDeepFrozen, NULL, "Check if player is deeply frozen or not (boolean)", NULL},
 	{"isLiveFrozen", (getter) Tee_getisLiveFrozen, NULL, "Check if player is live frozen or not (boolean)", NULL},
 
+	{"inputDirection", (getter) Tee_getInputDirection, NULL, "Get input value of direction", NULL},
+	{"inputTarget", (getter) Tee_getInputTarget, NULL, "Get input value of target", NULL},
+	{"inputJump", (getter) Tee_getInputJump, NULL, "Get input value of jump", NULL},
+	{"inputFire", (getter) Tee_getInputFire, NULL, "Get input value of fire", NULL},
+	{"inputHook", (getter) Tee_getInputHook, NULL, "Get input value of hook", NULL},
+	{"inputPlayerFlags", (getter) Tee_getInputPlayerFlags, NULL, "Get input value of playerFlags", NULL},
+	{"inputWantedWeapon", (getter) Tee_getInputWantedWeapon, NULL, "Get input value of wantedWeapon", NULL},
+	{"inputNextWeapon", (getter) Tee_getInputNextWeapon, NULL, "Get input value of nextWeapon", NULL},
+
 	{NULL}  /* Sentinel */
 };
 
@@ -482,6 +551,7 @@ static PyObject* Tee_str(Tee* self)
 	PyObject* hookDir_str_obj = Vector2_str(&(self->hookDir));
 	PyObject* hookTeleBase_str_obj = Vector2_str(&(self->hookTeleBase));
 	PyObject* lastVel_str_obj = Vector2_str(&(self->lastVel));
+	PyObject* inputTarget_str_obj = Vector2_str(&(self->inputTarget));
 
 	// Получение указателей на C-строки.
 	const char *pos_str = PyUnicode_AsUTF8(pos_str_obj);
@@ -490,6 +560,7 @@ static PyObject* Tee_str(Tee* self)
 	const char *hookDir_str = PyUnicode_AsUTF8(hookDir_str_obj);
 	const char *hookTeleBase_str = PyUnicode_AsUTF8(hookTeleBase_str_obj);
 	const char *lastVel_str = PyUnicode_AsUTF8(lastVel_str_obj);
+	const char *inputTarget_str = PyUnicode_AsUTF8(inputTarget_str_obj);
 
 	// Проверка получения всех указателей на строки.
 	if (!pos_str || !vel_str || !hookPos_str || !hookDir_str || !hookTeleBase_str || !lastVel_str) {
@@ -500,6 +571,7 @@ static PyObject* Tee_str(Tee* self)
 		Py_XDECREF(hookDir_str_obj);
 		Py_XDECREF(hookTeleBase_str_obj);
 		Py_XDECREF(lastVel_str_obj);
+		Py_XDECREF(inputTarget_str_obj);
 		return NULL;
 	}
 
@@ -546,6 +618,15 @@ static PyObject* Tee_str(Tee* self)
 			"	isInFreeze: %s,\n"
 			"	isDeepFrozen: %s,\n"
 			"	isLiveFrozen: %s\n"
+			"	inputDirection: %d\n"
+			"	inputTarget: %s\n"
+			"	inputJump: %d\n"
+			"	inputFire: %d\n"
+			"	inputHook: %d\n"
+			"	inputPlayerFlags: %d\n"
+			"	inputWantedWeapon: %d\n"
+			"	inputNextWeapon: %d\n"
+			"	inputPrevWeapon: %d\n"
 		")",
 		pos_str, vel_str, hookPos_str, hookDir_str, hookTeleBase_str, self->hookTick, self->hookState,
 		self->hookedPlayer, self->activeWeapon, self->isNewHook ? "true" : "false", self->jumped, self->jumpedTotal, self->jumps,
@@ -556,7 +637,16 @@ static PyObject* Tee_str(Tee* self)
 		self->isLaserHitDisabled ? "true" : "false", self->isShotgunHitDisabled ? "true" : "false",
 		self->isHookHitDisabled ? "true" : "false", self->isSuper ? "true" : "false", self->hasTelegunGun ? "true" : "false",
 		self->hasTelegunGrenade ? "true" : "false", self->hasTelegunLaser ? "true" : "false", self->freezeStart,
-		self->freezeEnd, self->isInFreeze ? "true" : "false", self->isDeepFrozen ? "true" : "false", self->isLiveFrozen ? "true" : "false"
+		self->freezeEnd, self->isInFreeze ? "true" : "false", self->isDeepFrozen ? "true" : "false", self->isLiveFrozen ? "true" : "false",
+		self->inputDirection,
+		inputTarget_str,
+		self->inputJump,
+		self->inputFire,
+		self->inputHook,
+		self->inputPlayerFlags,
+		self->inputWantedWeapon,
+		self->inputNextWeapon,
+		self->inputPrevWeapon
 	);
 
 	// Уменьшение счетчика ссылок на все PyObject.
@@ -566,6 +656,7 @@ static PyObject* Tee_str(Tee* self)
 	Py_DECREF(hookDir_str_obj);
 	Py_DECREF(hookTeleBase_str_obj);
 	Py_DECREF(lastVel_str_obj);
+	Py_DECREF(inputTarget_str_obj);
 
 	return PyUnicode_FromString(buf);
 }
