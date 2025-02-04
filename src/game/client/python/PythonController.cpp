@@ -1,7 +1,6 @@
 #include "PythonController.h"
 #include "Python.h"
 #include "game/client/python/api/api.h"
-#include <windows.h>
 
 PythonController::PythonController()
 {
@@ -80,12 +79,6 @@ void PythonController::StartExecuteScript(PythonScript* pythonScript)
 	ResetInput();
 
 	pythonScript->init();
-
-	if (LoadLibrary(LPCWSTR("torch_cpu.dll")) == NULL) {
-		GameClient()->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "load_library", "Failed to load torch_cpu.dll");
-	} else {
-		GameClient()->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "load_library", "torch_cpu.dll loaded successfully");
-	}
 
 	if (!pythonScript->isInitialized() || this->isExecutedScript(pythonScript)) {
 		return;
