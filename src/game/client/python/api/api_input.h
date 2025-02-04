@@ -241,6 +241,12 @@ static PyObject* API_Input_kill(PyObject* self, PyObject* args)
 	Py_RETURN_NONE;
 }
 
+static PyObject* API_Input_swap(PyObject* self, PyObject* args)
+{
+	g_Config.m_ClDummy = (g_Config.m_ClDummy + 1) % 2;
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef API_InputMethods[] = {
 	{"move", API_Input_move, METH_VARARGS, "Move tee. Takes a value from (API.Direction['Left'], API.Direction['None'], API.Direction['Right'])."},
 	{"jump", API_Input_jump, METH_NOARGS, "Jump tee"},
@@ -258,6 +264,7 @@ static PyMethodDef API_InputMethods[] = {
 	{"cancelHumanLike", API_Input_cancelHumanLike, METH_VARARGS, "Cancel HumanLike"},
 	{"reset", API_Input_reset, METH_VARARGS, "Reset input for current player"},
 	{"kill", API_Input_kill, METH_VARARGS, "Kill the dummy"},
+	{"swap", API_Input_swap, METH_VARARGS, "Swap with dummy"},
 	{NULL, NULL, 0, NULL}
 };
 

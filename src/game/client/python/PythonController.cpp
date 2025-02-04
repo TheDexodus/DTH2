@@ -39,6 +39,40 @@ bool PythonController::isScriptAutoloading(PythonScript *pythonScript)
 	}
 	return false;
 }
+bool PythonController::OnChatMessage(int MsgType, void *pRawMsg)
+{
+	CNetMsg_Sv_Chat *pMsg = (CNetMsg_Sv_Chat *)pRawMsg;
+
+	for (auto ExecutedPythonScript : this->executedPythonScripts) {
+		if (!PyObject_HasAttrString(ExecutedPythonScript->module, "onMessage")) {
+			ExecutedPythonScript->updateExceptions();
+			continue;
+		}
+
+		PyObject* Function = PyObject_GetAttrString(ExecutedPythonScript->module, "onMessage");
+
+		if (Function != nullptr && PyCallable_Check(Function)) {
+			GameClient()->pythonRender.SetScriptRender(ExecutedPythonScript->filepath);
+			PyObject* KeyCodeObject = PyLong_FromLong(pMsg->m_ClientId);
+			PyObject* KeyFlagsObject = PyLong_FromLong( pMsg->m_Team);
+			PyObject* KeyNameObject = PyUnicode_DecodeUTF8(string(pMsg->m_pMessage).c_str(), string(pMsg->m_pMessage).size(), "strict");
+			PyObject* args = PyTuple_Pack(3, KeyCodeObject, KeyFlagsObject, KeyNameObject);
+			PyObject* result = PyObject_CallObject(Function, args);
+
+			PyOS_InterruptOccurred();
+			Py_XDECREF(args);
+			Py_XDECREF(KeyCodeObject);
+			Py_XDECREF(KeyFlagsObject);
+			Py_XDECREF(KeyNameObject);
+		} else {
+			PyErr_Clear();
+		}
+
+		ExecutedPythonScript->updateExceptions();
+	}
+
+	return false;
+}
 
 void PythonController::StartExecuteScript(PythonScript* pythonScript)
 {

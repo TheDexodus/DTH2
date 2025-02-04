@@ -183,6 +183,10 @@ class Chat:
     def sendLocalMessage(message: str):
         pass;
 
+    @staticmethod
+    def sendMessage(message: str):
+        pass;
+
 class Console:
     @staticmethod
     def debug(message: str) -> None:
@@ -257,6 +261,10 @@ class Input:
 
     @staticmethod
     def kill() -> None:
+        pass
+
+    @staticmethod
+    def swap() -> None:
         pass
 
 
@@ -343,6 +351,10 @@ class Graphics:
         pass
 
     @staticmethod
+    def drawText(pos: Vector2, fontWeight: float, text: str, color: int = 0xffffffff) -> int:
+        pass
+
+    @staticmethod
     def rgba(red: int, green: int, blue: int, alpha: int = 255) -> int:
         pass
 
@@ -356,6 +368,14 @@ class Graphics:
 
     @staticmethod
     def mapWorldPositionToUI(worldPosition: Vector2) -> Vector2:
+        pass
+
+    @staticmethod
+    def mapUIPositionToWorld(uiPosition: Vector2) -> Vector2:
+        pass
+
+    @staticmethod
+    def getTextWidth(fontWeight: float, text: str) -> float:
         pass
 
 class Tuning:
@@ -573,4 +593,8 @@ class Events:
 
     @staticmethod
     def getScriptName() -> str:
+        pass
+
+    @staticmethod
+    def onMessage(clientId: int, team: int, message: str) -> None:
         pass

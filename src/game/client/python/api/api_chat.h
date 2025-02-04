@@ -15,9 +15,17 @@ static PyObject* API_Chat_sendLocalMessage(PyObject* self, PyObject* args) {
 	PythonAPI_GameClient->m_Chat.Echo(message);
 	Py_RETURN_NONE;
 }
+static PyObject* API_Chat_sendMessage(PyObject* self, PyObject* args) {
+	char* message;
+	PyArg_ParseTuple(args, "s", &message);
+
+	PythonAPI_GameClient->m_Chat.SendChat(0, message);
+	Py_RETURN_NONE;
+}
 
 static PyMethodDef API_ChatMethods[] = {
 	{"sendLocalMessage", API_Chat_sendLocalMessage, METH_VARARGS, "Prints a local message in chat"},
+	{"sendMessage", API_Chat_sendMessage, METH_VARARGS, "Prints a message in chat"},
 	{NULL, NULL, 0, NULL}
 };
 

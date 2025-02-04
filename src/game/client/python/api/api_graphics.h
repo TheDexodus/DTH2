@@ -37,6 +37,19 @@ static PyObject* API_Graphics_drawLine(PyObject* self, PyObject* args)
 	return Py_BuildValue("i", PythonAPI_GameClient->pythonRender.DrawLine(from->toVec2(), to->toVec2(), color));
 }
 
+static PyObject* API_Graphics_drawText(PyObject* self, PyObject* args)
+{
+	Vector2 *pos;
+	float fontWeight;
+	char* text;
+	unsigned int color = 0xffffffff;
+
+	if (!PyArg_ParseTuple(args, "O!fs|I", &Vector2Type, &pos, &fontWeight, &text, &color))
+		return NULL;
+
+	return Py_BuildValue("i", PythonAPI_GameClient->pythonRender.DrawText(pos->toVec2(), fontWeight, string(text), color));
+}
+
 static PyObject* API_Graphics_removeDrawObject(PyObject* self, PyObject* args)
 {
 	int objectId;
@@ -82,6 +95,7 @@ static PyObject* API_Graphics_mapWorldPositionToUI(PyObject* self, PyObject* arg
 	if (!PyArg_ParseTuple(args, "O!", &Vector2Type, &worldPosition))
 		return NULL;
 
+	// return Graphics.GetScreenCenter() + ((position - Game.Camera:GetCenter()) / Game.Camera:GetZoom() * 0.75)
 	vec2 screenCenter(PythonAPI_GameClient->Ui()->Screen()->w / 2, PythonAPI_GameClient->Ui()->Screen()->h / 2);
 	vec2 diff = worldPosition->toVec2() - PythonAPI_GameClient->m_Camera.m_Center;
 	vec2 uiPosition = screenCenter + diff / PythonAPI_GameClient->m_Camera.m_Zoom *  0.75;
@@ -91,13 +105,44 @@ static PyObject* API_Graphics_mapWorldPositionToUI(PyObject* self, PyObject* arg
 	return reinterpret_cast<PyObject *>(result);
 }
 
+static PyObject* API_Graphics_mapUIPositionToWorld(PyObject* self, PyObject* args)
+{
+	Vector2 *worldPosition;
+
+	if (!PyArg_ParseTuple(args, "O!", &Vector2Type, &worldPosition))
+		return NULL;
+
+	// return Game.Camera:GetCenter() + (position - Graphics.GetScreenCenter()) * 1.25 * Game.Camera:GetZoom()
+	vec2 screenCenter(PythonAPI_GameClient->Ui()->Screen()->w / 2, PythonAPI_GameClient->Ui()->Screen()->h / 2);
+	vec2 diff = worldPosition->toVec2() - screenCenter;
+	vec2 uiPosition = PythonAPI_GameClient->m_Camera.m_Center + diff * PythonAPI_GameClient->m_Camera.m_Zoom *  1.25;
+	Vector2 *result = (Vector2 *)PyObject_New(Vector2, &Vector2Type);
+	result->x = uiPosition.x;
+	result->y = uiPosition.y;
+	return reinterpret_cast<PyObject *>(result);
+}
+
+static PyObject* API_Graphics_getTextWidth(PyObject* self, PyObject* args)
+{
+	float fontWeight;
+	char* text;
+
+	if (!PyArg_ParseTuple(args, "fs", &fontWeight, &text))
+		return NULL;
+
+	return Py_BuildValue("f", PythonAPI_GameClient->TextRender()->TextWidth(fontWeight, text));
+}
+
 static PyMethodDef API_GraphicsMethods[] = {
 	{"drawCircle", API_Graphics_drawCircle, METH_VARARGS, "Return Draw Object id"},
 	{"drawLine", API_Graphics_drawLine, METH_VARARGS, "Return Draw Object id"},
+	{"drawText", API_Graphics_drawText, METH_VARARGS, "Return Draw Object id"},
 	{"rgba", API_Graphics_rgba, METH_VARARGS, "Return color from RGBA"},
 	{"removeDrawObject", API_Graphics_removeDrawObject, METH_VARARGS, "RemoveDrawObject(arg: ObjectId)"},
 	{"getScreenSize", API_Graphics_getScreenSize, METH_VARARGS, "getScreenSize"},
 	{"mapWorldPositionToUI", API_Graphics_mapWorldPositionToUI, METH_VARARGS, "Mapping world position to UI position"},
+	{"mapUIPositionToWorld", API_Graphics_mapUIPositionToWorld, METH_VARARGS, "Mapping UI position to world position"},
+	{"getTextWidth", API_Graphics_getTextWidth, METH_VARARGS, "Get text width"},
 	{NULL, NULL, 0, NULL}
 };
 

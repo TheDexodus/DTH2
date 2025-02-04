@@ -89,6 +89,7 @@ static int Player_init(Player *self, PyObject *args, PyObject *kwds)
 	}
 
 	CGameClient::CClientData clientData = PythonAPI_GameClient->m_aClients[id];
+	// clientData.m_RenderInfo->
 
 	self->useCustomColor = clientData.m_UseCustomColor;
 	self->colorBody = clientData.m_ColorBody;
@@ -602,9 +603,9 @@ static PyObject* Player_str(Player* self)
 		"isPaused: %s,\n"
 		"isSpec: %s,\n"
 		"renderPos: %s,\n"
+		"isSpecCharPresent: %s,\n"
 		"isPredicted: %s,\n"
 		"isPredictedLocal: %s,\n"
-		"isSpecCharPresent: %s,\n"
 		"specChar: %s,\n"
 		"tee: %s\n"
 		")",

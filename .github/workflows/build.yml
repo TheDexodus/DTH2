@@ -13,18 +13,48 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest]
+        os: [windows-latest, ubuntu-latest]
         include:
         - os: windows-latest
           cmake-args: -A x64
           cmake-init-env: CXXFLAGS=/WX LDFLAGS=/WX
           package-file: "*-win64.zip"
           fancy: false
+        - os: ubuntu-latest
+          cmake-args: -G Ninja
+          cmake-init-env: CXXFLAGS=-Werror
+          package-file: "*-linux_x86_64.tar.xz"
+          fancy: true
 
     steps:
     - uses: actions/checkout@v4
       with:
         submodules: true
+
+    - name: Prepare Linux
+      if: contains(matrix.os, 'ubuntu')
+      run: |
+        sudo apt-get update -y
+        # mount: /var/lib/grub/esp: special device /dev/disk/by-id/scsi-... does not exist.
+        # sudo apt-get upgrade -y
+        sudo apt-get install pkg-config cmake ninja-build libfreetype6-dev libnotify-dev libsdl2-dev libsqlite3-dev libvulkan-dev glslang-tools spirv-tools libavcodec-dev libavformat-dev libavutil-dev libswresample-dev libswscale-dev libx264-dev libpng-dev valgrind gcovr libglew-dev -y
+
+    - name: Prepare Linux (fancy)
+      if: contains(matrix.os, 'ubuntu') && matrix.fancy
+      run: |
+        sudo apt-get install libmariadb-dev libwebsockets-dev mariadb-server -y
+        sudo systemctl stop mysql
+        sudo rm -rf /var/lib/mysql/
+        sudo mysql_install_db --user=mysql --datadir=/var/lib/mysql/
+        cd /usr; sudo mysqld_safe --datadir='/var/lib/mysql/' --no-watch
+        sleep 10
+        sudo mysql <<EOF
+        CREATE DATABASE ddnet;
+        CREATE USER 'ddnet'@'localhost' IDENTIFIED BY 'thebestpassword';
+        GRANT ALL PRIVILEGES ON ddnet.* TO 'ddnet'@'localhost';
+        FLUSH PRIVILEGES;
+        EOF
+
     - uses: actions/setup-python@v5
       with:
         python-version: '3.11.9'
@@ -55,6 +85,15 @@ jobs:
 #      run: |
 #        cd debug
 #        ./DDNet-Server shutdown
+
+    - name: Build headless client
+      if: contains(matrix.os, 'ubuntu-latest')
+      run: |
+        mkdir headless
+        cd headless
+        ${{ matrix.cmake-path }}cmake --version
+        ${{ matrix.cmake-path }}cmake -E env CXXFLAGS="--coverage -Werror" ${{ matrix.cmake-path }}cmake -E env LDFLAGS="--coverage -Werror" ${{ matrix.cmake-path }}cmake ${{ matrix.cmake-args }} -DHEADLESS_CLIENT=ON -DCMAKE_BUILD_TYPE=Debug -Werror=dev -DDOWNLOAD_GTEST=ON -DDEV=ON -DCMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG=. ..
+        ${{ matrix.cmake-path }}cmake -E env RUSTFLAGS="-Clink-arg=--coverage" ${{ matrix.cmake-path }}cmake --build . --config Debug  ${{ matrix.build-args }}
 
     - name: Build in release mode
       run: |

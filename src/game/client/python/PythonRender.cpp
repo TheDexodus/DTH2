@@ -49,6 +49,18 @@ void PythonRender::OnRender()
 	}
 
 	Graphics()->LinesEnd();
+
+	for (auto & textsPair : this->texts)
+	{
+		for (auto & textPair : textsPair.second)
+		{
+			PythonText text = textPair.second;
+			TextRender()->TextColor(text.getColorR(), text.getColorG(), text.getColorB(), text.getColorA());
+			TextRender()->Text(text.position.x, text.position.y, text.fontSize, text.text.c_str());
+		}
+	}
+
+	TextRender()->TextColor(1.0, 1.0, 1.0, 1.0);
 	Graphics()->WrapClamp();
 }
 
@@ -66,6 +78,13 @@ int PythonRender::DrawLine(vec2 from, vec2 to, unsigned int color)
 	return this->objectOffset[this->scriptId] - 1;
 }
 
+int PythonRender::DrawText(vec2 position, float fontSize, std::string text, unsigned int color)
+{
+	this->texts[this->scriptId][this->objectOffset[this->scriptId]++] = PythonText(position, fontSize, text, color);
+
+	return this->objectOffset[this->scriptId] - 1;
+}
+
 void PythonRender::RemoveDrawObject(int objectId)
 {
 	if (this->circles[scriptId].find(objectId) != this->circles[scriptId].end())
@@ -76,10 +95,15 @@ void PythonRender::RemoveDrawObject(int objectId)
 	{
 		this->lines[scriptId].erase(objectId);
 	}
+	else if (this->texts[scriptId].find(objectId) != this->texts[scriptId].end())
+	{
+		this->texts[scriptId].erase(objectId);
+	}
 }
 
 void PythonRender::ResetScriptObjects(std::string scriptId)
 {
 	this->circles[scriptId] = std::map<int, PythonCircle>();
 	this->lines[scriptId] = std::map<int, PythonLine>();
+	this->texts[scriptId] = std::map<int, PythonText>();
 }

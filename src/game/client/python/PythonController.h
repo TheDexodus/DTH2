@@ -16,6 +16,7 @@ public:
 	void AutoloadAdd(PythonScript* pythonScript);
 	void AutoloadRemove(PythonScript* pythonScript);
 	bool isScriptAutoloading(PythonScript* pythonScript);
+	bool OnChatMessage(int MsgType, void *pRawMsg);
 
 	void InputFire(int id);
 	void ResetInput(int id = -1);
