@@ -34,7 +34,7 @@ public:
 	void cancel();
 	bool isMoveEnded();
 protected:
-	Point HumanLikeMouse::getCurrentMousePosition();
+	Point getCurrentMousePosition();
 	std::queue<Point> targetWay;
 	int countPointsInWay;
 	function<void()> onArrival;
