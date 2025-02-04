@@ -38,8 +38,8 @@ void CMenus::RenderLoginMenu(CUIRect MainView)
 	if (init == 0) {
 		init = 1;
 		auto credentials = GameClient()->user.getCredentials();
-		strcpy_s(m_Login, credentials.first.c_str());
-		strcpy_s(m_Pass, credentials.second.c_str());
+		strcpy(m_Login, credentials.first.c_str());
+		strcpy(m_Pass, credentials.second.c_str());
 
 		if (strlen(m_Login) > 0 && strlen(m_Pass) > 0) {
 			rememberMe = 1;
