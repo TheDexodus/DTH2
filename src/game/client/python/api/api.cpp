@@ -14,6 +14,7 @@
 #include "api_chat.h"
 #include "api_world.h"
 #include "game/client/gameclient.h"
+#include <thread>
 
 // ============ API Module ============ //
 
