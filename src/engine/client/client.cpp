@@ -2848,7 +2848,7 @@ void CClient::Update()
 	if(g_Config.m_DbgStress)
 	{
 		static int64_t s_ActionTaken = 0;
-		int64_t Now = time_get();
+		int64_t Now = ddnet_time_get();
 		if(State() == IClient::STATE_OFFLINE)
 		{
 			if(Now > s_ActionTaken + time_freq() * 2)
