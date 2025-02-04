@@ -56,7 +56,7 @@ int main(int argc, const char **argv)
 
 	NetClient.Send(&Packet);
 
-	const int64_t StartTime = time_get();
+	const int64_t StartTime = ddnet_time_get();
 
 	using namespace std::chrono_literals;
 	const std::chrono::nanoseconds Timeout = std::chrono::nanoseconds(1s);
@@ -76,7 +76,7 @@ int main(int argc, const char **argv)
 			if(Token != CurToken)
 				continue;
 
-			const int64_t EndTime = time_get();
+			const int64_t EndTime = ddnet_time_get();
 			log_info("twping", "%g ms", (double)(EndTime - StartTime) / time_freq() * 1000);
 			return 0;
 		}

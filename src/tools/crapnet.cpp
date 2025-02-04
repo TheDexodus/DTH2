@@ -57,7 +57,7 @@ void Run(unsigned short Port, NETADDR Dest)
 	while(true)
 	{
 		static int s_Lastcfg = 0;
-		int n = ((time_get() / time_freq()) / g_ConfigInterval) % g_ConfigNumpingconfs;
+		int n = ((ddnet_time_get() / time_freq()) / g_ConfigInterval) % g_ConfigNumpingconfs;
 		SPingConfig Ping = g_aConfigPings[n];
 
 		if(n != s_Lastcfg)
@@ -106,7 +106,7 @@ void Run(unsigned short Port, NETADDR Dest)
 			g_pLast = p;
 
 			// set data in packet
-			p->m_Timestamp = time_get();
+			p->m_Timestamp = ddnet_time_get();
 			p->m_DataSize = Bytes;
 			p->m_Id = Id++;
 			mem_copy(p->m_aData, pData, Bytes);
@@ -146,7 +146,7 @@ void Run(unsigned short Port, NETADDR Dest)
 				break;
 			pNext = p->m_pNext;
 
-			if((time_get() - p->m_Timestamp) > g_CurrentLatency)
+			if((ddnet_time_get() - p->m_Timestamp) > g_CurrentLatency)
 			{
 				char aFlags[] = "  ";
 

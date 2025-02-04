@@ -57,12 +57,12 @@ void CStun::CProtocol::FeedStunServer(NETADDR StunServer)
 
 void CStun::CProtocol::Refresh()
 {
-	m_NextTry = time_get();
+	m_NextTry = ddnet_time_get();
 }
 
 void CStun::CProtocol::Update()
 {
-	int64_t Now = time_get();
+	int64_t Now = ddnet_time_get();
 	if(m_NextTry == -1 || Now < m_NextTry || !m_HaveStunServer)
 	{
 		return;
@@ -90,7 +90,7 @@ bool CStun::CProtocol::OnPacket(NETADDR Addr, unsigned char *pData, int DataSize
 	{
 		return false;
 	}
-	m_LastResponse = time_get();
+	m_LastResponse = ddnet_time_get();
 	if(!Success)
 	{
 		m_HaveAddr = false;
@@ -114,7 +114,7 @@ CONNECTIVITY CStun::CProtocol::GetConnectivity(NETADDR *pGlobalAddr)
 	{
 		return CONNECTIVITY::UNKNOWN;
 	}
-	int64_t Now = time_get();
+	int64_t Now = ddnet_time_get();
 	int64_t Freq = time_freq();
 	bool HaveTriedALittle = m_NumUnsuccessfulTries >= 5 && (m_LastResponse == -1 || Now - m_LastResponse >= 30 * Freq);
 	if(m_LastResponse == -1 && !HaveTriedALittle)

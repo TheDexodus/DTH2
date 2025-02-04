@@ -979,7 +979,7 @@ int64_t time_get_impl()
 	return std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - tw_start_time).count();
 }
 
-int64_t time_get()
+int64_t ddnet_time_get()
 {
 	static int64_t last = 0;
 	if(new_tick == 0)

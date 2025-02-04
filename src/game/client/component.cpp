@@ -32,7 +32,7 @@ class IUpdater *CComponent::Updater() const
 int64_t CComponent::time() const
 {
 #if defined(CONF_VIDEORECORDER)
-	return IVideo::Current() ? IVideo::Time() : time_get();
+	return IVideo::Current() ? IVideo::Time() : ddnet_time_get();
 #else
 	return time_get();
 #endif

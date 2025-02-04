@@ -9,7 +9,7 @@
 
 void CSmoothTime::Init(int64_t Target)
 {
-	m_Snap = time_get();
+	m_Snap = ddnet_time_get();
 	m_Current = Target;
 	m_Target = Target;
 	m_Margin = 0;
@@ -45,7 +45,7 @@ int64_t CSmoothTime::Get(int64_t Now) const
 
 void CSmoothTime::UpdateInt(int64_t Target)
 {
-	int64_t Now = time_get();
+	int64_t Now = ddnet_time_get();
 	m_Current = Get(Now) - m_Margin;
 	m_Snap = Now;
 	m_Target = Target;

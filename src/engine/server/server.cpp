@@ -502,7 +502,7 @@ void CServer::ReconnectClient(int ClientId)
 	CMsgPacker Msg(NETMSG_RECONNECT, true);
 	SendMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientId);
 
-	m_aClients[ClientId].m_RedirectDropTime = time_get() + time_freq() * 10;
+	m_aClients[ClientId].m_RedirectDropTime = ddnet_time_get() + time_freq() * 10;
 	m_aClients[ClientId].m_State = CClient::STATE_REDIRECTED;
 }
 
@@ -527,7 +527,7 @@ void CServer::RedirectClient(int ClientId, int Port)
 	Msg.AddInt(Port);
 	SendMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientId);
 
-	m_aClients[ClientId].m_RedirectDropTime = time_get() + time_freq() * 10;
+	m_aClients[ClientId].m_RedirectDropTime = ddnet_time_get() + time_freq() * 10;
 	m_aClients[ClientId].m_State = CClient::STATE_REDIRECTED;
 }
 
@@ -954,7 +954,7 @@ void CServer::DoSnapshot()
 			m_aClients[i].m_Snapshots.PurgeUntil(m_CurrentGameTick - TickSpeed() * 3);
 
 			// save the snapshot
-			m_aClients[i].m_Snapshots.Add(m_CurrentGameTick, time_get(), SnapshotSize, pData, 0, nullptr);
+			m_aClients[i].m_Snapshots.Add(m_CurrentGameTick, ddnet_time_get(), SnapshotSize, pData, 0, nullptr);
 
 			// find snapshot that we can perform delta against
 			int DeltaTick = -1;
@@ -1580,7 +1580,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 
 	if(Config()->m_SvNetlimit && Msg != NETMSG_REQUEST_MAP_DATA)
 	{
-		int64_t Now = time_get();
+		int64_t Now = ddnet_time_get();
 		int64_t Diff = Now - m_aClients[ClientId].m_TrafficSince;
 		double Alpha = Config()->m_SvNetlimitAlpha / 100.0;
 		double Limit = (double)(Config()->m_SvNetlimit * 1024) / time_freq();
@@ -1777,13 +1777,13 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 
 			int64_t TagTime;
 			if(m_aClients[ClientId].m_Snapshots.Get(m_aClients[ClientId].m_LastAckedSnapshot, &TagTime, nullptr, nullptr) >= 0)
-				m_aClients[ClientId].m_Latency = (int)(((time_get() - TagTime) * 1000) / time_freq());
+				m_aClients[ClientId].m_Latency = (int)(((ddnet_time_get() - TagTime) * 1000) / time_freq());
 
 			// add message to report the input timing
 			// skip packets that are old
 			if(IntendedTick > m_aClients[ClientId].m_LastInputTick)
 			{
-				const int TimeLeft = (TickStartTime(IntendedTick) - time_get()) / (time_freq() / 1000);
+				const int TimeLeft = (TickStartTime(IntendedTick) - ddnet_time_get()) / (time_freq() / 1000);
 
 				CMsgPacker Msgp(NETMSG_INPUTTIMING, true);
 				Msgp.AddInt(IntendedTick);
@@ -2937,7 +2937,7 @@ int CServer::Run()
 		bool NonActive = false;
 		bool PacketWaiting = false;
 
-		m_GameStartTime = time_get();
+		m_GameStartTime = ddnet_time_get();
 
 		UpdateServerInfo();
 		while(m_RunServer < STOPPING)
@@ -2947,7 +2947,7 @@ int CServer::Run()
 
 			set_new_tick();
 
-			int64_t t = time_get();
+			int64_t t = ddnet_time_get();
 			int NewTicks = 0;
 
 			// load new map
@@ -2988,7 +2988,7 @@ int CServer::Run()
 						m_aClients[ClientId].m_State = CClient::STATE_CONNECTING;
 					}
 
-					m_GameStartTime = time_get();
+					m_GameStartTime = ddnet_time_get();
 					m_CurrentGameTick = MIN_TICK;
 					m_ServerInfoFirstRequest = 0;
 					Kernel()->ReregisterInterface(GameServer());
@@ -3150,7 +3150,7 @@ int CServer::Run()
 				{
 					if(m_aClients[i].m_State == CClient::STATE_REDIRECTED)
 					{
-						if(time_get() > m_aClients[i].m_RedirectDropTime)
+						if(ddnet_time_get() > m_aClients[i].m_RedirectDropTime)
 						{
 							m_NetServer.Drop(i, "redirected");
 						}
@@ -3195,7 +3195,7 @@ int CServer::Run()
 				m_ReloadedWhenEmpty = false;
 
 				set_new_tick();
-				t = time_get();
+				t = ddnet_time_get();
 				int x = (TickStartTime(m_CurrentGameTick + 1) - t) * 1000000 / time_freq() + 1;
 
 				PacketWaiting = x > 0 ? net_socket_read_wait(m_NetServer.Socket(), x) : true;

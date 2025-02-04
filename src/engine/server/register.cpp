@@ -258,7 +258,7 @@ void CRegister::ConchainOnConfigChange(IConsole::IResult *pResult, void *pUserDa
 
 void CRegister::CProtocol::SendRegister()
 {
-	int64_t Now = time_get();
+	int64_t Now = ddnet_time_get();
 	int64_t Freq = time_freq();
 
 	char aAddress[64];
@@ -380,12 +380,12 @@ void CRegister::CProtocol::CheckChallengeStatus()
 			if(m_NewChallengeToken)
 			{
 				// Immediately resend if we got the token.
-				m_NextRegister = time_get();
+				m_NextRegister = ddnet_time_get();
 			}
 			break;
 		case STATUS_NEEDINFO:
 			// Act immediately if the master requests more info.
-			m_NextRegister = time_get();
+			m_NextRegister = ddnet_time_get();
 			break;
 		}
 	}
@@ -394,7 +394,7 @@ void CRegister::CProtocol::CheckChallengeStatus()
 void CRegister::CProtocol::Update()
 {
 	CheckChallengeStatus();
-	if(time_get() >= m_NextRegister)
+	if(ddnet_time_get() >= m_NextRegister)
 	{
 		SendRegister();
 	}
@@ -407,7 +407,7 @@ void CRegister::CProtocol::OnToken(const char *pToken)
 	str_copy(m_aChallengeToken, pToken);
 
 	CheckChallengeStatus();
-	if(time_get() >= m_NextRegister)
+	if(ddnet_time_get() >= m_NextRegister)
 	{
 		SendRegister();
 	}
@@ -722,7 +722,7 @@ void CRegister::OnNewInfo(const char *pInfo)
 	}
 
 	// Immediately send new info if it changes, but at most once per second.
-	int64_t Now = time_get();
+	int64_t Now = ddnet_time_get();
 	int64_t Freq = time_freq();
 	int64_t MaximumPrevRegister = -1;
 	int64_t MinimumNextRegister = -1;

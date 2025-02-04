@@ -91,10 +91,10 @@ CClient::CClient() :
 	m_aGametimeMarginGraphs{128, 128},
 	m_FpsGraph(4096)
 {
-	m_StateStartTime = time_get();
+	m_StateStartTime = ddnet_time_get();
 	for(auto &DemoRecorder : m_aDemoRecorder)
 		DemoRecorder = CDemoRecorder(&m_SnapshotDelta);
-	m_LastRenderTime = time_get();
+	m_LastRenderTime = ddnet_time_get();
 	mem_zero(m_aInputs, sizeof(m_aInputs));
 	mem_zero(m_aapSnapshots, sizeof(m_aapSnapshots));
 	for(auto &SnapshotStorage : m_aSnapshotStorage)
@@ -313,7 +313,7 @@ bool CClient::ConnectionProblems() const
 
 void CClient::SendInput()
 {
-	int64_t Now = time_get();
+	int64_t Now = ddnet_time_get();
 
 	if(m_aPredTick[g_Config.m_ClDummy] <= 0)
 		return;
@@ -409,15 +409,15 @@ void CClient::SetState(EClientState State)
 	const EClientState OldState = m_State;
 	m_State = State;
 
-	m_StateStartTime = time_get();
+	m_StateStartTime = ddnet_time_get();
 	GameClient()->OnStateChange(m_State, OldState);
 
 	if(State == IClient::STATE_OFFLINE && m_ReconnectTime == 0)
 	{
 		if(g_Config.m_ClReconnectFull > 0 && (str_find_nocase(ErrorString(), "full") || str_find_nocase(ErrorString(), "reserved")))
-			m_ReconnectTime = time_get() + time_freq() * g_Config.m_ClReconnectFull;
+			m_ReconnectTime = ddnet_time_get() + time_freq() * g_Config.m_ClReconnectFull;
 		else if(g_Config.m_ClReconnectTimeout > 0 && (str_find_nocase(ErrorString(), "Timeout") || str_find_nocase(ErrorString(), "Too weak connection")))
-			m_ReconnectTime = time_get() + time_freq() * g_Config.m_ClReconnectTimeout;
+			m_ReconnectTime = ddnet_time_get() + time_freq() * g_Config.m_ClReconnectTimeout;
 	}
 
 	if(State == IClient::STATE_ONLINE)
@@ -488,7 +488,7 @@ void CClient::EnterGame(int Conn)
 	OnEnterGame(Conn);
 
 	ServerInfoRequest(); // fresh one for timeout protection
-	m_CurrentServerNextPingTime = time_get() + time_freq() / 2;
+	m_CurrentServerNextPingTime = ddnet_time_get() + time_freq() / 2;
 }
 
 void GenerateTimeoutCode(char *pBuffer, unsigned Size, char *pSeed, const NETADDR *pAddrs, int NumAddrs, bool Dummy)
@@ -858,9 +858,9 @@ void CClient::DebugRender()
 	Graphics()->MapScreen(0, 0, Graphics()->ScreenWidth(), Graphics()->ScreenHeight());
 	Graphics()->QuadsBegin();
 
-	if(time_get() - s_LastSnapTime > time_freq())
+	if(ddnet_time_get() - s_LastSnapTime > time_freq())
 	{
-		s_LastSnapTime = time_get();
+		s_LastSnapTime = ddnet_time_get();
 		s_Prev = s_Current;
 		net_stats(&s_Current);
 	}
@@ -1048,7 +1048,7 @@ void CClient::Render()
 
 	if(State() == IClient::STATE_ONLINE && g_Config.m_ClAntiPingLimit)
 	{
-		int64_t Now = time_get();
+		int64_t Now = ddnet_time_get();
 		g_Config.m_ClAntiPing = (m_PredictedTime.Get(Now) - m_aGameTime[g_Config.m_ClDummy].Get(Now)) * 1000 / (float)time_freq() > g_Config.m_ClAntiPingLimit;
 	}
 }
@@ -1391,7 +1391,7 @@ void CClient::ProcessServerInfo(int RawType, NETADDR *pFrom, const void *pData, 
 			}
 			if(ValidPong)
 			{
-				int LatencyMs = (time_get() - m_CurrentServerCurrentPingTime) * 1000 / time_freq();
+				int LatencyMs = (ddnet_time_get() - m_CurrentServerCurrentPingTime) * 1000 / time_freq();
 				m_ServerBrowser.SetCurrentServerPing(ServerAddress(), LatencyMs);
 				m_CurrentServerPingInfoType = SavedType;
 				m_CurrentServerCurrentPingTime = -1;
@@ -1738,7 +1738,7 @@ void CClient::ProcessServerPacket(CNetChunk *pPacket, int Conn, bool Dummy)
 			}
 			if(m_ServerCapabilities.m_PingEx && m_CurrentServerCurrentPingTime >= 0 && *pId == m_CurrentServerPingUuid)
 			{
-				int LatencyMs = (time_get() - m_CurrentServerCurrentPingTime) * 1000 / time_freq();
+				int LatencyMs = (ddnet_time_get() - m_CurrentServerCurrentPingTime) * 1000 / time_freq();
 				m_ServerBrowser.SetCurrentServerPing(ServerAddress(), LatencyMs);
 				m_CurrentServerCurrentPingTime = -1;
 
@@ -1858,7 +1858,7 @@ void CClient::ProcessServerPacket(CNetChunk *pPacket, int Conn, bool Dummy)
 		else if(Conn == CONN_MAIN && Msg == NETMSG_PING_REPLY)
 		{
 			char aBuf[256];
-			str_format(aBuf, sizeof(aBuf), "latency %.2f", (time_get() - m_PingStartTime) * 1000 / (float)time_freq());
+			str_format(aBuf, sizeof(aBuf), "latency %.2f", (ddnet_time_get() - m_PingStartTime) * 1000 / (float)time_freq());
 			m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "client/network", aBuf);
 		}
 		else if(Msg == NETMSG_INPUTTIMING)
@@ -1870,7 +1870,7 @@ void CClient::ProcessServerPacket(CNetChunk *pPacket, int Conn, bool Dummy)
 				return;
 			}
 
-			int64_t Now = time_get();
+			int64_t Now = ddnet_time_get();
 
 			// adjust our prediction time
 			int64_t Target = 0;
@@ -2051,7 +2051,7 @@ void CClient::ProcessServerPacket(CNetChunk *pPacket, int Conn, bool Dummy)
 					}
 
 					// add new
-					m_aSnapshotStorage[Conn].Add(GameTick, time_get(), SnapSize, pTmpBuffer3, AltSnapSize, pAltSnapBuffer);
+					m_aSnapshotStorage[Conn].Add(GameTick, ddnet_time_get(), SnapSize, pTmpBuffer3, AltSnapSize, pAltSnapBuffer);
 
 					if(!Dummy)
 					{
@@ -2104,7 +2104,7 @@ void CClient::ProcessServerPacket(CNetChunk *pPacket, int Conn, bool Dummy)
 						m_aCurGameTick[Conn] = m_aapSnapshots[Conn][SNAP_CURRENT]->m_Tick;
 						if(Conn == CONN_MAIN)
 						{
-							m_LocalStartTime = time_get();
+							m_LocalStartTime = ddnet_time_get();
 #if defined(CONF_VIDEORECORDER)
 							IVideo::SetLocalStartTime(m_LocalStartTime);
 #endif
@@ -2123,7 +2123,7 @@ void CClient::ProcessServerPacket(CNetChunk *pPacket, int Conn, bool Dummy)
 					// adjust game time
 					if(m_aReceivedSnapshots[Conn] > 2)
 					{
-						int64_t Now = m_aGameTime[Conn].Get(time_get());
+						int64_t Now = m_aGameTime[Conn].Get(ddnet_time_get());
 						int64_t TickStart = GameTick * time_freq() / GameTickSpeed();
 						int64_t TimeLeft = (TickStart - Now) * 1000 / time_freq();
 						m_aGameTime[Conn].Update(&m_aGametimeMarginGraphs[Conn], (GameTick - 1) * time_freq() / GameTickSpeed(), TimeLeft, CSmoothTime::ADJUSTDIRECTION_DOWN);
@@ -2706,7 +2706,7 @@ void CClient::Update()
 		if(m_aapSnapshots[!g_Config.m_ClDummy][SNAP_CURRENT])
 		{
 			// switch dummy snapshot
-			int64_t Now = m_aGameTime[!g_Config.m_ClDummy].Get(time_get());
+			int64_t Now = m_aGameTime[!g_Config.m_ClDummy].Get(ddnet_time_get());
 			while(true)
 			{
 				if(!m_aapSnapshots[!g_Config.m_ClDummy][SNAP_CURRENT]->m_pNext)
@@ -2728,8 +2728,8 @@ void CClient::Update()
 		{
 			// switch snapshot
 			bool Repredict = false;
-			int64_t Now = m_aGameTime[g_Config.m_ClDummy].Get(time_get());
-			int64_t PredNow = m_PredictedTime.Get(time_get());
+			int64_t Now = m_aGameTime[g_Config.m_ClDummy].Get(ddnet_time_get());
+			int64_t PredNow = m_PredictedTime.Get(ddnet_time_get());
 
 			if(m_LastDummy != (bool)g_Config.m_ClDummy && m_aapSnapshots[g_Config.m_ClDummy][SNAP_PREV])
 			{
@@ -2797,17 +2797,17 @@ void CClient::Update()
 
 			// fetch server info if we don't have it
 			if(m_CurrentServerInfoRequestTime >= 0 &&
-				time_get() > m_CurrentServerInfoRequestTime)
+				ddnet_time_get() > m_CurrentServerInfoRequestTime)
 			{
 				m_ServerBrowser.RequestCurrentServer(ServerAddress());
-				m_CurrentServerInfoRequestTime = time_get() + time_freq() * 2;
+				m_CurrentServerInfoRequestTime = ddnet_time_get() + time_freq() * 2;
 			}
 
 			// periodically ping server
 			if(m_CurrentServerNextPingTime >= 0 &&
-				time_get() > m_CurrentServerNextPingTime)
+				ddnet_time_get() > m_CurrentServerNextPingTime)
 			{
-				int64_t NowPing = time_get();
+				int64_t NowPing = ddnet_time_get();
 				int64_t Freq = time_freq();
 
 				char aBuf[64];
@@ -2939,7 +2939,7 @@ void CClient::Update()
 		Steam()->ClearConnectAddress();
 	}
 
-	if(m_ReconnectTime > 0 && time_get() > m_ReconnectTime)
+	if(m_ReconnectTime > 0 && ddnet_time_get() > m_ReconnectTime)
 	{
 		if(State() != STATE_ONLINE)
 			Connect(m_aConnectAddressStr);
@@ -3002,7 +3002,7 @@ void CClient::InitInterfaces()
 
 void CClient::Run()
 {
-	m_LocalStartTime = m_GlobalStartTime = time_get();
+	m_LocalStartTime = m_GlobalStartTime = ddnet_time_get();
 #if defined(CONF_VIDEORECORDER)
 	IVideo::SetLocalStartTime(m_LocalStartTime);
 #endif
@@ -3132,7 +3132,7 @@ void CClient::Run()
 	bool LastG = false;
 
 	auto LastTime = time_get_nanoseconds();
-	int64_t LastRenderTime = time_get();
+	int64_t LastRenderTime = ddnet_time_get();
 
 	while(true)
 	{
@@ -3235,7 +3235,7 @@ void CClient::Run()
 			}
 
 			Update();
-			int64_t Now = time_get();
+			int64_t Now = ddnet_time_get();
 
 			bool IsRenderActive = (g_Config.m_GfxBackgroundRender || m_pGraphics->WindowOpen());
 
@@ -3265,7 +3265,7 @@ void CClient::Run()
 					char aBuf[64];
 					str_format(aBuf, sizeof(aBuf), "Frametime %d us\n", (int)(m_RenderFrameTime * 1000000));
 					io_write(m_BenchmarkFile, aBuf, str_length(aBuf));
-					if(time_get() > m_BenchmarkStopTime)
+					if(ddnet_time_get() > m_BenchmarkStopTime)
 					{
 						io_close(m_BenchmarkFile);
 						m_BenchmarkFile = 0;
@@ -3351,8 +3351,8 @@ void CClient::Run()
 			LastTime = Now;
 
 		// update local and global time
-		m_LocalTime = (time_get() - m_LocalStartTime) / (float)time_freq();
-		m_GlobalTime = (time_get() - m_GlobalStartTime) / (float)time_freq();
+		m_LocalTime = (ddnet_time_get() - m_LocalStartTime) / (float)time_freq();
+		m_GlobalTime = (ddnet_time_get() - m_GlobalStartTime) / (float)time_freq();
 	}
 
 	GameClient()->RenderShutdownMessage();
@@ -3490,7 +3490,7 @@ void CClient::Con_Ping(IConsole::IResult *pResult, void *pUserData)
 
 	CMsgPacker Msg(NETMSG_PING, true);
 	pSelf->SendMsg(CONN_MAIN, &Msg, MSGFLAG_FLUSH);
-	pSelf->m_PingStartTime = time_get();
+	pSelf->m_PingStartTime = ddnet_time_get();
 }
 
 void CClient::AutoScreenshot_Start()
@@ -4097,7 +4097,7 @@ void CClient::Con_BenchmarkQuit(IConsole::IResult *pResult, void *pUserData)
 void CClient::BenchmarkQuit(int Seconds, const char *pFilename)
 {
 	m_BenchmarkFile = Storage()->OpenFile(pFilename, IOFLAG_WRITE, IStorage::TYPE_ABSOLUTE);
-	m_BenchmarkStopTime = time_get() + time_freq() * Seconds;
+	m_BenchmarkStopTime = ddnet_time_get() + time_freq() * Seconds;
 }
 
 void CClient::UpdateAndSwap()
@@ -4105,7 +4105,7 @@ void CClient::UpdateAndSwap()
 	Input()->Update();
 	Graphics()->Swap();
 	Graphics()->Clear(0, 0, 0);
-	m_GlobalTime = (time_get() - m_GlobalStartTime) / (float)time_freq();
+	m_GlobalTime = (ddnet_time_get() - m_GlobalStartTime) / (float)time_freq();
 }
 
 void CClient::ServerBrowserUpdate()
@@ -4125,7 +4125,7 @@ void CClient::InitChecksum()
 	CChecksumData *pData = &m_Checksum.m_Data;
 	pData->m_SizeofData = sizeof(*pData);
 	str_copy(pData->m_aVersionStr, GAME_NAME " " GAME_RELEASE_VERSION " (" CONF_PLATFORM_STRING "; " CONF_ARCH_STRING ")");
-	pData->m_Start = time_get();
+	pData->m_Start = ddnet_time_get();
 	os_version_str(pData->m_aOsVersion, sizeof(pData->m_aOsVersion));
 	secure_random_fill(&pData->m_Random, sizeof(pData->m_Random));
 	pData->m_Version = GameClient()->DDNetVersion();
@@ -4644,7 +4644,7 @@ int SDL_main(int argc, char *argv2[])
 int main(int argc, const char **argv)
 #endif
 {
-	const int64_t MainStart = time_get();
+	const int64_t MainStart = ddnet_time_get();
 
 #if defined(CONF_PLATFORM_ANDROID)
 	const char **argv = const_cast<const char **>(argv2);
@@ -4990,7 +4990,7 @@ int main(int argc, const char **argv)
 	}
 
 	// run the client
-	log_trace("client", "initialization finished after %.2fms, starting...", (time_get() - MainStart) * 1000.0f / (float)time_freq());
+	log_trace("client", "initialization finished after %.2fms, starting...", (ddnet_time_get() - MainStart) * 1000.0f / (float)time_freq());
 	pClient->Run();
 
 	const bool Restarting = pClient->State() == CClient::STATE_RESTARTING;
@@ -5106,14 +5106,14 @@ void CClient::RequestDDNetInfo()
 
 int CClient::GetPredictionTime()
 {
-	int64_t Now = time_get();
+	int64_t Now = ddnet_time_get();
 	return (int)((m_PredictedTime.Get(Now) - m_aGameTime[g_Config.m_ClDummy].Get(Now)) * 1000 / (float)time_freq());
 }
 
 void CClient::GetSmoothTick(int *pSmoothTick, float *pSmoothIntraTick, float MixAmount)
 {
-	int64_t GameTime = m_aGameTime[g_Config.m_ClDummy].Get(time_get());
-	int64_t PredTime = m_PredictedTime.Get(time_get());
+	int64_t GameTime = m_aGameTime[g_Config.m_ClDummy].Get(ddnet_time_get());
+	int64_t PredTime = m_PredictedTime.Get(ddnet_time_get());
 	int64_t SmoothTime = clamp(GameTime + (int64_t)(MixAmount * (PredTime - GameTime)), GameTime, PredTime);
 
 	*pSmoothTick = (int)(SmoothTime * GameTickSpeed() / time_freq()) + 1;

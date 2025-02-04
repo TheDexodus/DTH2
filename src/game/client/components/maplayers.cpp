@@ -1577,7 +1577,7 @@ void CMapLayers::OnRender()
 							if(IsGameLayer)
 							{
 								// slow blinking to hint that it's not a part of the map
-								double Seconds = time_get() / (double)time_freq();
+								double Seconds = ddnet_time_get() / (double)time_freq();
 								ColorRGBA ColorHint = ColorRGBA(1.0f, 1.0f, 1.0f, 0.3 + 0.7 * (1 + std::sin(2 * (double)pi * Seconds / 3)) / 2);
 								RenderTools()->RenderTileRectangle(-201, -201, pTMap->m_Width + 402, pTMap->m_Height + 402,
 									0, TILE_DEATH, // display air inside, death outside
@@ -1593,7 +1593,7 @@ void CMapLayers::OnRender()
 							if(IsGameLayer)
 							{
 								// slow blinking to hint that it's not a part of the map
-								double Seconds = time_get() / (double)time_freq();
+								double Seconds = ddnet_time_get() / (double)time_freq();
 								ColorRGBA ColorHint = ColorRGBA(1.0f, 1.0f, 1.0f, 0.3 + 0.7 * (1.0 + std::sin(2 * (double)pi * Seconds / 3)) / 2);
 								RenderKillTileBorder(TileLayerCounter - 1, Color.Multiply(ColorHint));
 							}

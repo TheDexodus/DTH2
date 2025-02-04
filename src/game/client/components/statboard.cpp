@@ -128,10 +128,10 @@ void CStatboard::OnRender()
 	if((g_Config.m_ClAutoStatboardScreenshot || g_Config.m_ClAutoCSV) && Client()->State() != IClient::STATE_DEMOPLAYBACK)
 	{
 		if(m_ScreenshotTime < 0 && m_pClient->m_Snap.m_pGameInfoObj && m_pClient->m_Snap.m_pGameInfoObj->m_GameStateFlags & GAMESTATEFLAG_GAMEOVER)
-			m_ScreenshotTime = time_get() + time_freq() * 3;
-		if(m_ScreenshotTime > -1 && m_ScreenshotTime < time_get())
+			m_ScreenshotTime = ddnet_time_get() + time_freq() * 3;
+		if(m_ScreenshotTime > -1 && m_ScreenshotTime < ddnet_time_get())
 			m_Active = true;
-		if(!m_ScreenshotTaken && m_ScreenshotTime > -1 && m_ScreenshotTime + time_freq() / 5 < time_get())
+		if(!m_ScreenshotTaken && m_ScreenshotTime > -1 && m_ScreenshotTime + time_freq() / 5 < ddnet_time_get())
 		{
 			if(g_Config.m_ClAutoStatboardScreenshot)
 				AutoStatScreenshot();

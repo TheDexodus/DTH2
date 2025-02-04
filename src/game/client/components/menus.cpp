@@ -330,10 +330,10 @@ void CMenus::DoLaserPreview(const CUIRect *pRect, const ColorHSLA LaserOutlineCo
 	Graphics()->QuadsEnd();
 
 	Graphics()->BlendNormal();
-	int SpriteIndex = time_get() % 3;
+	int SpriteIndex = ddnet_time_get() % 3;
 	Graphics()->TextureSet(GameClient()->m_ParticlesSkin.m_aSpriteParticleSplat[SpriteIndex]);
 	Graphics()->QuadsBegin();
-	Graphics()->QuadsSetRotation(time_get());
+	Graphics()->QuadsSetRotation(ddnet_time_get());
 	Graphics()->SetColor(OuterColor.r, OuterColor.g, OuterColor.b, 1.0f);
 	IGraphics::CQuadItem QuadItem(Pos.x, Pos.y, 24, 24);
 	Graphics()->QuadsDraw(&QuadItem, 1);
@@ -1269,7 +1269,7 @@ void CMenus::RenderPopupFullscreen(CUIRect Screen)
 		pButtonText = Localize("Ok");
 		if(Client()->ReconnectTime() > 0)
 		{
-			str_format(aBuf, sizeof(aBuf), Localize("Reconnect in %d sec"), (int)((Client()->ReconnectTime() - time_get()) / time_freq()) + 1);
+			str_format(aBuf, sizeof(aBuf), Localize("Reconnect in %d sec"), (int)((Client()->ReconnectTime() - ddnet_time_get()) / time_freq()) + 1);
 			pTitle = Client()->ErrorString();
 			pExtraText = aBuf;
 			pButtonText = Localize("Abort");
@@ -1906,7 +1906,7 @@ void CMenus::RenderPopupConnecting(CUIRect Screen)
 	Props.m_EllipsisAtEnd = true;
 	Ui()->DoLabel(&Label, Client()->ConnectAddressString(), FontSize, TEXTALIGN_MC, Props);
 
-	if(time_get() - Client()->StateStartTime() > time_freq())
+	if(ddnet_time_get() - Client()->StateStartTime() > time_freq())
 	{
 		const char *pConnectivityLabel = "";
 		switch(Client()->UdpConnectivity(Client()->ConnectNetTypes()))
@@ -1959,7 +1959,7 @@ void CMenus::RenderPopupLoading(CUIRect Screen)
 	char aLabel2[128];
 	if(Client()->MapDownloadTotalsize() > 0)
 	{
-		const int64_t Now = time_get();
+		const int64_t Now = ddnet_time_get();
 		if(Now - m_DownloadLastCheckTime >= time_freq())
 		{
 			if(m_DownloadLastCheckSize > Client()->MapDownloadAmount())
@@ -2254,7 +2254,7 @@ void CMenus::OnStateChange(int NewState, int OldState)
 	}
 	else if(NewState == IClient::STATE_LOADING)
 	{
-		m_DownloadLastCheckTime = time_get();
+		m_DownloadLastCheckTime = ddnet_time_get();
 		m_DownloadLastCheckSize = 0;
 		m_DownloadSpeed = 0.0f;
 	}

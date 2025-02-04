@@ -687,7 +687,7 @@ static int TranslateMouseWheelEventKey(const SDL_MouseWheelEvent &MouseWheelEven
 
 int CInput::Update()
 {
-	const int64_t Now = time_get();
+	const int64_t Now = ddnet_time_get();
 	if(m_LastUpdate != 0)
 	{
 		const float Diff = (Now - m_LastUpdate) / (float)time_freq();

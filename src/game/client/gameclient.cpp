@@ -292,7 +292,7 @@ void CGameClient::InitializeLanguage()
 
 void CGameClient::OnInit()
 {
-	const int64_t OnInitStart = time_get();
+	const int64_t OnInitStart = ddnet_time_get();
 
 	Client()->SetLoadingCallback([this](IClient::ELoadingCallbackDetail Detail) {
 		const char *pTitle;
@@ -440,7 +440,7 @@ void CGameClient::OnInit()
 	this->pythonScripts = scriptsScanner->scan();
 
 	m_Menus.FinishLoading();
-	log_trace("gameclient", "initialization finished after %.2fms", (time_get() - OnInitStart) * 1000.0f / (float)time_freq());
+	log_trace("gameclient", "initialization finished after %.2fms", (ddnet_time_get() - OnInitStart) * 1000.0f / (float)time_freq());
 }
 
 void CGameClient::OnUpdate()
@@ -2456,7 +2456,7 @@ void CGameClient::OnPredict()
 							aMixAmount[j] = 1.f - std::pow(1.f - aMixAmount[j], 1 / 1.2f);
 						}
 					}
-					int64_t TimePassed = time_get() - m_aClients[i].m_aSmoothStart[j];
+					int64_t TimePassed = ddnet_time_get() - m_aClients[i].m_aSmoothStart[j];
 					if(in_range(TimePassed, (int64_t)0, Len - 1))
 						aMixAmount[j] = minimum(aMixAmount[j], (float)(TimePassed / (double)Len));
 				}
@@ -2466,7 +2466,7 @@ void CGameClient::OnPredict()
 				for(int j = 0; j < 2; j++)
 				{
 					int64_t Remaining = minimum((1.f - aMixAmount[j]) * Len, minimum(time_freq() * 0.700f, (1.f - aMixAmount[j ^ 1]) * Len + time_freq() * 0.300f)); // don't smooth for longer than 700ms, or more than 300ms longer along one axis than the other axis
-					int64_t Start = time_get() - (Len - Remaining);
+					int64_t Start = ddnet_time_get() - (Len - Remaining);
 					if(!in_range(Start + Len, m_aClients[i].m_aSmoothStart[j], m_aClients[i].m_aSmoothStart[j] + Len))
 					{
 						m_aClients[i].m_aSmoothStart[j] = Start;
@@ -3434,7 +3434,7 @@ void CGameClient::DetectStrongHook()
 vec2 CGameClient::GetSmoothPos(int ClientId)
 {
 	vec2 Pos = mix(m_aClients[ClientId].m_PrevPredicted.m_Pos, m_aClients[ClientId].m_Predicted.m_Pos, Client()->PredIntraGameTick(g_Config.m_ClDummy));
-	int64_t Now = time_get();
+	int64_t Now = ddnet_time_get();
 	for(int i = 0; i < 2; i++)
 	{
 		int64_t Len = clamp(m_aClients[ClientId].m_aSmoothLen[i], (int64_t)1, time_freq());

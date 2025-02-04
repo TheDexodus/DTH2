@@ -45,7 +45,7 @@ void CSnapIdPool::RemoveFirstTimeout()
 
 int CSnapIdPool::NewId()
 {
-	int64_t Now = time_get();
+	int64_t Now = ddnet_time_get();
 
 	// process timed ids
 	while(m_FirstTimed != -1 && m_aIds[m_FirstTimed].m_Timeout < Now)
@@ -80,7 +80,7 @@ void CSnapIdPool::FreeId(int Id)
 
 	m_InUsage--;
 	m_aIds[Id].m_State = ID_TIMED;
-	m_aIds[Id].m_Timeout = time_get() + time_freq() * 5;
+	m_aIds[Id].m_Timeout = ddnet_time_get() + time_freq() * 5;
 	m_aIds[Id].m_Next = -1;
 
 	if(m_LastTimed != -1)

@@ -71,12 +71,12 @@ void CTooltips::OnRender()
 		// Only reset hover time when rendering, because multiple tooltips can be
 		// activated in the same frame, but only the last one should be rendered.
 		if(!m_PreviousTooltip.has_value() || m_PreviousTooltip.value().get().m_pText != Tooltip.m_pText)
-			m_HoverTime = time_get();
+			m_HoverTime = ddnet_time_get();
 		m_PreviousTooltip.emplace(Tooltip);
 
 		// Delay tooltip until 1 second passed. Start fade-in in the last 0.25 seconds.
 		constexpr float SecondsBeforeFadeIn = 0.75f;
-		const float SecondsSinceActivation = (time_get() - m_HoverTime) / (float)time_freq();
+		const float SecondsSinceActivation = (ddnet_time_get() - m_HoverTime) / (float)time_freq();
 		if(SecondsSinceActivation < SecondsBeforeFadeIn)
 			return;
 		constexpr float SecondsFadeIn = 0.25f;
