@@ -939,7 +939,7 @@ int64_t CDemoPlayer::Time()
 		return Now;
 	}
 #else
-	return time_get();
+	return ddnet_time_get();
 #endif
 }
 
