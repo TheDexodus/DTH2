@@ -45,7 +45,7 @@ vector<PythonScript*> ScriptsScanner::scan()
 			}
 
 			string scriptPath = "python." + path.substr(0, path.length() - 3);
-			std::replace(scriptPath.begin(), scriptPath.end(), '\\', '.');
+			std::string::replace(scriptPath.begin(), scriptPath.end(), '\\', '.');
 			scripts.emplace_back(new PythonScript(scriptPath));
 		}
 	}
