@@ -247,28 +247,30 @@ static int World_init(World *self, PyObject *args, PyObject *kwds)
 static void World_dealloc(World* self)
 {
 	self->world.~CGameWorld();
-	Py_TYPE(self)->tp_free((PyObject*)self);
+	Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
-static PyObject* API_World_Predict(PyObject* self, PyObject* args)
+static PyObject *API_World_Predict(PyObject *self, PyObject *args)
 {
 	int ticksOffset;
 
-	if (args == nullptr || !PyArg_ParseTuple(args, "i", &ticksOffset)) {
+	if(args == nullptr || !PyArg_ParseTuple(args, "i", &ticksOffset))
+	{
 		return NULL;
 	}
 
 	CGameWorld world;
 	world.CopyWorld(&PythonAPI_GameClient->m_GameWorld);
 
-	for (int i = 0; i < ticksOffset; i++) {
+	for(int i = 0; i < ticksOffset; i++)
+	{
 		world.Tick();
 	}
 
 	return Py_None;
 }
 
-static PyTypeObject WorldType = {
+inline PyTypeObject WorldType = {
 	{ PyObject_HEAD_INIT(NULL) 0, },
 	"API.World",                /* tp_name */
 	sizeof(World),              /* tp_basicsize */

@@ -171,6 +171,10 @@ class Collision:
         pass
 
     @staticmethod
+    def intersectLineTeleHook(position0: Vector2, position1: Vector2) -> Tuple[int, Vector2, Vector2]:
+        pass
+
+    @staticmethod
     def getMapSize() -> Vector2:
         pass
 

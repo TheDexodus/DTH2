@@ -7,15 +7,15 @@
 class ScriptsScanner
 {
 public:
-	ScriptsScanner() : directoryForScanning("python") {}
-	ScriptsScanner(char* directoryForScanning)
+	ScriptsScanner() : directoryForScanning("release\\python") {}
+	ScriptsScanner(const char* directoryForScanning)
 	{
 		this->directoryForScanning = directoryForScanning;
 	}
 
 	std::vector<PythonScript*> scan();
 protected:
-	char* directoryForScanning;
+	const char *directoryForScanning;
 };
 
 #endif // DDNET_SCRIPTSSCANNER_H

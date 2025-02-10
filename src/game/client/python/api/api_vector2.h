@@ -255,14 +255,14 @@ static PyNumberMethods Vector2_as_number = {
 	Vector2_div,
 };
 
-static PyObject* Vector2_str(Vector2* self)
+static PyObject *Vector2_str(Vector2 *self)
 {
 	char buf[128];
 	sprintf(buf, "{x: %.2f, y: %.2f}", self->x, self->y);
 	return PyUnicode_FromString(buf);
 }
 
-static PyTypeObject Vector2Type = {
+inline PyTypeObject Vector2Type = {
 	{ PyObject_HEAD_INIT(NULL) 0, },
 	"API.Vector2",                /* tp_name */
 	sizeof(Vector2),              /* tp_basicsize */

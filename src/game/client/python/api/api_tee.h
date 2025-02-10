@@ -661,7 +661,7 @@ static PyObject* Tee_str(Tee* self)
 	return PyUnicode_FromString(buf);
 }
 
-static PyTypeObject TeeType = {
+inline PyTypeObject TeeType = {
 	{ PyObject_HEAD_INIT(NULL) 0, },
 	"API.Tee",                /* tp_name */
 	sizeof(Tee),              /* tp_basicsize */

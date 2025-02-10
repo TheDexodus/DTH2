@@ -130,7 +130,7 @@ static PyGetSetDef Character_getseters[] = {
 	{NULL}  /* Sentinel */
 };
 
-static PyTypeObject CharacterType = {
+inline PyTypeObject CharacterType = {
 	{ PyObject_HEAD_INIT(NULL) 0, },
 	"API.Character",                /* tp_name */
 	sizeof(Character),              /* tp_basicsize */

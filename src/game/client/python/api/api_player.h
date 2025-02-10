@@ -82,8 +82,13 @@ static int Player_init(Player *self, PyObject *args, PyObject *kwds)
 	if (!PyArg_ParseTuple(args, "i", &id))
 		return -1;
 
+	if(id == -1)
+		id = g_Config.m_ClDummy;
+	else if (id == -2)
+		id = (g_Config.m_ClDummy + 1) % 2;
+
 	if (id < 0 || id > 63) {
-		PyErr_SetString(PyExc_TypeError, "Expected int argument, with value between 0-63");
+		PyErr_SetString(PyExc_TypeError, "Expected int argument, with value between -2 <-> 63");
 
 		return -1;
 	}
@@ -637,7 +642,7 @@ static PyObject* Player_str(Player* self)
 	return PyUnicode_FromString(buf);
 }
 
-static PyTypeObject PlayerType = {
+inline PyTypeObject PlayerType = {
 	{ PyObject_HEAD_INIT(NULL) 0, },
 	"API.Player",                /* tp_name */
 	sizeof(Player),              /* tp_basicsize */

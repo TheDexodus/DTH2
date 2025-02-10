@@ -44,7 +44,7 @@ vector<PythonScript*> ScriptsScanner::scan()
 				continue;
 			}
 
-			string scriptPath = string(this->directoryForScanning) + "." + path.substr(0, path.length() - 3);
+			string scriptPath = "python." + path.substr(0, path.length() - 3);
 			replace(scriptPath.begin(), scriptPath.end(), '\\', '.');
 			scripts.emplace_back(new PythonScript(scriptPath));
 		}
