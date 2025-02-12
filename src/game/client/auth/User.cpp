@@ -45,7 +45,7 @@ bool User::login(string login, string password)
 
 bool User::isAuthorized()
 {
-	return this->token.size() > 0 && loginRequest == nullptr && gettingUserRequest == nullptr && gettingLatestClientVersionRequest == nullptr && isLatestVersion();
+	return this->token.size() > 0 && loginRequest == nullptr && gettingUserRequest == nullptr && gettingLatestClientVersionRequest == nullptr && gettingPythonBlacklist == nullptr && isLatestVersion();
 }
 
 string encrypt(string str, char key) {
@@ -89,7 +89,7 @@ void User::eraseCredentials()
 
 bool User::isLoginLoading()
 {
-	return loginRequest != nullptr || gettingUserRequest != nullptr || gettingLatestClientVersionRequest != nullptr;
+	return loginRequest != nullptr || gettingUserRequest != nullptr || gettingLatestClientVersionRequest != nullptr || gettingPythonBlacklist != nullptr;
 }
 
 bool User::getClientVersion()
@@ -116,12 +116,52 @@ bool User::getClientVersion()
 		return false;
 	}
 
+	const json_value &Json = *resultJson;
+	this->userData.latestClientVersion = json_string_get(&Json["version"]);
+
+	return this->getPythonBlacklist();
+}
+
+bool User::getPythonBlacklist()
+{
+	if (gettingPythonBlacklist == nullptr)
+	{
+		string url = string(BACKEND_URL) + "api/server_with_python_ignores";
+		gettingPythonBlacklist = HttpGet(url.c_str());
+		gettingPythonBlacklist->LogProgress(HTTPLOG::FAILURE);
+		Http()->Run(gettingPythonBlacklist);
+		return false;
+	}
+
+	if (gettingPythonBlacklist != nullptr && !gettingPythonBlacklist->Done())
+	{
+		return false;
+	}
+
+	json_value* resultJson = gettingPythonBlacklist->ResultJson();
+
+	if (!resultJson) {
+		return false;
+	}
+
 	loginRequest = nullptr;
 	gettingUserRequest = nullptr;
 	gettingLatestClientVersionRequest = nullptr;
+	gettingPythonBlacklist = nullptr;
 
 	const json_value &Json = *resultJson;
-	this->userData.latestClientVersion = json_string_get(&Json["version"]);
+	const json_value& members = Json["hydra:member"];
+
+	if (members.type != json_array) {
+		return false;
+	}
+
+	for (size_t i = 0; i < members.u.array.length; i++) {
+		const json_value& entry = *members.u.array.values[i];
+		if (entry["ipAddress"].type == json_string) {
+			this->userData.pythonBlacklistIp.push_back(json_string_get(&entry["ipAddress"]));
+		}
+	}
 
 	return true;
 }

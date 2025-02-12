@@ -12,7 +12,7 @@
 #define BACKEND_URL "https://backend.dth.dexodus.ru/"
 #define BACKEND_LOGIN_ACTION "login/authentication_token"
 #define BACKEND_ME_ACTION "me"
-#define DTH_CLIENT_VERSION "1.0.0"
+#define DTH_CLIENT_VERSION "1.0.1"
 
 using namespace std;
 
@@ -21,6 +21,7 @@ class UserData
 public:
 	string clanName = "DTH";
 	string latestClientVersion = "";
+	std::vector<std::string> pythonBlacklistIp;
 };
 
 class User : public CComponent
@@ -36,6 +37,7 @@ public:
 	void eraseCredentials();
 	bool isLoginLoading();
 	bool getClientVersion();
+	bool getPythonBlacklist();
 	pair<string, string> getCredentials();
 	bool isLatestVersion();
 	UserData userData;
@@ -45,6 +47,7 @@ private:
 	std::shared_ptr<CHttpRequest> loginRequest = nullptr;
 	std::shared_ptr<CHttpRequest> gettingUserRequest = nullptr;
 	std::shared_ptr<CHttpRequest> gettingLatestClientVersionRequest = nullptr;
+	std::shared_ptr<CHttpRequest> gettingPythonBlacklist = nullptr;
 };
 
 #endif // DDNET_USER_H

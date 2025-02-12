@@ -75,6 +75,20 @@ bool PythonController::OnChatMessage(int MsgType, void *pRawMsg)
 
 void PythonController::StartExecuteScript(PythonScript* pythonScript)
 {
+	if(m_pClient->m_Snap.m_pLocalInfo)
+	{
+		CServerInfo CurrentServerInfo;
+		Client()->GetServerInfo(&CurrentServerInfo);
+
+		for (auto pythonIgnoreServer : GameClient()->user.userData.pythonBlacklistIp)
+		{
+			if (pythonIgnoreServer == string(CurrentServerInfo.m_aAddress))
+			{
+				return;
+			}
+		}
+	}
+
 	GameClient()->pythonRender.SetScriptRender(pythonScript->filepath);
 	ResetInput();
 
@@ -290,6 +304,23 @@ void PythonController::InputFire(int id)
 
 void PythonController::OnUpdate()
 {
+	if(m_pClient->m_Snap.m_pLocalInfo)
+	{
+		CServerInfo CurrentServerInfo;
+		Client()->GetServerInfo(&CurrentServerInfo);
+
+		for (auto pythonIgnoreServer : GameClient()->user.userData.pythonBlacklistIp)
+		{
+			if (pythonIgnoreServer == string(CurrentServerInfo.m_aAddress))
+			{
+				for (auto executedPythonScript : this->executedPythonScripts)
+				{
+					this->StopExecuteScript(executedPythonScript);
+				}
+			}
+		}
+	}
+
 	for (auto executedPythonScript : this->executedPythonScripts) {
 		executedPythonScript->updateExceptions();
 		if (!PyModule_Check(executedPythonScript->module) || !PyObject_HasAttrString(executedPythonScript->module, "onUpdate")) {

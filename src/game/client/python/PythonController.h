@@ -33,6 +33,7 @@ public:
 	std::vector<PythonScript*> autoLoadPythonScripts;
 	std::vector<PythonScript*> executedPythonScripts;
 	bool enableDummyControl = false;
+
 protected:
 	bool OnInput(const IInput::CEvent &Event);
 };
