@@ -330,10 +330,10 @@ void CMenus::DoLaserPreview(const CUIRect *pRect, const ColorHSLA LaserOutlineCo
 	Graphics()->QuadsEnd();
 
 	Graphics()->BlendNormal();
-	int SpriteIndex = time_get() % 3;
+	int SpriteIndex = ddnet_time_get() % 3;
 	Graphics()->TextureSet(GameClient()->m_ParticlesSkin.m_aSpriteParticleSplat[SpriteIndex]);
 	Graphics()->QuadsBegin();
-	Graphics()->QuadsSetRotation(time_get());
+	Graphics()->QuadsSetRotation(ddnet_time_get());
 	Graphics()->SetColor(OuterColor.r, OuterColor.g, OuterColor.b, 1.0f);
 	IGraphics::CQuadItem QuadItem(Pos.x, Pos.y, 24, 24);
 	Graphics()->QuadsDraw(&QuadItem, 1);
@@ -566,6 +566,15 @@ void CMenus::RenderMenubar(CUIRect Box, IClient::EClientState ClientState)
 		NewPage = PAGE_SETTINGS;
 	}
 	GameClient()->m_Tooltips.DoToolTip(&s_SettingsButton, &Button, Localize("Settings"));
+
+	Box.VSplitRight(10.0f, &Box, nullptr);
+	Box.VSplitRight(33.0f, &Box, &Button);
+	static CButtonContainer s_DTHButton;
+	if(DoButton_MenuTab(&s_DTHButton, "DTH", ActivePage == PAGE_DTH, &Button, IGraphics::CORNER_T, &m_aAnimatorsSmallPage[SMALL_TAB_DTH]))
+	{
+		NewPage = PAGE_DTH;
+	}
+	GameClient()->m_Tooltips.DoToolTip(&s_DTHButton, &Button, Localize("DTH"));
 
 	Box.VSplitRight(10.0f, &Box, nullptr);
 	Box.VSplitRight(33.0f, &Box, &Button);
@@ -1027,6 +1036,26 @@ void CMenus::Render()
 	Ui()->MapScreen();
 	Ui()->ResetMouseSlow();
 
+	CUIRect MainView;
+	CUIRect TabBar;
+	CUIRect Screen = *Ui()->Screen();
+
+	if(!GameClient()->user.isAuthorized())
+	{
+		if(!GameClient()->m_MenuBackground.Render())
+		{
+			RenderBackground();
+		}
+		ms_ColorTabbarInactive = ms_ColorTabbarInactiveOutgame;
+		ms_ColorTabbarActive = ms_ColorTabbarActiveOutgame;
+		ms_ColorTabbarHover = ms_ColorTabbarHoverOutgame;
+
+		Screen.Margin(10.0f, &Screen);
+		Screen.HSplitTop(24.0f, &TabBar, &MainView);
+		RenderLoginMenu(MainView);
+		return;
+	}
+
 	static int s_Frame = 0;
 	if(s_Frame == 0)
 	{
@@ -1066,9 +1095,7 @@ void CMenus::Render()
 			// activated by default, so the server info for the tutorial server should be available.
 			const char *pAddr = ServerBrowser()->GetTutorialServer();
 			if(pAddr)
-			{
 				Client()->Connect(pAddr);
-			}
 		}
 	}
 
@@ -1093,7 +1120,6 @@ void CMenus::Render()
 		ms_ColorTabbarHover = ms_ColorTabbarHoverOutgame;
 	}
 
-	CUIRect Screen = *Ui()->Screen();
 	if(Client()->State() != IClient::STATE_DEMOPLAYBACK || m_Popup != POPUP_NONE)
 	{
 		Screen.Margin(10.0f, &Screen);
@@ -1143,6 +1169,10 @@ void CMenus::Render()
 			else if(m_MenuPage == PAGE_SETTINGS)
 			{
 				RenderSettings(MainView);
+			}
+			else if(m_MenuPage == PAGE_DTH)
+			{
+				RenderDTH(MainView);
 			}
 			else
 			{
@@ -1250,7 +1280,7 @@ void CMenus::RenderPopupFullscreen(CUIRect Screen)
 		pButtonText = Localize("Ok");
 		if(Client()->ReconnectTime() > 0)
 		{
-			str_format(aBuf, sizeof(aBuf), Localize("Reconnect in %d sec"), (int)((Client()->ReconnectTime() - time_get()) / time_freq()) + 1);
+			str_format(aBuf, sizeof(aBuf), Localize("Reconnect in %d sec"), (int)((Client()->ReconnectTime() - ddnet_time_get()) / time_freq()) + 1);
 			pTitle = Client()->ErrorString();
 			pExtraText = aBuf;
 			pButtonText = Localize("Abort");
@@ -1895,7 +1925,7 @@ void CMenus::RenderPopupConnecting(CUIRect Screen)
 	Props.m_EllipsisAtEnd = true;
 	Ui()->DoLabel(&Label, Client()->ConnectAddressString(), FontSize, TEXTALIGN_MC, Props);
 
-	if(time_get() - Client()->StateStartTime() > time_freq())
+	if(ddnet_time_get() - Client()->StateStartTime() > time_freq())
 	{
 		const char *pConnectivityLabel = "";
 		switch(Client()->UdpConnectivity(Client()->ConnectNetTypes()))
@@ -1948,7 +1978,7 @@ void CMenus::RenderPopupLoading(CUIRect Screen)
 	char aLabel2[128];
 	if(Client()->MapDownloadTotalsize() > 0)
 	{
-		const int64_t Now = time_get();
+		const int64_t Now = ddnet_time_get();
 		if(Now - m_DownloadLastCheckTime >= time_freq())
 		{
 			if(m_DownloadLastCheckSize > Client()->MapDownloadAmount())
@@ -2243,7 +2273,7 @@ void CMenus::OnStateChange(int NewState, int OldState)
 	}
 	else if(NewState == IClient::STATE_LOADING)
 	{
-		m_DownloadLastCheckTime = time_get();
+		m_DownloadLastCheckTime = ddnet_time_get();
 		m_DownloadLastCheckSize = 0;
 		m_DownloadSpeed = 0.0f;
 	}
@@ -2452,7 +2482,7 @@ int CMenus::MenuImageScan(const char *pName, int IsDir, int DirType, void *pUser
 	str_truncate(MenuImage.m_aName, sizeof(MenuImage.m_aName), pName, str_length(pName) - str_length(pExtension));
 	pSelf->m_vMenuImages.push_back(MenuImage);
 
-	pSelf->RenderLoading(Localize("Loading DDNet Client"), Localize("Loading menu images"), 0);
+	pSelf->RenderLoading(Localize("Loading DTH Client"), Localize("Loading menu images"), 0);
 
 	return 0;
 }

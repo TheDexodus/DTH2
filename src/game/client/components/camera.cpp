@@ -604,8 +604,7 @@ void CCamera::SetZoom(float Target, int Smoothness, bool IsUser)
 
 bool CCamera::ZoomAllowed() const
 {
-	return GameClient()->m_Snap.m_SpecInfo.m_Active ||
-	       GameClient()->m_GameInfo.m_AllowZoom ||
+	return Client()->State() == IClient::STATE_ONLINE ||
 	       Client()->State() == IClient::STATE_DEMOPLAYBACK;
 }
 

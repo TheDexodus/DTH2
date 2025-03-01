@@ -522,8 +522,8 @@ Browser
 Ghost
 == Duch
 
-Loading DDNet Client
-== Načítání DDNet Klienta
+Loading DTH Client
+== Načítání DTH Klienta
 
 Reconnect in %d sec
 == Opětovné připojení za %d sek

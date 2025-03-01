@@ -136,6 +136,13 @@ public:
 
 	bool IsSuper() { return m_Core.m_Super; }
 
+	CNetObj_PlayerInput m_LatestInput;
+	CNetObj_PlayerInput m_Input;
+	CNetObj_PlayerInput m_SavedInput;
+
+	// the player core for the physics
+	CCharacterCore m_Core;
+
 private:
 	// weapon info
 	int m_aHitObjects[10];
@@ -151,21 +158,15 @@ private:
 
 	// these are non-heldback inputs
 	CNetObj_PlayerInput m_LatestPrevInput;
-	CNetObj_PlayerInput m_LatestInput;
 
 	// input
 	CNetObj_PlayerInput m_PrevInput;
-	CNetObj_PlayerInput m_Input;
-	CNetObj_PlayerInput m_SavedInput;
 
 	int m_NumInputs;
 
 	// tune
 	int m_TuneZone;
 	int m_TuneZoneOverride;
-
-	// the player core for the physics
-	CCharacterCore m_Core;
 
 	// DDRace
 

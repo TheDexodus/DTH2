@@ -736,7 +736,7 @@ int64_t time_get_impl();
  *
  * @see time_freq time_get_impl
  */
-int64_t time_get();
+int64_t ddnet_time_get();
 
 /**
  * @ingroup Time

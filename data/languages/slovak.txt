@@ -570,8 +570,8 @@ Connected
 Loading map file from storage
 == Načítanie súboru mapy z úložiska
 
-Loading DDNet Client
-== Načítanie DDNet Klienta
+Loading DTH Client
+== Načítanie DTH Klienta
 
 Why are you slowmo replaying to read this?
 == Prečo prehrávate pomaly kvôli tomuto?

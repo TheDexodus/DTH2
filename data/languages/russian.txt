@@ -22,6 +22,24 @@ Abort
 Add
 == Добавить
 
+You need login to use this client.
+== Необходимо авторизоваться, чтобы использовать клиент
+
+Log in
+== Войти
+
+Login
+== Логин
+
+Remember me
+== Запомнить меня
+
+Invalid credentials
+== Недействительные учётные данные
+
+Is logging
+== Авторизация...
+
 Add Friend
 == Добавить друга
 
@@ -598,8 +616,8 @@ Messages
 New random timeout code
 == Сгенерировать новый тайм-аут код
 
-Loading DDNet Client
-== Загрузка DDNet Client
+Loading DTH Client
+== Загрузка DTH Client
 
 Normal message
 == Обычное

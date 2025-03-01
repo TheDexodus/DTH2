@@ -657,8 +657,8 @@ Suicides
 Net
 == Net
 
-Loading DDNet Client
-== Carregant el client DDNet
+Loading DTH Client
+== Carregant el client DTH
 
 FPM
 == FPM

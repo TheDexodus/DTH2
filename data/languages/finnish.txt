@@ -529,8 +529,8 @@ Browser
 Ghost
 == Haamu
 
-Loading DDNet Client
-== Ladataan DDNet-asiakasta
+Loading DTH Client
+== Ladataan DTH-asiakasta
 
 Reconnect in %d sec
 == Yhdistää uudelleen %d sekunnissa

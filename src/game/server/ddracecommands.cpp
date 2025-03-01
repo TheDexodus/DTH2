@@ -946,7 +946,7 @@ void CGameContext::ConDumpLog(IConsole::IResult *pResult, void *pUserData)
 		if(!pEntry->m_Timestamp)
 			continue;
 
-		int Seconds = (time_get() - pEntry->m_Timestamp) / time_freq();
+		int Seconds = (ddnet_time_get() - pEntry->m_Timestamp) / time_freq();
 		if(Seconds > LimitSecs)
 			continue;
 
@@ -965,7 +965,7 @@ void CGameContext::LogEvent(const char *Description, int ClientId)
 	CLog *pNewEntry = &m_aLogs[m_LatestLog];
 	m_LatestLog = (m_LatestLog + 1) % MAX_LOGS;
 
-	pNewEntry->m_Timestamp = time_get();
+	pNewEntry->m_Timestamp = ddnet_time_get();
 	str_copy(pNewEntry->m_aDescription, Description);
 	pNewEntry->m_FromServer = ClientId < 0;
 	if(!pNewEntry->m_FromServer)

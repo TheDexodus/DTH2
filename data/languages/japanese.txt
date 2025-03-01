@@ -528,8 +528,8 @@ Browser
 Ghost
 == ゴースト
 
-Loading DDNet Client
-== DDNet Client 読み込み中
+Loading DTH Client
+== DTH Client 読み込み中
 
 Reconnect in %d sec
 == 再接続まであと %d 秒

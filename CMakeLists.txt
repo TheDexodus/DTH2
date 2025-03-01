@@ -284,7 +284,7 @@ if(NOT MSVC AND NOT HAIKU)
   endif()
 
   # Disable exceptions as DDNet does not use them.
-  add_cxx_compiler_flag_if_supported(OUR_FLAGS -fno-exceptions)
+  add_cxx_compiler_flag_if_supported(OUR_FLAGS -fexceptions)
 
   # Inaccurate floating point numbers cause problems on mingw-w64-gcc when
   # compiling for x86, might cause problems elsewhere. So don't store floats
@@ -315,6 +315,7 @@ if(NOT MSVC AND NOT HAIKU)
     add_cxx_compiler_flag_if_supported(OUR_FLAGS -fno-omit-frame-pointer)
   endif()
 
+  add_cxx_compiler_flag_if_supported(OUR_FLAGS_OWN -Wno-error)
   add_cxx_compiler_flag_if_supported(OUR_FLAGS_OWN -Wall)
   add_cxx_compiler_flag_if_supported(OUR_FLAGS_OWN -Wextra)
   add_cxx_compiler_flag_if_supported(OUR_FLAGS_OWN -Wno-psabi) # parameter passing for argument of type ‘__gnu_cxx::__normal_iterator<CCommandProcessorFragment_Vulkan::SMemoryBlock<1>*, std::vector<CCommandProcessorFragment_Vulkan::SMemoryBlock<1>, std::allocator<CCommandProcessorFragment_Vulkan::SMemoryBlock<1> > > >’ changed in GCC 7.1
@@ -331,11 +332,11 @@ if(NOT MSVC AND NOT HAIKU)
   add_cxx_compiler_flag_if_supported(OUR_FLAGS_OWN -Wduplicated-branches)
   add_cxx_compiler_flag_if_supported(OUR_FLAGS_OWN -Wlogical-op)
   add_cxx_compiler_flag_if_supported(OUR_FLAGS_OWN -Wrestrict)
-  add_cxx_compiler_flag_if_supported(OUR_FLAGS_OWN -Wshadow-all) # clang
-  add_cxx_compiler_flag_if_supported(OUR_FLAGS_OWN -Wshadow=global) # gcc
+  #add_cxx_compiler_flag_if_supported(OUR_FLAGS_OWN -Wshadow-all) # clang
+  #add_cxx_compiler_flag_if_supported(OUR_FLAGS_OWN -Wshadow=global) # gcc
   add_cxx_compiler_flag_if_supported(OUR_FLAGS_OWN -Wthread-safety)
   add_cxx_compiler_flag_if_supported(OUR_FLAGS_OWN -Wthread-safety-negative)
-  add_cxx_compiler_flag_if_supported(OUR_FLAGS_OWN -Wsuggest-override)
+#  add_cxx_compiler_flag_if_supported(OUR_FLAGS_OWN -Wsuggest-override)
   add_cxx_compiler_flag_if_supported(OUR_FLAGS_OWN -Wdynamic-class-memaccess) # clang
   add_cxx_compiler_flag_if_supported(OUR_FLAGS_OWN -Wclass-memaccess) # gcc
   add_linker_flag_if_supported(OUR_FLAGS_LINK -Wno-alloc-size-larger-than) # save.cpp with LTO
@@ -351,7 +352,7 @@ if(MSVC)
 endif()
 
 if(NOT MSVC AND NOT HAIKU AND SECURITY_COMPILER_FLAGS)
-  check_c_compiler_flag("-O2;-Wp,-Werror;-D_FORTIFY_SOURCE=2" DEFINE_FORTIFY_SOURCE) # Some distributions define _FORTIFY_SOURCE by themselves.
+  check_c_compiler_flag("-O2;-Wp,-Wno-error;-D_FORTIFY_SOURCE=2" DEFINE_FORTIFY_SOURCE) # Some distributions define _FORTIFY_SOURCE by themselves.
 endif()
 
 ########################################################################
@@ -371,7 +372,7 @@ function(set_glob VAR GLOBBING EXTS DIRECTORY) # ...
   endforeach()
 
   if(NOT FILES STREQUAL GLOB_RESULT)
-    message(AUTHOR_WARNING "${VAR} does not contain every file from directory ${DIRECTORY}")
+#    message(AUTHOR_WARNING "${VAR} does not contain every file from directory ${DIRECTORY}")
     set(LIST_BUT_NOT_GLOB)
     foreach(file ${FILES})
       if(NOT file IN_LIST GLOB_RESULT)
@@ -379,7 +380,7 @@ function(set_glob VAR GLOBBING EXTS DIRECTORY) # ...
       endif()
     endforeach()
     if(LIST_BUT_NOT_GLOB)
-      message(AUTHOR_WARNING "Entries only present in ${VAR}: ${LIST_BUT_NOT_GLOB}")
+#      message(AUTHOR_WARNING "Entries only present in ${VAR}: ${LIST_BUT_NOT_GLOB}")
     endif()
     set(GLOB_BUT_NOT_LIST)
     foreach(file ${GLOB_RESULT})
@@ -388,10 +389,10 @@ function(set_glob VAR GLOBBING EXTS DIRECTORY) # ...
       endif()
     endforeach()
     if(GLOB_BUT_NOT_LIST)
-      message(AUTHOR_WARNING "Entries only present in ${DIRECTORY}: ${GLOB_BUT_NOT_LIST}")
+#      message(AUTHOR_WARNING "Entries only present in ${DIRECTORY}: ${GLOB_BUT_NOT_LIST}")
     endif()
     if(NOT LIST_BUT_NOT_GLOB AND NOT GLOB_BUT_NOT_LIST)
-      message(AUTHOR_WARNING "${VAR} is not alphabetically sorted")
+#      message(AUTHOR_WARNING "${VAR} is not alphabetically sorted")
     endif()
   endif()
 
@@ -527,7 +528,7 @@ find_package(Ogg)
 find_package(Opus)
 find_package(Opusfile)
 find_package(PNG)
-find_package(Python3)
+find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
 find_package(Rust)
 find_package(SDL2)
 find_package(SQLite3)
@@ -2324,8 +2325,16 @@ if(CLIENT)
     warning.cpp
   )
   set_src(GAME_CLIENT GLOB_RECURSE src/game/client
+    MovementAgent.cpp
+    MovementAgent.h
+    aim/AimHelper.cpp
+    aim/AimHelper.h
+    aim/HumanLikeMouse.cpp
+    aim/HumanLikeMouse.h
     animstate.cpp
     animstate.h
+    auth/User.cpp
+    auth/User.h
     component.cpp
     component.h
     components/background.cpp
@@ -2348,6 +2357,8 @@ if(CLIENT)
     components/damageind.h
     components/debughud.cpp
     components/debughud.h
+    components/dth_database.cpp
+    components/dth_database.h
     components/effects.cpp
     components/effects.h
     components/emoticon.cpp
@@ -2364,6 +2375,7 @@ if(CLIENT)
     components/infomessages.h
     components/items.cpp
     components/items.h
+    components/login.cpp
     components/mapimages.cpp
     components/mapimages.h
     components/maplayers.cpp
@@ -2376,6 +2388,7 @@ if(CLIENT)
     components/menus.h
     components/menus_browser.cpp
     components/menus_demo.cpp
+    components/menus_dth.cpp
     components/menus_ingame.cpp
     components/menus_settings.cpp
     components/menus_settings7.cpp
@@ -2409,6 +2422,8 @@ if(CLIENT)
     components/touch_controls.h
     components/voting.cpp
     components/voting.h
+    environment/Map.cpp
+    environment/Map.h
     gameclient.cpp
     gameclient.h
     laser_data.cpp
@@ -2433,6 +2448,30 @@ if(CLIENT)
     prediction/gameworld.h
     projectile_data.cpp
     projectile_data.h
+    python/PythonController.cpp
+    python/PythonController.h
+    python/PythonRender.cpp
+    python/PythonRender.h
+    python/PythonScript.cpp
+    python/PythonScript.h
+    python/ScriptsScanner.cpp
+    python/ScriptsScanner.h
+    python/api/api.cpp
+    python/api/api.h
+    python/api/api_character.h
+    python/api/api_chat.h
+    python/api/api_collision.h
+    python/api/api_console.h
+    python/api/api_dummy_input.h
+    python/api/api_graphics.h
+    python/api/api_input.h
+    python/api/api_player.h
+    python/api/api_predict.h
+    python/api/api_tee.h
+    python/api/api_tuning.h
+    python/api/api_time.h
+    python/api/api_vector2.h
+    python/api/api_world.h
     race.cpp
     race.h
     render.cpp
@@ -2540,6 +2579,7 @@ if(CLIENT)
     ${SDL2_LIBRARIES}
     ${WAVPACK_LIBRARIES}
     ${FFMPEG_LIBRARIES}
+    ${Python3_LIBRARIES}
 
     # Order of these three is important.
     ${OPUSFILE_LIBRARIES}
@@ -2601,6 +2641,9 @@ if(CLIENT)
       $<TARGET_OBJECTS:rust-bridge-shared>
     )
   endif()
+  add_custom_command(TARGET game-client POST_BUILD
+          COMMAND ${CMAKE_COMMAND} -E copy_directory
+          ${CMAKE_SOURCE_DIR}/python $<TARGET_FILE_DIR:game-client>/python)
   set_property(TARGET game-client
       PROPERTY OUTPUT_NAME ${CLIENT_EXECUTABLE}
   )
@@ -2621,6 +2664,7 @@ if(CLIENT)
     ${WAVPACK_INCLUDE_DIRS}
     ${FFMPEG_INCLUDE_DIRS}
     ${DISCORDSDK_INCLUDE_DIRS}
+    ${Python3_INCLUDE_DIRS}
 
     ${VULKAN_INCLUDE_DIRS}
 
@@ -2663,7 +2707,6 @@ if(CLIENT)
   list(APPEND TARGETS_OWN game-client)
   list(APPEND TARGETS_LINK game-client)
 endif()
-
 
 ########################################################################
 # SERVER

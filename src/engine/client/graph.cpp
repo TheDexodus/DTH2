@@ -95,7 +95,7 @@ void CGraph::Scale(int64_t WantedTotalTime)
 
 void CGraph::Add(float Value, ColorRGBA Color)
 {
-	InsertAt(time_get(), Value, Color);
+	InsertAt(ddnet_time_get(), Value, Color);
 }
 
 void CGraph::InsertAt(int64_t Time, float Value, ColorRGBA Color)

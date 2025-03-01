@@ -22,6 +22,7 @@
 #include <engine/shared/linereader.h>
 #include <engine/textrender.h>
 
+#include "game/client/python/ScriptsScanner.h"
 #include <game/client/component.h>
 #include <game/client/components/mapimages.h>
 #include <game/client/lineinput.h>
@@ -30,6 +31,13 @@
 #include <game/voting.h>
 
 #include <game/client/components/skins7.h>
+
+enum ACTIVESCRIPT_BUTTONS {
+	BUTTON_TOGGLE,
+	BUTTON_AUTOLOAD,
+	BUTTON_EXCEPTIONS,
+	NUMOF_BUTTONS
+};
 
 struct CServerProcess
 {
@@ -145,6 +153,8 @@ public:
 	};
 
 protected:
+	ScriptsScanner scriptsScanner;
+
 	std::vector<SCustomEntities> m_vEntitiesList;
 	std::vector<SCustomGame> m_vGameList;
 	std::vector<SCustomEmoticon> m_vEmoticonList;
@@ -153,6 +163,8 @@ protected:
 	std::vector<SCustomExtras> m_vExtrasList;
 
 	bool m_IsInit = false;
+
+	void RefreshPythonScripts();
 
 	static void LoadEntities(struct SCustomEntities *pEntitiesItem, void *pUser);
 	static int EntitiesScan(const char *pName, int IsDir, int DirType, void *pUser);
@@ -269,6 +281,10 @@ protected:
 
 	// for password popup
 	CLineInput m_PasswordInput;
+	CLineInput m_LogInLogin;
+	CLineInput m_LogInPassword;
+	char m_Login[32];
+	char m_Pass[32];
 
 	// for call vote
 	int m_CallvoteSelectedOption;
@@ -618,6 +634,19 @@ protected:
 	void RenderSettingsSound(CUIRect MainView);
 	void RenderSettings(CUIRect MainView);
 	void RenderSettingsCustom(CUIRect MainView);
+	void RenderSettingsPython(CUIRect MainView);
+	void RenderSettingsPythonExceptions(CUIRect MainView, PythonScript *PS);
+
+	// found in menus_dth.cpp
+	void RenderDTH(CUIRect MainView);
+	void RenderDTHProfile(CUIRect MainView);
+	void RenderDTHPlayer(CUIRect &MainView, CTeeRenderInfo TeeRenderInfo, bool withBlink = false, bool withWatchToCursor = false, std::string name = "", std::string role = "");
+	void RenderDTHMembers(CUIRect MainView);
+
+	//login
+	void RenderLoginMenu(CUIRect MainView);
+
+	bool NeedToggle = true;
 
 	class CMapListItem
 	{
@@ -657,6 +686,8 @@ protected:
 	bool CheckHotKey(int Key) const;
 
 public:
+	bool Logged = true;
+
 	void RenderBackground();
 
 	static CMenusKeyBinder m_Binder;
@@ -704,6 +735,7 @@ public:
 		PAGE_FAVORITE_COMMUNITY_5,
 		PAGE_DEMOS,
 		PAGE_SETTINGS,
+		PAGE_DTH,
 		PAGE_NETWORK,
 		PAGE_GHOST,
 
@@ -719,6 +751,7 @@ public:
 		SETTINGS_SOUND,
 		SETTINGS_DDNET,
 		SETTINGS_ASSETS,
+		SETTINGS_PYTHON,
 
 		SETTINGS_LENGTH,
 
@@ -738,6 +771,7 @@ public:
 		SMALL_TAB_HOME = 0,
 		SMALL_TAB_QUIT,
 		SMALL_TAB_SETTINGS,
+		SMALL_TAB_DTH,
 		SMALL_TAB_EDITOR,
 		SMALL_TAB_DEMOBUTTON,
 		SMALL_TAB_SERVER,

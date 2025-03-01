@@ -6,8 +6,8 @@ Connected
 Loading map file from storage
 == Ŝargas mapdosieron el la diskaparato
 
-Loading DDNet Client
-== Ŝargas DDNet
+Loading DTH Client
+== Ŝargas DTH
 
 Warning
 == Averto

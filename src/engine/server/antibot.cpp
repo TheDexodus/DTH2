@@ -70,7 +70,7 @@ void CAntibot::Init()
 	CAntibotVersion Version = ANTIBOT_VERSION;
 	m_Data.m_Version = Version;
 
-	m_Data.m_Now = time_get();
+	m_Data.m_Now = ddnet_time_get();
 	m_Data.m_Freq = time_freq();
 	m_Data.m_pfnKick = Kick;
 	m_Data.m_pfnLog = Log;
@@ -104,7 +104,7 @@ void CAntibot::ConsoleCommand(const char *pCommand)
 }
 void CAntibot::Update()
 {
-	m_Data.m_Now = time_get();
+	m_Data.m_Now = ddnet_time_get();
 	m_Data.m_Freq = time_freq();
 
 	Server()->FillAntibot(&m_RoundData);

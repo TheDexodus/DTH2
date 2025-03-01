@@ -322,7 +322,7 @@ Browser
 Ghost
 == ﺡﻭﺭ ﺖﻟﺎﺣ
 
-Loading DDNet Client
+Loading DTH Client
 == ﺖﻨﯾﺪﯾﺩ ﺖﻨﯾﻼﮐ ﻥﺩﺮﮐ ﻩﺩﺎﻣﺁ ﻝﺎﺣﺭﺩ
 
 Reconnect in %d sec

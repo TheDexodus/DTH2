@@ -270,7 +270,7 @@ bool CVideo::Start()
 	m_Recording = true;
 	m_Started = true;
 	m_Stopped = false;
-	ms_Time = time_get();
+	ms_Time = ddnet_time_get();
 	return true;
 }
 

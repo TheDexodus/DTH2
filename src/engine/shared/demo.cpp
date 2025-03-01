@@ -930,7 +930,7 @@ int64_t CDemoPlayer::Time()
 	}
 	else
 	{
-		const int64_t Now = time_get();
+		const int64_t Now = ddnet_time_get();
 		if(m_WasRecording)
 		{
 			m_WasRecording = false;
@@ -939,7 +939,7 @@ int64_t CDemoPlayer::Time()
 		return Now;
 	}
 #else
-	return time_get();
+	return ddnet_time_get();
 #endif
 }
 

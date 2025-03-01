@@ -1122,7 +1122,7 @@ void CEditor::DoToolbarLayers(CUIRect ToolBar)
 		if(DoButton_FontIcon(&s_AnimateButton, FONT_ICON_CIRCLE_PLAY, m_Animate, &Button, BUTTONFLAG_LEFT, "[Ctrl+M] Toggle animation.", IGraphics::CORNER_L) ||
 			(m_Dialog == DIALOG_NONE && CLineInput::GetActiveInput() == nullptr && Input()->KeyPress(KEY_M) && ModPressed))
 		{
-			m_AnimateStart = time_get();
+			m_AnimateStart = ddnet_time_get();
 			m_Animate = !m_Animate;
 		}
 
@@ -9020,7 +9020,7 @@ void CEditor::OnRender()
 		m_ShowMousePointer = false;
 
 	if(m_Animate)
-		m_AnimateTime = (time_get() - m_AnimateStart) / (float)time_freq();
+		m_AnimateTime = (ddnet_time_get() - m_AnimateStart) / (float)time_freq();
 	else
 		m_AnimateTime = 0;
 

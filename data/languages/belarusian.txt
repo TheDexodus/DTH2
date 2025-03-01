@@ -536,8 +536,8 @@ Connected
 Loading map file from storage
 == Загрузка файла карты са сховішча
 
-Loading DDNet Client
-== Загрузка кліента DDNet
+Loading DTH Client
+== Загрузка кліента DTH
 
 Why are you slowmo replaying to read this?
 == Навошта вы запавольваеце прайграванне каб прачытаць гэта?

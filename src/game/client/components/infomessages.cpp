@@ -14,6 +14,8 @@
 #include <game/client/prediction/entities/character.h>
 #include <game/client/prediction/gameworld.h>
 
+#include <curl/curl.h>
+
 static constexpr float ROW_HEIGHT = 46.0f;
 static constexpr float FONT_SIZE = 36.0f;
 static constexpr float RACE_FLAG_SIZE = 52.0f;
@@ -272,6 +274,12 @@ void CInfoMessages::OnKillMessage(const CNetMsg_Sv_KillMsg *pMsg)
 		return; // message would be empty
 	}
 
+	if (Kill.m_KillerId == GameClient()->m_aLocalIds[g_Config.m_ClDummy] || Kill.m_KillerId == GameClient()->m_aLocalIds[!g_Config.m_ClDummy])
+	{
+		// char* encoded = curl_easy_escape(nullptr, Kill.m_aVictimName, str_length(Kill.m_aVictimName));
+		// dbg_msg('encoded', encoded);
+		// GameClient()->dthDatabase.SendKillInfo(encoded);
+	}
 	AddInfoMsg(Kill);
 }
 

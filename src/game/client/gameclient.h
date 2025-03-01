@@ -24,6 +24,7 @@
 #include <game/generated/protocolglue.h>
 
 // components
+#include "MovementAgent.h"
 #include "components/background.h"
 #include "components/binds.h"
 #include "components/broadcast.h"
@@ -61,6 +62,13 @@
 #include "components/tooltips.h"
 #include "components/touch_controls.h"
 #include "components/voting.h"
+#include "game/client/components/dth_database.h"
+#include "game/client/aim/AimHelper.h"
+#include "game/client/aim/HumanLikeMouse.h"
+#include "game/client/auth/User.h"
+#include "game/client/environment/Map.h"
+#include "game/client/python/PythonController.h"
+#include "game/client/python/PythonRender.h"
 
 #include <vector>
 
@@ -174,8 +182,20 @@ public:
 
 	CTooltips m_Tooltips;
 
-private:
+	HumanLikeMouse humanLikeMouse;
+	AimHelper aimHelper;
+	PythonController pythonController;
+	PythonRender pythonRender;
+	DTHDatabase dthDatabase;
+
+	std::vector<PythonScript*> pythonScripts;
+	MovementAgent movementAgent;
+	Map map;
+	User user;
+
 	std::vector<class CComponent *> m_vpAll;
+
+private:
 	std::vector<class CComponent *> m_vpInput;
 	CNetObjHandler m_NetObjHandler;
 	protocol7::CNetObjHandler m_NetObjHandler7;
@@ -622,7 +642,7 @@ public:
 	bool GotWantedSkin7(bool Dummy);
 	void SendInfo(bool Start);
 	void SendDummyInfo(bool Start) override;
-	void SendKill() const;
+	void SendKill(int ClientId = 0, bool KillDummy = false) const;
 	void SendReadyChange7();
 
 	int m_NextChangeInfo;
@@ -848,6 +868,7 @@ public:
 	void ResetMultiView();
 	int FindFirstMultiViewId();
 	void CleanMultiViewId(int ClientId);
+
 
 private:
 	std::vector<CSnapEntities> m_vSnapEntities;

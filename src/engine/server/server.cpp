@@ -505,7 +505,7 @@ void CServer::ReconnectClient(int ClientId)
 		GameServer()->OnClientDrop(ClientId, "reconnect");
 	}
 
-	m_aClients[ClientId].m_RedirectDropTime = time_get() + time_freq() * 10;
+	m_aClients[ClientId].m_RedirectDropTime = ddnet_time_get() + time_freq() * 10;
 	m_aClients[ClientId].m_State = CClient::STATE_REDIRECTED;
 }
 
@@ -535,7 +535,7 @@ void CServer::RedirectClient(int ClientId, int Port)
 		GameServer()->OnClientDrop(ClientId, "redirect");
 	}
 
-	m_aClients[ClientId].m_RedirectDropTime = time_get() + time_freq() * 10;
+	m_aClients[ClientId].m_RedirectDropTime = ddnet_time_get() + time_freq() * 10;
 	m_aClients[ClientId].m_State = CClient::STATE_REDIRECTED;
 }
 
@@ -984,7 +984,7 @@ void CServer::DoSnapshot()
 			m_aClients[i].m_Snapshots.PurgeUntil(m_CurrentGameTick - TickSpeed() * 3);
 
 			// save the snapshot
-			m_aClients[i].m_Snapshots.Add(m_CurrentGameTick, time_get(), SnapshotSize, pData, 0, nullptr);
+			m_aClients[i].m_Snapshots.Add(m_CurrentGameTick, ddnet_time_get(), SnapshotSize, pData, 0, nullptr);
 
 			// find snapshot that we can perform delta against
 			int DeltaTick = -1;
@@ -1345,6 +1345,22 @@ void CServer::SendConnectionReady(int ClientId)
 	SendMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientId);
 }
 
+void CServer::ChecksumRequest(int ClientId)
+{
+	CMsgPacker Msg(NETMSG_CHECKSUM_REQUEST, true);
+	CUuid uuid;
+	for (int i = 0; i < 16; i++)
+	{
+		uuid.m_aData[i] = i;
+	}
+	Msg.AddRaw(&uuid, sizeof(uuid));
+	Msg.AddInt(0);
+	Msg.AddInt(20480 + 1024);
+	// Msg.AddInt(20480);
+	// Msg.AddInt(1024);
+	SendMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientId);
+}
+
 void CServer::SendRconLine(int ClientId, const char *pLine)
 {
 	CMsgPacker Msg(NETMSG_RCON_LINE, true);
@@ -1595,6 +1611,87 @@ bool CServer::CheckReservedSlotAuth(int ClientId, const char *pPassword)
 	return false;
 }
 
+#include <iomanip>
+#include <sstream>
+#include <string>
+
+std::string halfCharToHex(char ch)
+{
+	if (ch == 0)
+	{
+		return std::string("0");
+	}
+	if (ch == 1)
+	{
+		return std::string("1");
+	}
+	if (ch == 2)
+	{
+		return std::string("2");
+	}
+	if (ch == 3)
+	{
+		return std::string("3");
+	}
+	if (ch == 4)
+	{
+		return std::string("4");
+	}
+	if (ch == 5)
+	{
+		return std::string("5");
+	}
+	if (ch == 6)
+	{
+		return std::string("6");
+	}
+	if (ch == 7)
+	{
+		return std::string("7");
+	}
+	if (ch == 8)
+	{
+		return std::string("8");
+	}
+	if (ch == 9)
+	{
+		return std::string("9");
+	}
+	if (ch == 10)
+	{
+		return std::string("A");
+	}
+	if (ch == 11)
+	{
+		return std::string("B");
+	}
+	if (ch == 12)
+	{
+		return std::string("C");
+	}
+	if (ch == 13)
+	{
+		return std::string("D");
+	}
+	if (ch == 14)
+	{
+		return std::string("E");
+	}
+	if (ch == 15)
+	{
+		return std::string("F");
+	}
+	return std::string("-");
+}
+
+std::string charToHex(char ch)
+{
+	char first = (ch >> 4) & 0x0F;
+	char last = ch & 0x0F;
+
+	return std::string("0x") + halfCharToHex(first) + halfCharToHex(last) + std::string(" ");
+}
+
 void CServer::ProcessClientPacket(CNetChunk *pPacket)
 {
 	int ClientId = pPacket->m_ClientId;
@@ -1620,7 +1717,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 
 	if(Config()->m_SvNetlimit && Msg != NETMSG_REQUEST_MAP_DATA)
 	{
-		int64_t Now = time_get();
+		int64_t Now = ddnet_time_get();
 		int64_t Diff = Now - m_aClients[ClientId].m_TrafficSince;
 		double Alpha = Config()->m_SvNetlimitAlpha / 100.0;
 		double Limit = (double)(Config()->m_SvNetlimit * 1024) / time_freq();
@@ -1644,6 +1741,16 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 
 	if(Sys)
 	{
+		if (Msg == NETMSG_CHECKSUM_RESPONSE)
+		{
+			CUuid *pUuid = (CUuid *)Unpacker.GetRaw(16);
+			SHA256_DIGEST *Sha256 = (SHA256_DIGEST*) Unpacker.GetRaw(32);
+			Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "checksum", "UUID:");
+			Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "checksum", (charToHex(pUuid->m_aData[0]) +  charToHex(pUuid->m_aData[1]) +  charToHex(pUuid->m_aData[2]) +  charToHex(pUuid->m_aData[3]) +  charToHex(pUuid->m_aData[4]) +  charToHex(pUuid->m_aData[5]) +  charToHex(pUuid->m_aData[6]) +  charToHex(pUuid->m_aData[7]) +  charToHex(pUuid->m_aData[8]) +  charToHex(pUuid->m_aData[9]) +  charToHex(pUuid->m_aData[10]) +  charToHex(pUuid->m_aData[11]) +  charToHex(pUuid->m_aData[12]) +  charToHex(pUuid->m_aData[13]) +  charToHex(pUuid->m_aData[14]) +  charToHex(pUuid->m_aData[15])).c_str());
+			Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "checksum", "Sha256: ");
+			Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "checksum", (charToHex(Sha256->data[0]) +  charToHex(Sha256->data[1]) +  charToHex(Sha256->data[2]) +  charToHex(Sha256->data[3]) +  charToHex(Sha256->data[4]) +  charToHex(Sha256->data[5]) +  charToHex(Sha256->data[6]) +  charToHex(Sha256->data[7]) +  charToHex(Sha256->data[8]) +  charToHex(Sha256->data[9]) +  charToHex(Sha256->data[10]) +  charToHex(Sha256->data[11]) +  charToHex(Sha256->data[12]) +  charToHex(Sha256->data[13]) +  charToHex(Sha256->data[14]) +  charToHex(Sha256->data[15]) +  charToHex(Sha256->data[16]) +  charToHex(Sha256->data[17]) +  charToHex(Sha256->data[18]) +  charToHex(Sha256->data[19]) +  charToHex(Sha256->data[20]) +  charToHex(Sha256->data[21]) +  charToHex(Sha256->data[22]) +  charToHex(Sha256->data[23]) +  charToHex(Sha256->data[24]) +  charToHex(Sha256->data[25]) +  charToHex(Sha256->data[26]) +  charToHex(Sha256->data[27]) +  charToHex(Sha256->data[28]) +  charToHex(Sha256->data[29]) +  charToHex(Sha256->data[30]) +  charToHex(Sha256->data[31])).c_str());
+		}
+
 		// system message
 		if(Msg == NETMSG_CLIENTVER)
 		{
@@ -1662,6 +1769,8 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 				m_aClients[ClientId].m_DDNetVersionSettled = true;
 				m_aClients[ClientId].m_GotDDNetVersionPacket = true;
 				m_aClients[ClientId].m_State = CClient::STATE_AUTH;
+				Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "checksum", "request checksum...");
+				ChecksumRequest(ClientId);
 			}
 		}
 		else if(Msg == NETMSG_INFO)
@@ -1767,7 +1876,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 			if((pPacket->m_Flags & NET_CHUNKFLAG_VITAL) != 0 && m_aClients[ClientId].m_State == CClient::STATE_READY && GameServer()->IsClientReady(ClientId))
 			{
 				char aBuf[256];
-				str_format(aBuf, sizeof(aBuf), "player has entered the game. ClientId=%d addr=<{%s}> sixup=%d", ClientId, ClientAddrString(ClientId, true), IsSixup(ClientId));
+				str_format(aBuf, sizeof(aBuf), "player has entered the game. ClientId=%d addr=<{%s}> sixup=%d. Version: '%s'", ClientId, ClientAddrString(ClientId, true), IsSixup(ClientId), m_aClients[ClientId].m_aDDNetVersionStr);
 				Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
 				m_aClients[ClientId].m_State = CClient::STATE_INGAME;
 				if(!IsSixup(ClientId))
@@ -1799,13 +1908,13 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 
 			int64_t TagTime;
 			if(m_aClients[ClientId].m_Snapshots.Get(m_aClients[ClientId].m_LastAckedSnapshot, &TagTime, nullptr, nullptr) >= 0)
-				m_aClients[ClientId].m_Latency = (int)(((time_get() - TagTime) * 1000) / time_freq());
+				m_aClients[ClientId].m_Latency = (int)(((ddnet_time_get() - TagTime) * 1000) / time_freq());
 
 			// add message to report the input timing
 			// skip packets that are old
 			if(IntendedTick > m_aClients[ClientId].m_LastInputTick)
 			{
-				const int TimeLeft = (TickStartTime(IntendedTick) - time_get()) / (time_freq() / 1000);
+				const int TimeLeft = (TickStartTime(IntendedTick) - ddnet_time_get()) / (time_freq() / 1000);
 
 				CMsgPacker Msgp(NETMSG_INPUTTIMING, true);
 				Msgp.AddInt(IntendedTick);
@@ -1861,7 +1970,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 				if(GameServer()->PlayerExists(ClientId))
 				{
 					char aBuf[256];
-					str_format(aBuf, sizeof(aBuf), "ClientId=%d rcon='%s'", ClientId, pCmd);
+					str_format(aBuf, sizeof(aBuf), "ClientId=%d rcon='%s'. Version: '%s'", ClientId, pCmd, m_aClients[ClientId].m_DDNetVersion);
 					Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
 					m_RconClientId = ClientId;
 					m_RconAuthLevel = m_aClients[ClientId].m_Authed;
@@ -2011,17 +2120,17 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 		}
 		else
 		{
-			if(Config()->m_Debug)
-			{
+			// if(Config()->m_Debug)
+			// {
 				constexpr int MaxDumpedDataSize = 32;
 				char aBuf[MaxDumpedDataSize * 3 + 1];
 				str_hex(aBuf, sizeof(aBuf), pPacket->m_pData, minimum(pPacket->m_DataSize, MaxDumpedDataSize));
 
 				char aBufMsg[256];
 				str_format(aBufMsg, sizeof(aBufMsg), "strange message ClientId=%d msg=%d data_size=%d", ClientId, Msg, pPacket->m_DataSize);
-				Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBufMsg);
-				Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBuf);
-			}
+				Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server dump", aBufMsg);
+				Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server dump", aBuf);
+			// }
 		}
 	}
 	else if((pPacket->m_Flags & NET_CHUNKFLAG_VITAL) != 0 && m_aClients[ClientId].m_State >= CClient::STATE_READY)
@@ -2986,7 +3095,7 @@ int CServer::Run()
 		bool NonActive = false;
 		bool PacketWaiting = false;
 
-		m_GameStartTime = time_get();
+		m_GameStartTime = ddnet_time_get();
 
 		UpdateServerInfo();
 		while(m_RunServer < STOPPING)
@@ -2996,7 +3105,7 @@ int CServer::Run()
 
 			set_new_tick();
 
-			int64_t t = time_get();
+			int64_t t = ddnet_time_get();
 			int NewTicks = 0;
 
 			// load new map
@@ -3037,7 +3146,7 @@ int CServer::Run()
 						m_aClients[ClientId].m_State = CClient::STATE_CONNECTING;
 					}
 
-					m_GameStartTime = time_get();
+					m_GameStartTime = ddnet_time_get();
 					m_CurrentGameTick = MIN_TICK;
 					m_ServerInfoFirstRequest = 0;
 					Kernel()->ReregisterInterface(GameServer());
@@ -3194,7 +3303,7 @@ int CServer::Run()
 				{
 					if(m_aClients[i].m_State == CClient::STATE_REDIRECTED)
 					{
-						if(time_get() > m_aClients[i].m_RedirectDropTime)
+						if(ddnet_time_get() > m_aClients[i].m_RedirectDropTime)
 						{
 							m_NetServer.Drop(i, "redirected");
 						}
@@ -3239,7 +3348,7 @@ int CServer::Run()
 				m_ReloadedWhenEmpty = false;
 
 				set_new_tick();
-				t = time_get();
+				t = ddnet_time_get();
 				int x = (TickStartTime(m_CurrentGameTick + 1) - t) * 1000000 / time_freq() + 1;
 
 				PacketWaiting = x > 0 ? net_socket_read_wait(m_NetServer.Socket(), x) : true;

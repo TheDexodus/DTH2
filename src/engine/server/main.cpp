@@ -46,7 +46,7 @@ void HandleSigIntTerm(int Param)
 
 int main(int argc, const char **argv)
 {
-	const int64_t MainStart = time_get();
+	const int64_t MainStart = ddnet_time_get();
 
 	CCmdlineFix CmdlineFix(&argc, &argv);
 
@@ -207,7 +207,7 @@ int main(int argc, const char **argv)
 	pEngine->SetAdditionalLogger(pServerLogger);
 
 	// run the server
-	log_trace("server", "initialization finished after %.2fms, starting...", (time_get() - MainStart) * 1000.0f / (float)time_freq());
+	log_trace("server", "initialization finished after %.2fms, starting...", (ddnet_time_get() - MainStart) * 1000.0f / (float)time_freq());
 	int Ret = pServer->Run();
 
 	pServerLogger->OnServerDeletion();

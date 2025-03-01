@@ -871,8 +871,8 @@ Show other players' key presses
 Gameplay
 == Spelet
 
-Loading DDNet Client
-== Laddar DDNet Klienten
+Loading DTH Client
+== Laddar DTH Klienten
 
 Show HUD
 == Visa HUD

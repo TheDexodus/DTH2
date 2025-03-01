@@ -188,6 +188,142 @@ void CCharacterCore::Reset()
 	m_Input.m_TargetY = -1;
 }
 
+CCharacterCore CCharacterCore::Clone()
+{
+	CCharacterCore clone;
+	clone.m_Angle = m_Angle;
+	clone.m_Pos = m_Pos;
+	clone.m_Vel = m_Vel;
+	clone.m_HookPos = m_HookPos;
+	clone.m_HookDir = m_HookDir;
+	clone.m_HookTeleBase = m_HookTeleBase;
+	clone.m_HookTick = m_HookTick;
+	clone.m_HookState = m_HookState;
+	clone.m_AttachedPlayers = m_AttachedPlayers;
+	clone.m_ActiveWeapon = m_ActiveWeapon;
+	clone.m_aWeapons[0] = m_aWeapons[0];
+	clone.m_aWeapons[1] = m_aWeapons[1];
+	clone.m_aWeapons[2] = m_aWeapons[2];
+	clone.m_aWeapons[3] = m_aWeapons[3];
+	clone.m_aWeapons[4] = m_aWeapons[4];
+	clone.m_aWeapons[5] = m_aWeapons[5];
+	clone.m_Ninja = m_Ninja;
+	clone.m_NewHook = m_NewHook;
+	clone.m_Jumped = m_Jumped;
+	clone.m_JumpedTotal = m_JumpedTotal;
+	clone.m_Jumps = m_Jumps;
+	clone.m_Direction = m_Direction;
+	clone.m_Angle = m_Angle;
+	clone.m_Input = m_Input;
+	clone.m_TriggeredEvents = m_TriggeredEvents;
+	clone.m_Id = m_Id;
+	clone.m_Reset = m_Reset;
+	clone.m_Colliding = m_Colliding;
+	clone.m_LeftWall = m_LeftWall;
+	clone.m_Solo = m_Solo;
+	clone.m_Jetpack = m_Jetpack;
+	clone.m_CollisionDisabled = m_CollisionDisabled;
+	clone.m_EndlessHook = m_EndlessHook;
+	clone.m_EndlessJump = m_EndlessJump;
+	clone.m_HammerHitDisabled = m_HammerHitDisabled;
+	clone.m_GrenadeHitDisabled = m_GrenadeHitDisabled;
+	clone.m_LaserHitDisabled = m_LaserHitDisabled;
+	clone.m_ShotgunHitDisabled = m_ShotgunHitDisabled;
+	clone.m_HookHitDisabled = m_HookHitDisabled;
+	clone.m_Super = m_Super;
+	clone.m_Invincible = m_Invincible;
+	clone.m_HasTelegunGun = m_HasTelegunGun;
+	clone.m_HasTelegunGrenade = m_HasTelegunGrenade;
+	clone.m_HasTelegunLaser = m_HasTelegunLaser;
+	clone.m_FreezeStart = m_FreezeStart;
+	clone.m_FreezeEnd = m_FreezeEnd;
+	clone.m_IsInFreeze = m_IsInFreeze;
+	clone.m_DeepFrozen = m_DeepFrozen;
+	clone.m_LiveFrozen = m_LiveFrozen;
+	clone.m_Tuning = m_Tuning;
+	clone.m_pWorld = m_pWorld;
+	clone.m_pCollision = m_pCollision;
+	clone.m_isClone = true;
+	clone.ForceSetHookedPlayer(this->HookedPlayer());
+	clone.SetTeamsCore(this->getTeams());
+
+	return clone;
+}
+
+CTeamsCore *CCharacterCore::getTeams()
+{
+	return this->m_pTeams;
+}
+
+void CCharacterCore::setTeams(CTeamsCore *pTeams)
+{
+	this->m_pTeams = pTeams;
+}
+
+CCharacterCore CCharacterCore::PredictTicks(int ticksOffset)
+{
+	if(m_isClone)
+	{
+		for(int i = 0; i < ticksOffset; i++)
+		{
+			this->Tick(!this->m_IsInFreeze);
+			this->Move();
+			int Index = Collision()->GetPureMapIndex(this->m_Pos);
+			const int aTiles[] = {
+				Collision()->GetTileIndex(Index),
+				Collision()->GetFrontTileIndex(Index),
+				Collision()->GetSwitchType(Index)};
+			for(const int Tile : aTiles)
+			{
+				if(Tile == TILE_FREEZE || Tile == TILE_DFREEZE || Tile == TILE_LFREEZE || Tile == TILE_DEATH)
+				{
+					this->m_IsInFreeze = true;
+					this->m_HookState = HOOK_IDLE;
+					break;
+				}
+
+				if (Tile == TILE_UNFREEZE)
+				{
+					this->m_IsInFreeze = false;
+					break;
+				}
+			}
+		}
+
+		return *this;
+	}
+
+	CCharacterCore clone = this->Clone();
+	for(int i = 0; i < ticksOffset; i++)
+	{
+		clone.Tick(!clone.m_IsInFreeze);
+		clone.Move();
+
+		int Index = Collision()->GetPureMapIndex(clone.m_Pos);
+		const int aTiles[] = {
+			Collision()->GetTileIndex(Index),
+			Collision()->GetFrontTileIndex(Index),
+			Collision()->GetSwitchType(Index)};
+		for(const int Tile : aTiles)
+		{
+			if(Tile == TILE_FREEZE || Tile == TILE_DFREEZE || Tile == TILE_LFREEZE || Tile == TILE_DEATH)
+			{
+				clone.m_IsInFreeze = true;
+				clone.m_HookState = HOOK_IDLE;
+				break;
+			}
+
+			if (Tile == TILE_UNFREEZE)
+			{
+				clone.m_IsInFreeze = false;
+				break;
+			}
+		}
+	}
+
+	return clone;
+}
+
 void CCharacterCore::Tick(bool UseInput, bool DoDeferredTick)
 {
 	m_MoveRestrictions = m_pCollision->GetMoveRestrictions(UseInput ? IsSwitchActiveCb : nullptr, this, m_Pos);
@@ -289,11 +425,11 @@ void CCharacterCore::Tick(bool UseInput, bool DoDeferredTick)
 	}
 
 	// add the speed modification according to players wanted direction
-	if(m_Direction < 0)
+	if(m_Direction < 0 && !m_IsInFreeze)
 		m_Vel.x = SaturatedAdd(-MaxSpeed, MaxSpeed, m_Vel.x, -Accel);
-	if(m_Direction > 0)
+	if(m_Direction > 0 && !m_IsInFreeze)
 		m_Vel.x = SaturatedAdd(-MaxSpeed, MaxSpeed, m_Vel.x, Accel);
-	if(m_Direction == 0)
+	if(m_Direction == 0 || m_IsInFreeze)
 		m_Vel.x *= Friction;
 
 	// do hook
@@ -465,6 +601,9 @@ void CCharacterCore::TickDeferred()
 		{
 			CCharacterCore *pCharCore = m_pWorld->m_apCharacters[i];
 			if(!pCharCore)
+				continue;
+
+			if (m_isClone && pCharCore->m_Id == m_Id)
 				continue;
 
 			if(pCharCore == this || (m_Id != -1 && !m_pTeams->CanCollide(m_Id, i)))
@@ -721,6 +860,11 @@ void CCharacterCore::SetHookedPlayer(int HookedPlayer)
 		}
 		m_HookedPlayer = HookedPlayer;
 	}
+}
+
+void CCharacterCore::ForceSetHookedPlayer(int HookedPlayer)
+{
+	m_HookedPlayer = HookedPlayer;
 }
 
 // DDRace

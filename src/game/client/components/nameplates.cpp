@@ -138,8 +138,28 @@ void CNamePlates::RenderNamePlate(CNamePlate &NamePlate, const CRenderNamePlateD
 	{
 		YOffset -= Data.m_FontSize;
 		NamePlate.m_Name.Update(*this, Data.m_ClientId, Data.m_pName, Data.m_ShowFriendMark, Data.m_FontSize);
+		ColorRGBA NameColor = Color;
+
+		if (GameClient()->dthDatabase.IsPlayerNameWar(std::string(Data.m_pName)))
+		{
+			NameColor = ColorRGBA(1.0f, 0.0f, 0.0f, 1.0f);
+		}
+
+		if (GameClient()->dthDatabase.IsPlayerNamePeace(std::string(Data.m_pName)))
+		{
+			NameColor = ColorRGBA(1.0f, 1.0f, 0.0f, 1.0f);
+		}
+
+		if (GameClient()->dthDatabase.IsClanMember(std::string(Data.m_pName)))
+		{
+			NameColor = ColorRGBA(0.0f, 1.0f, 0.0f, 1.0f);
+		}
+
 		if(NamePlate.m_Name.m_TextContainerIndex.Valid())
-			TextRender()->RenderTextContainer(NamePlate.m_Name.m_TextContainerIndex, Color, OutlineColor, Data.m_Position.x - TextRender()->GetBoundingBoxTextContainer(NamePlate.m_Name.m_TextContainerIndex).m_W / 2.0f, YOffset);
+			TextRender()->RenderTextContainer(NamePlate.m_Name.m_TextContainerIndex, NameColor, OutlineColor, Data.m_Position.x - TextRender()->GetBoundingBoxTextContainer(NamePlate.m_Name.m_TextContainerIndex).m_W / 2.0f, YOffset);
+
+
+		TextRender()->TextColor(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 	if(Data.m_pClan && Data.m_pClan[0] != '\0')
 	{

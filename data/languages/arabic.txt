@@ -604,8 +604,8 @@ Messages
 %.2f MiB
 == %.2f MiB
 
-Loading DDNet Client
-== ﻞﻴﻤﺤﺘﻟﺍ ﺭﺎﺟ DDNet Client
+Loading DTH Client
+== ﻞﻴﻤﺤﺘﻟﺍ ﺭﺎﺟ DTH Client
 
 Default zoom
 == ﻲﻌﻴﺒﻄﻟﺍ ﺮﻴﺒﻜﺘﻟﺍ

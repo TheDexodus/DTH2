@@ -549,8 +549,8 @@ Browser
 Ghost
 == Дух
 
-Loading DDNet Client
-== Учитавам DDNet клијент
+Loading DTH Client
+== Учитавам DTH клијент
 
 Reconnect in %d sec
 == Поново повезивање за %d секунди

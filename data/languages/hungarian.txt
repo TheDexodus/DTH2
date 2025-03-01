@@ -646,8 +646,8 @@ Player country:
 Net
 == Net
 
-Loading DDNet Client
-== DDNet Kliens betöltése
+Loading DTH Client
+== DTH Kliens betöltése
 
 FPM
 == FPM

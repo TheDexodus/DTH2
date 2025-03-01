@@ -529,8 +529,8 @@ Browser
 Ghost
 == Kummitus
 
-Loading DDNet Client
-== DDNet Kliendi laadimine
+Loading DTH Client
+== DTH Kliendi laadimine
 
 Reconnect in %d sec
 == Taasühendamine %d sekundi pärast

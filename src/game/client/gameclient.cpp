@@ -78,7 +78,12 @@
 #include "prediction/entities/character.h"
 #include "prediction/entities/projectile.h"
 
+#include "game/client/python/ScriptsScanner.h"
+#include "game/client/python/api/api.h"
+
 using namespace std::chrono_literals;
+
+CGameClient* PythonAPI_GameClient = nullptr;
 
 const char *CGameClient::Version() const { return GAME_VERSION; }
 const char *CGameClient::NetVersion() const { return GAME_NETVERSION; }
@@ -109,9 +114,11 @@ void CGameClient::OnConsoleInit()
 	m_pUpdater = Kernel()->RequestInterface<IUpdater>();
 #endif
 	m_pHttp = Kernel()->RequestInterface<IHttp>();
-
 	// make a list of all the systems, make sure to add them in the correct render order
-	m_vpAll.insert(m_vpAll.end(), {&m_Skins,
+	m_vpAll.insert(m_vpAll.end(), {
+					      &humanLikeMouse,
+					      &map,
+					      &m_Skins,
 					      &m_Skins7,
 					      &m_CountryFlags,
 					      &m_MapImages,
@@ -154,10 +161,18 @@ void CGameClient::OnConsoleInit()
 					      &m_Tooltips,
 					      &CMenus::m_Binder,
 					      &m_GameConsole,
-					      &m_MenuBackground});
+					      &m_MenuBackground,
+					      &aimHelper,
+					      &movementAgent,
+					      &user,
+					      &pythonController,
+					      &pythonRender,
+					      &dthDatabase
+        });
 
 	// build the input stack
-	m_vpInput.insert(m_vpInput.end(), {&CMenus::m_Binder, // this will take over all input when we want to bind a key
+	m_vpInput.insert(m_vpInput.end(), {&pythonController,
+						  &CMenus::m_Binder, // this will take over all input when we want to bind a key
 						  &m_Binds.m_SpecialBinds,
 						  &m_GameConsole,
 						  &m_Chat, // chat has higher prio, due to that you can quit it by pressing esc
@@ -287,7 +302,7 @@ void CGameClient::InitializeLanguage()
 
 void CGameClient::OnInit()
 {
-	const int64_t OnInitStart = time_get();
+	const int64_t OnInitStart = ddnet_time_get();
 
 	Client()->SetLoadingCallback([this](IClient::ELoadingCallbackDetail Detail) {
 		const char *pTitle;
@@ -350,7 +365,7 @@ void CGameClient::OnInit()
 	// update and swap after font loading, they are quite huge
 	Client()->UpdateAndSwap();
 
-	const char *pLoadingDDNetCaption = Localize("Loading DDNet Client");
+	const char *pLoadingDDNetCaption = Localize("Loading DTH Client");
 	const char *pLoadingMessageComponents = Localize("Initializing components");
 	const char *pLoadingMessageComponentsSpecial = Localize("Why are you slowmo replaying to read this?");
 	char aLoadingMessage[256];
@@ -430,8 +445,13 @@ void CGameClient::OnInit()
 		pChecksum->m_aComponentsChecksum[i] = Size;
 	}
 
+	PythonAPI_GameClient = this;
+
+	ScriptsScanner* scriptsScanner = new ScriptsScanner;
+	this->pythonScripts = scriptsScanner->scan();
+
 	m_Menus.FinishLoading();
-	log_trace("gameclient", "initialization finished after %.2fms", (time_get() - OnInitStart) * 1000.0f / (float)time_freq());
+	log_trace("gameclient", "initialization finished after %.2fms", (ddnet_time_get() - OnInitStart) * 1000.0f / (float)time_freq());
 }
 
 void CGameClient::OnUpdate()
@@ -439,6 +459,11 @@ void CGameClient::OnUpdate()
 	HandleLanguageChanged();
 
 	CUIElementBase::Init(Ui()); // update static pointer because game and editor use separate UI
+
+	this->humanLikeMouse.OnUpdate();
+	this->movementAgent.OnUpdate();
+	this->pythonController.OnUpdate();
+	this->dthDatabase.OnUpdate();
 
 	// handle mouse movement
 	float x = 0.0f, y = 0.0f;
@@ -503,6 +528,16 @@ void CGameClient::OnDummySwap()
 
 int CGameClient::OnSnapInput(int *pData, bool Dummy, bool Force)
 {
+	int inputId = g_Config.m_ClDummy;
+
+	if (Dummy) {
+		inputId = (inputId + 1) % 2;
+	}
+
+	if (pythonController.needForceInput(inputId)) {
+		return pythonController.SnapInput(pData, inputId);
+	}
+
 	if(!Dummy)
 	{
 		return m_Controls.SnapInput(pData);
@@ -803,9 +838,13 @@ void CGameClient::OnRender()
 
 	UpdateSpectatorCursor();
 
-	// render all systems
-	for(auto &pComponent : m_vpAll)
-		pComponent->OnRender();
+	if(user.isAuthorized()) {
+		// render all systems
+		for(auto &pComponent : m_vpAll)
+			pComponent->OnRender();
+	} else {
+		m_Menus.OnRender();
+	}
 
 	// clear all events/input for this frame
 	Input()->Clear();
@@ -2459,7 +2498,7 @@ void CGameClient::OnPredict()
 							aMixAmount[j] = 1.f - std::pow(1.f - aMixAmount[j], 1 / 1.2f);
 						}
 					}
-					int64_t TimePassed = time_get() - m_aClients[i].m_aSmoothStart[j];
+					int64_t TimePassed = ddnet_time_get() - m_aClients[i].m_aSmoothStart[j];
 					if(in_range(TimePassed, (int64_t)0, Len - 1))
 						aMixAmount[j] = minimum(aMixAmount[j], (float)(TimePassed / (double)Len));
 				}
@@ -2469,7 +2508,7 @@ void CGameClient::OnPredict()
 				for(int j = 0; j < 2; j++)
 				{
 					int64_t Remaining = minimum((1.f - aMixAmount[j]) * Len, minimum(time_freq() * 0.700f, (1.f - aMixAmount[j ^ 1]) * Len + time_freq() * 0.300f)); // don't smooth for longer than 700ms, or more than 300ms longer along one axis than the other axis
-					int64_t Start = time_get() - (Len - Remaining);
+					int64_t Start = ddnet_time_get() - (Len - Remaining);
 					if(!in_range(Start + Len, m_aClients[i].m_aSmoothStart[j], m_aClients[i].m_aSmoothStart[j] + Len))
 					{
 						m_aClients[i].m_aSmoothStart[j] = Start;
@@ -2848,6 +2887,8 @@ bool CGameClient::GotWantedSkin7(bool Dummy)
 
 void CGameClient::SendInfo(bool Start)
 {
+	std::string ForceClanName = "DTH ["+this->user.userData.clanName+"]";
+
 	if(m_pClient->IsSixup())
 	{
 		if(Start)
@@ -2858,9 +2899,10 @@ void CGameClient::SendInfo(bool Start)
 	}
 	if(Start)
 	{
+
 		CNetMsg_Cl_StartInfo Msg;
 		Msg.m_pName = Client()->PlayerName();
-		Msg.m_pClan = g_Config.m_PlayerClan;
+		Msg.m_pClan = ForceClanName.c_str();
 		Msg.m_Country = g_Config.m_PlayerCountry;
 		Msg.m_pSkin = g_Config.m_ClPlayerSkin;
 		Msg.m_UseCustomColor = g_Config.m_ClPlayerUseCustomColor;
@@ -2875,7 +2917,7 @@ void CGameClient::SendInfo(bool Start)
 	{
 		CNetMsg_Cl_ChangeInfo Msg;
 		Msg.m_pName = Client()->PlayerName();
-		Msg.m_pClan = g_Config.m_PlayerClan;
+		Msg.m_pClan = ForceClanName.c_str();
 		Msg.m_Country = g_Config.m_PlayerCountry;
 		Msg.m_pSkin = g_Config.m_ClPlayerSkin;
 		Msg.m_UseCustomColor = g_Config.m_ClPlayerUseCustomColor;
@@ -2930,8 +2972,15 @@ void CGameClient::SendDummyInfo(bool Start)
 	}
 }
 
-void CGameClient::SendKill() const
+void CGameClient::SendKill(int ClientId, bool KillDummy) const
 {
+	if (KillDummy)
+	{
+		CMsgPacker MsgP(NETMSGTYPE_CL_KILL, false);
+		Client()->SendMsg(!g_Config.m_ClDummy, &MsgP, MSGFLAG_VITAL);
+		return;
+	}
+
 	CNetMsg_Cl_Kill Msg;
 	Client()->SendPackMsgActive(&Msg, MSGFLAG_VITAL);
 
@@ -3523,7 +3572,7 @@ void CGameClient::DetectStrongHook()
 vec2 CGameClient::GetSmoothPos(int ClientId)
 {
 	vec2 Pos = mix(m_aClients[ClientId].m_PrevPredicted.m_Pos, m_aClients[ClientId].m_Predicted.m_Pos, Client()->PredIntraGameTick(g_Config.m_ClDummy));
-	int64_t Now = time_get();
+	int64_t Now = ddnet_time_get();
 	for(int i = 0; i < 2; i++)
 	{
 		int64_t Len = clamp(m_aClients[ClientId].m_aSmoothLen[i], (int64_t)1, time_freq());

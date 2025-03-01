@@ -751,12 +751,12 @@ void CPlayer::TryRespawn()
 
 void CPlayer::UpdatePlaytime()
 {
-	m_LastPlaytime = time_get();
+	m_LastPlaytime = ddnet_time_get();
 }
 
 void CPlayer::AfkTimer()
 {
-	SetAfk(g_Config.m_SvMaxAfkTime != 0 && m_LastPlaytime < time_get() - time_freq() * g_Config.m_SvMaxAfkTime);
+	SetAfk(g_Config.m_SvMaxAfkTime != 0 && m_LastPlaytime < ddnet_time_get() - time_freq() * g_Config.m_SvMaxAfkTime);
 }
 
 void CPlayer::SetAfk(bool Afk)
@@ -780,9 +780,9 @@ void CPlayer::SetInitialAfk(bool Afk)
 
 	// Ensure that the AFK state is not reset again automatically
 	if(Afk)
-		m_LastPlaytime = time_get() - time_freq() * g_Config.m_SvMaxAfkTime - 1;
+		m_LastPlaytime = ddnet_time_get() - time_freq() * g_Config.m_SvMaxAfkTime - 1;
 	else
-		m_LastPlaytime = time_get();
+		m_LastPlaytime = ddnet_time_get();
 }
 
 int CPlayer::GetDefaultEmote() const
@@ -955,7 +955,7 @@ void CPlayer::ProcessScoreResult(CScorePlayerResult &Result)
 			break;
 		case CScorePlayerResult::MAP_VOTE:
 			GameServer()->m_VoteType = CGameContext::VOTE_TYPE_OPTION;
-			GameServer()->m_LastMapVote = time_get();
+			GameServer()->m_LastMapVote = ddnet_time_get();
 
 			char aCmd[256];
 			str_format(aCmd, sizeof(aCmd),

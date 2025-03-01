@@ -971,7 +971,7 @@ void CServerBrowser::OnServerInfoUpdate(const NETADDR &Addr, int Token, const CS
 	if(m_ServerlistType == IServerBrowser::TYPE_LAN)
 	{
 		SetInfo(pEntry, *pInfo);
-		pEntry->m_Info.m_Latency = minimum(static_cast<int>((time_get() - m_BroadcastTime) * 1000 / time_freq()), 999);
+		pEntry->m_Info.m_Latency = minimum(static_cast<int>((ddnet_time_get() - m_BroadcastTime) * 1000 / time_freq()), 999);
 	}
 	else if(pEntry->m_RequestTime > 0)
 	{
@@ -980,7 +980,7 @@ void CServerBrowser::OnServerInfoUpdate(const NETADDR &Addr, int Token, const CS
 			SetInfo(pEntry, *pInfo);
 		}
 
-		int Latency = minimum(static_cast<int>((time_get() - pEntry->m_RequestTime) * 1000 / time_freq()), 999);
+		int Latency = minimum(static_cast<int>((ddnet_time_get() - pEntry->m_RequestTime) * 1000 / time_freq()), 999);
 		if(!pEntry->m_RequestIgnoreInfo)
 		{
 			pEntry->m_Info.m_Latency = Latency;
@@ -1027,7 +1027,7 @@ void CServerBrowser::Refresh(int Type, bool Force)
 		Packet.m_aExtraData[0] = GetExtraToken(Token) >> 8;
 		Packet.m_aExtraData[1] = GetExtraToken(Token) & 0xff;
 
-		m_BroadcastTime = time_get();
+		m_BroadcastTime = ddnet_time_get();
 
 		CPacker Packer;
 		Packer.Reset();
@@ -1135,7 +1135,7 @@ void CServerBrowser::RequestImpl(const NETADDR &Addr, CServerEntry *pEntry, int 
 	}
 
 	if(pEntry)
-		pEntry->m_RequestTime = time_get();
+		pEntry->m_RequestTime = ddnet_time_get();
 }
 
 void CServerBrowser::RequestCurrentServer(const NETADDR &Addr) const
@@ -1278,7 +1278,7 @@ void CServerBrowser::CleanUp()
 void CServerBrowser::Update()
 {
 	int64_t Timeout = time_freq();
-	int64_t Now = time_get();
+	int64_t Now = ddnet_time_get();
 
 	const char *pHttpBestUrl;
 	if(!m_pHttp->GetBestUrl(&pHttpBestUrl) && pHttpBestUrl != m_pHttpPrevBestUrl)

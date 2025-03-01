@@ -15,6 +15,8 @@
 
 #include "prng.h"
 
+#include <memory>
+
 class CCollision;
 class CTeamsCore;
 
@@ -175,10 +177,10 @@ public:
 
 class CCharacterCore
 {
-	CWorldCore *m_pWorld = nullptr;
-	CCollision *m_pCollision;
 
 public:
+	CWorldCore *m_pWorld = nullptr;
+	CCollision *m_pCollision;
 	static constexpr float PhysicalSize() { return 28.0f; };
 	static constexpr vec2 PhysicalSizeVec2() { return vec2(28.0f, 28.0f); };
 	vec2 m_Pos;
@@ -190,8 +192,12 @@ public:
 	int m_HookTick;
 	int m_HookState;
 	std::set<int> m_AttachedPlayers;
+	bool m_isClone = false;
 	int HookedPlayer() const { return m_HookedPlayer; }
 	void SetHookedPlayer(int HookedPlayer);
+	void ForceSetHookedPlayer(int HookedPlayer);
+	CCharacterCore Clone();
+	CCharacterCore PredictTicks(int ticksOffset);
 
 	int m_ActiveWeapon;
 	struct WeaponStat
@@ -267,6 +273,9 @@ public:
 	bool m_DeepFrozen;
 	bool m_LiveFrozen;
 	CTuningParams m_Tuning;
+
+	CTeamsCore *getTeams();
+	void setTeams(CTeamsCore *pTeams);
 
 private:
 	CTeamsCore *m_pTeams;

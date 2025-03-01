@@ -106,7 +106,7 @@ int CNetConnection::Flush()
 	CNetBase::SendPacket(m_Socket, &m_PeerAddr, &m_Construct, m_SecurityToken, m_Sixup);
 
 	// update send times
-	m_LastSendTime = time_get();
+	m_LastSendTime = ddnet_time_get();
 
 	// clear construct so we can start building a new package
 	mem_zero(&m_Construct, sizeof(m_Construct));
@@ -150,7 +150,7 @@ int CNetConnection::QueueChunkEx(int Flags, int DataSize, const void *pData, int
 			pResend->m_Flags = Flags;
 			pResend->m_DataSize = DataSize;
 			pResend->m_pData = (unsigned char *)(pResend + 1);
-			pResend->m_FirstSendTime = time_get();
+			pResend->m_FirstSendTime = ddnet_time_get();
 			pResend->m_LastSendTime = pResend->m_FirstSendTime;
 			mem_copy(pResend->m_pData, pData, DataSize);
 		}
@@ -174,7 +174,7 @@ int CNetConnection::QueueChunk(int Flags, int DataSize, const void *pData)
 void CNetConnection::SendConnect()
 {
 	// send the connect message
-	m_LastSendTime = time_get();
+	m_LastSendTime = ddnet_time_get();
 	for(int i = 0; i < m_NumConnectAddrs; i++)
 	{
 		CNetBase::SendControlMsg(m_Socket, &m_aConnectAddrs[i], m_Ack, NET_CTRLMSG_CONNECT, SECURITY_TOKEN_MAGIC, sizeof(SECURITY_TOKEN_MAGIC), m_SecurityToken, m_Sixup);
@@ -184,14 +184,14 @@ void CNetConnection::SendConnect()
 void CNetConnection::SendControl(int ControlMsg, const void *pExtra, int ExtraSize)
 {
 	// send the control message
-	m_LastSendTime = time_get();
+	m_LastSendTime = ddnet_time_get();
 	CNetBase::SendControlMsg(m_Socket, &m_PeerAddr, m_Ack, ControlMsg, pExtra, ExtraSize, m_SecurityToken, m_Sixup);
 }
 
 void CNetConnection::ResendChunk(CNetChunkResend *pResend)
 {
 	QueueChunkEx(pResend->m_Flags | NET_CHUNKFLAG_RESEND, pResend->m_DataSize, pResend->m_pData, pResend->m_Sequence);
-	pResend->m_LastSendTime = time_get();
+	pResend->m_LastSendTime = ddnet_time_get();
 }
 
 void CNetConnection::Resend()
@@ -222,7 +222,7 @@ int CNetConnection::Connect(const NETADDR *pAddr, int NumAddrs)
 
 void CNetConnection::SendControlWithToken7(int ControlMsg, SECURITY_TOKEN ResponseToken)
 {
-	m_LastSendTime = time_get();
+	m_LastSendTime = ddnet_time_get();
 
 	CNetBase::SendControlMsgWithToken7(m_Socket, &m_PeerAddr, ResponseToken, 0, ControlMsg, m_Token, true);
 }
@@ -238,7 +238,7 @@ int CNetConnection::Connect7(const NETADDR *pAddr, int NumAddrs)
 	{
 		m_aConnectAddrs[i] = pAddr[i];
 	}
-	m_LastRecvTime = time_get();
+	m_LastRecvTime = ddnet_time_get();
 	m_NumConnectAddrs = NumAddrs;
 	SetPeerAddr(pAddr);
 	SetToken7(GenerateToken7(pAddr));
@@ -299,7 +299,7 @@ void CNetConnection::DirectInit(const NETADDR &Addr, SECURITY_TOKEN SecurityToke
 	SetPeerAddr(&Addr);
 	mem_zero(m_aErrorString, sizeof(m_aErrorString));
 
-	int64_t Now = time_get();
+	int64_t Now = ddnet_time_get();
 	m_LastSendTime = Now;
 	m_LastRecvTime = Now;
 	m_LastUpdateTime = Now;
@@ -347,7 +347,7 @@ int CNetConnection::Feed(CNetPacketConstruct *pPacket, NETADDR *pAddr, SECURITY_
 	}
 	m_PeerAck = pPacket->m_Ack;
 
-	int64_t Now = time_get();
+	int64_t Now = ddnet_time_get();
 
 	// check if resend is requested
 	if(pPacket->m_Flags & NET_PACKETFLAG_RESEND)
@@ -422,7 +422,7 @@ int CNetConnection::Feed(CNetPacketConstruct *pPacket, NETADDR *pAddr, SECURITY_
 				{
 					if(CtrlMsg == NET_CTRLMSG_CONNECT)
 					{
-						if(net_addr_comp_noport(&m_PeerAddr, pAddr) == 0 && time_get() - m_LastUpdateTime < time_freq() * 3)
+						if(net_addr_comp_noport(&m_PeerAddr, pAddr) == 0 && ddnet_time_get() - m_LastUpdateTime < time_freq() * 3)
 							return 0;
 
 						// send response and init connection
@@ -501,7 +501,7 @@ int CNetConnection::Feed(CNetPacketConstruct *pPacket, NETADDR *pAddr, SECURITY_
 
 int CNetConnection::Update()
 {
-	int64_t Now = time_get();
+	int64_t Now = ddnet_time_get();
 
 	if(State() == NET_CONNSTATE_ERROR && m_TimeoutSituation && (Now - m_LastRecvTime) > time_freq() * g_Config.m_ConnTimeoutProtection)
 	{
@@ -549,24 +549,24 @@ int CNetConnection::Update()
 	// send keep alives if nothing has happened for 250ms
 	if(State() == NET_CONNSTATE_ONLINE)
 	{
-		if(time_get() - m_LastSendTime > time_freq() / 2) // flush connection after 500ms if needed
+		if(ddnet_time_get() - m_LastSendTime > time_freq() / 2) // flush connection after 500ms if needed
 		{
 			int NumFlushedChunks = Flush();
 			if(NumFlushedChunks && g_Config.m_Debug)
 				dbg_msg("connection", "flushed connection due to timeout. %d chunks.", NumFlushedChunks);
 		}
 
-		if(time_get() - m_LastSendTime > time_freq())
+		if(ddnet_time_get() - m_LastSendTime > time_freq())
 			SendControl(NET_CTRLMSG_KEEPALIVE, nullptr, 0);
 	}
 	else if(State() == NET_CONNSTATE_CONNECT)
 	{
-		if(time_get() - m_LastSendTime > time_freq() / 2) // send a new connect every 500ms
+		if(ddnet_time_get() - m_LastSendTime > time_freq() / 2) // send a new connect every 500ms
 			SendConnect();
 	}
 	else if(State() == NET_CONNSTATE_PENDING)
 	{
-		if(time_get() - m_LastSendTime > time_freq() / 2) // send a new connect/accept every 500ms
+		if(ddnet_time_get() - m_LastSendTime > time_freq() / 2) // send a new connect/accept every 500ms
 			SendControl(NET_CTRLMSG_CONNECTACCEPT, SECURITY_TOKEN_MAGIC, sizeof(SECURITY_TOKEN_MAGIC));
 	}
 
@@ -575,7 +575,7 @@ int CNetConnection::Update()
 
 void CNetConnection::SetTimedOut(const NETADDR *pAddr, int Sequence, int Ack, SECURITY_TOKEN SecurityToken, CStaticRingBuffer<CNetChunkResend, NET_CONN_BUFFERSIZE> *pResendBuffer, bool Sixup)
 {
-	int64_t Now = time_get();
+	int64_t Now = ddnet_time_get();
 
 	m_Sequence = Sequence;
 	m_Ack = Ack;
