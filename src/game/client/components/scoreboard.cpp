@@ -546,6 +546,22 @@ void CScoreboard::RenderScoreboard(CUIRect Scoreboard, int Team, int CountStart,
 					GameClient()->FormatClientId(pInfo->m_ClientId, aClientId, EClientIdFormat::INDENT_AUTO);
 					TextRender()->TextEx(&Cursor, aClientId);
 				}
+
+				if (GameClient()->dthDatabase.IsPlayerNameWar(std::string(ClientData.m_aName)))
+				{
+					TextRender()->TextColor(1.0f, 0.0f, 0.0f, 1.0f);
+				}
+
+				if (GameClient()->dthDatabase.IsPlayerNamePeace(std::string(ClientData.m_aName)))
+				{
+					TextRender()->TextColor(1.0f, 1.0f, 0.0f, 1.0f);
+				}
+
+				if (GameClient()->dthDatabase.IsClanMember(std::string(ClientData.m_aName)))
+				{
+					TextRender()->TextColor(0.0f, 1.0f, 0.0f, 1.0f);
+				}
+
 				TextRender()->TextEx(&Cursor, ClientData.m_aName);
 
 				// ready / watching

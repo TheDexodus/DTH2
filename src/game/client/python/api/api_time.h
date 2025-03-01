@@ -10,14 +10,14 @@ static PyObject* API_Time_getLocalTime(PyObject* self, PyObject* args)
 
 static PyObject* API_Time_getGameTick(PyObject* self, PyObject* args)
 {
-	PyObject* localPlayerIdObject;
-	int localPlayerId = g_Config.m_ClDummy;
+	PyObject* LocalPlayerIdObject;
+	int LocalPlayerId = g_Config.m_ClDummy;
 
-	if (args != nullptr && PyArg_ParseTuple(args, "O", &localPlayerIdObject) && localPlayerIdObject != nullptr && PyLong_Check(localPlayerIdObject)) {
-		localPlayerId = PyLong_AsLong(localPlayerIdObject);
+	if (args != nullptr && PyArg_ParseTuple(args, "O", &LocalPlayerIdObject) && LocalPlayerIdObject != nullptr && PyLong_Check(LocalPlayerIdObject)) {
+		LocalPlayerId = PyLong_AsLong(LocalPlayerIdObject);
 	}
 
-	return PyLong_FromLong(PythonAPI_GameClient->Client()->GameTick(localPlayerId));
+	return PyLong_FromLong(PythonAPI_GameClient->Client()->GameTick(LocalPlayerId));
 }
 
 static PyMethodDef API_TimeMethods[] = {

@@ -61,6 +61,7 @@
 #include "components/tooltips.h"
 #include "components/touch_controls.h"
 #include "components/voting.h"
+#include "game/client/components/dth_database.h"
 #include "game/client/aim/AimHelper.h"
 #include "game/client/aim/HumanLikeMouse.h"
 #include "game/client/auth/User.h"
@@ -180,6 +181,7 @@ public:
 	AimHelper aimHelper;
 	PythonController pythonController;
 	PythonRender pythonRender;
+	DTHDatabase dthDatabase;
 
 	std::vector<PythonScript*> pythonScripts;
 	MovementAgent movementAgent;

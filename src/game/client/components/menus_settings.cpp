@@ -255,6 +255,8 @@ void CMenus::RenderSettingsGeneral(CUIRect MainView)
 
 void CMenus::SetNeedSendInfo()
 {
+	GameClient()->dthDatabase.SendSkinInfo();
+
 	if(m_Dummy)
 		m_NeedSendDummyinfo = true;
 	else

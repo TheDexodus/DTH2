@@ -2354,6 +2354,8 @@ if(CLIENT)
     components/damageind.h
     components/debughud.cpp
     components/debughud.h
+    components/dth_database.cpp
+    components/dth_database.h
     components/effects.cpp
     components/effects.h
     components/emoticon.cpp
@@ -2383,6 +2385,7 @@ if(CLIENT)
     components/menus.h
     components/menus_browser.cpp
     components/menus_demo.cpp
+    components/menus_dth.cpp
     components/menus_ingame.cpp
     components/menus_settings.cpp
     components/menus_settings7.cpp

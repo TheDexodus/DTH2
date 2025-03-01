@@ -45,7 +45,7 @@ bool User::login(string login, string password)
 
 bool User::isAuthorized()
 {
-	return this->token.size() > 0 && loginRequest == nullptr && gettingUserRequest == nullptr && gettingLatestClientVersionRequest == nullptr && gettingPythonBlacklist == nullptr && isLatestVersion();
+	return !this->token.empty() && loginRequest == nullptr && gettingUserRequest == nullptr && gettingLatestClientVersionRequest == nullptr && gettingPythonBlacklist == nullptr && isLatestVersion();
 }
 
 string encrypt(string str, char key) {
@@ -126,7 +126,7 @@ bool User::getPythonBlacklist()
 {
 	if (gettingPythonBlacklist == nullptr)
 	{
-		string url = string(BACKEND_URL) + "api/server_with_python_ignores";
+		string url = string(BACKEND_URL) + "api/server_with_python_ignores?pagination=false";
 		gettingPythonBlacklist = HttpGet(url.c_str());
 		gettingPythonBlacklist->LogProgress(HTTPLOG::FAILURE);
 		Http()->Run(gettingPythonBlacklist);
@@ -218,6 +218,7 @@ bool User::requestUserData()
 
 	const json_value &Json = *resultJson;
 	this->userData.clanName = json_string_get(&Json["clanName"]);
+	GameClient()->dthDatabase.UpdateInfo();
 
 	return getClientVersion();
 }

@@ -569,6 +569,15 @@ void CMenus::RenderMenubar(CUIRect Box, IClient::EClientState ClientState)
 
 	Box.VSplitRight(10.0f, &Box, nullptr);
 	Box.VSplitRight(33.0f, &Box, &Button);
+	static CButtonContainer s_DTHButton;
+	if(DoButton_MenuTab(&s_DTHButton, "DTH", ActivePage == PAGE_DTH, &Button, IGraphics::CORNER_T, &m_aAnimatorsSmallPage[SMALL_TAB_DTH]))
+	{
+		NewPage = PAGE_DTH;
+	}
+	GameClient()->m_Tooltips.DoToolTip(&s_DTHButton, &Button, Localize("DTH"));
+
+	Box.VSplitRight(10.0f, &Box, nullptr);
+	Box.VSplitRight(33.0f, &Box, &Button);
 	static CButtonContainer s_EditorButton;
 	if(DoButton_MenuTab(&s_EditorButton, FONT_ICON_PEN_TO_SQUARE, 0, &Button, IGraphics::CORNER_T, &m_aAnimatorsSmallPage[SMALL_TAB_EDITOR]))
 	{
@@ -1086,9 +1095,7 @@ void CMenus::Render()
 			// activated by default, so the server info for the tutorial server should be available.
 			const char *pAddr = ServerBrowser()->GetTutorialServer();
 			if(pAddr)
-			{
 				Client()->Connect(pAddr);
-			}
 		}
 	}
 
@@ -1162,6 +1169,10 @@ void CMenus::Render()
 			else if(m_MenuPage == PAGE_SETTINGS)
 			{
 				RenderSettings(MainView);
+			}
+			else if(m_MenuPage == PAGE_DTH)
+			{
+				RenderDTH(MainView);
 			}
 			else
 			{

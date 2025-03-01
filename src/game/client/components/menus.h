@@ -634,6 +634,12 @@ protected:
 	void RenderSettingsPython(CUIRect MainView);
 	void RenderSettingsPythonExceptions(CUIRect MainView, PythonScript *PS);
 
+	// found in menus_dth.cpp
+	void RenderDTH(CUIRect MainView);
+	void RenderDTHProfile(CUIRect MainView);
+	void RenderDTHPlayer(CUIRect &MainView, CTeeRenderInfo TeeRenderInfo, bool withBlink = false, bool withWatchToCursor = false, std::string name = "", std::string role = "");
+	void RenderDTHMembers(CUIRect MainView);
+
 	//login
 	void RenderLoginMenu(CUIRect MainView);
 
@@ -726,6 +732,7 @@ public:
 		PAGE_FAVORITE_COMMUNITY_5,
 		PAGE_DEMOS,
 		PAGE_SETTINGS,
+		PAGE_DTH,
 		PAGE_NETWORK,
 		PAGE_GHOST,
 
@@ -761,6 +768,7 @@ public:
 		SMALL_TAB_HOME = 0,
 		SMALL_TAB_QUIT,
 		SMALL_TAB_SETTINGS,
+		SMALL_TAB_DTH,
 		SMALL_TAB_EDITOR,
 		SMALL_TAB_DEMOBUTTON,
 		SMALL_TAB_SERVER,

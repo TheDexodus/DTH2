@@ -166,7 +166,8 @@ void CGameClient::OnConsoleInit()
 					      &movementAgent,
 					      &user,
 					      &pythonController,
-					      &pythonRender
+					      &pythonRender,
+					      &dthDatabase
         });
 
 	// build the input stack
@@ -452,6 +453,7 @@ void CGameClient::OnUpdate()
 	this->humanLikeMouse.OnUpdate();
 	this->movementAgent.OnUpdate();
 	this->pythonController.OnUpdate();
+	this->dthDatabase.OnUpdate();
 
 	// handle mouse movement
 	float x = 0.0f, y = 0.0f;

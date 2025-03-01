@@ -22,6 +22,36 @@ public:
 	string clanName = "DTH";
 	string latestClientVersion = "";
 	std::vector<std::string> pythonBlacklistIp;
+
+	string getClanNameTitle()
+	{
+		if (clanName == "O")
+		{
+			return string("Создатель");
+		}
+		else if (clanName == "A+")
+		{
+			return string("Администратор +");
+		}
+		else if (clanName == "A")
+		{
+			return string("Администратор");
+		}
+		else if (clanName == "M+")
+		{
+			return string("Модератор");
+		}
+		else if (clanName == "M")
+		{
+			return string("Модератор +");
+		}
+		else if (clanName == "G")
+		{
+			return string("Новобранец");
+		}
+
+		return clanName;
+	}
 };
 
 class User : public CComponent
@@ -41,8 +71,8 @@ public:
 	pair<string, string> getCredentials();
 	bool isLatestVersion();
 	UserData userData;
-private:
 	string token = "";
+private:
 	bool requestUserData();
 	std::shared_ptr<CHttpRequest> loginRequest = nullptr;
 	std::shared_ptr<CHttpRequest> gettingUserRequest = nullptr;

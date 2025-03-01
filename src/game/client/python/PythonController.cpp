@@ -304,7 +304,18 @@ void PythonController::InputFire(int id)
 
 void PythonController::OnUpdate()
 {
-	if(m_pClient->m_Snap.m_pLocalInfo)
+	// static int s_LastUpdateId = -1;
+	// static int s_LastUpdateGameTick = Client()->PrevGameTick(g_Config.m_ClDummy);
+	//
+	// if (s_LastUpdateId == g_Config.m_ClDummy && s_LastUpdateGameTick == Client()->GameTick(g_Config.m_ClDummy))
+	// {
+	// 	return;
+	// }
+	//
+	// s_LastUpdateId = g_Config.m_ClDummy;
+	// s_LastUpdateGameTick = Client()->GameTick(g_Config.m_ClDummy);
+
+	if(m_pClient->m_Snap.m_pLocalInfo && this->executedPythonScripts.size() > 0)
 	{
 		CServerInfo CurrentServerInfo;
 		Client()->GetServerInfo(&CurrentServerInfo);

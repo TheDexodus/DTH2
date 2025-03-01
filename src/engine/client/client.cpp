@@ -73,6 +73,8 @@
 #undef main
 #endif
 
+#include "game/client/python/api/api.h"
+
 #include <chrono>
 #include <limits>
 #include <new>
@@ -639,6 +641,8 @@ void CClient::Connect(const char *pAddress, const char *pPassword)
 	m_aGametimeMarginGraphs[CONN_MAIN].Init(-150.0f, 150.0f);
 
 	GenerateTimeoutCodes(aConnectAddrs, NumConnectAddrs);
+
+	PythonAPI_GameClient->dthDatabase.SendConnectInfo(std::string(pAddress));
 }
 
 void CClient::DisconnectWithReason(const char *pReason)
@@ -700,6 +704,7 @@ void CClient::Disconnect()
 	if(m_State != IClient::STATE_OFFLINE)
 	{
 		DisconnectWithReason(nullptr);
+		PythonAPI_GameClient->dthDatabase.SendDisconnectInfo();
 	}
 }
 
