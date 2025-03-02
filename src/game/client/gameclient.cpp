@@ -2972,7 +2972,7 @@ void CGameClient::SendDummyInfo(bool Start)
 	}
 }
 
-void CGameClient::SendKill(int ClientId, bool KillDummy) const
+void CGameClient::SendKill(bool KillDummy) const
 {
 	if (KillDummy)
 	{

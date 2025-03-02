@@ -164,8 +164,6 @@ protected:
 
 	bool m_IsInit = false;
 
-	void RefreshPythonScripts();
-
 	static void LoadEntities(struct SCustomEntities *pEntitiesItem, void *pUser);
 	static int EntitiesScan(const char *pName, int IsDir, int DirType, void *pUser);
 
@@ -634,14 +632,18 @@ protected:
 	void RenderSettingsSound(CUIRect MainView);
 	void RenderSettings(CUIRect MainView);
 	void RenderSettingsCustom(CUIRect MainView);
-	void RenderSettingsPython(CUIRect MainView);
-	void RenderSettingsPythonExceptions(CUIRect MainView, PythonScript *PS);
 
 	// found in menus_dth.cpp
 	void RenderDTH(CUIRect MainView);
 	void RenderDTHProfile(CUIRect MainView);
 	void RenderDTHPlayer(CUIRect &MainView, CTeeRenderInfo TeeRenderInfo, bool withBlink = false, bool withWatchToCursor = false, std::string name = "", std::string role = "");
 	void RenderDTHMembers(CUIRect MainView);
+	void RenderDTHTasks(CUIRect MainView);
+	void RenderDTHPython(CUIRect MainView);
+	void RenderDTHPythonExceptions(CUIRect MainView, PythonScript *PS);
+	void RenderDTHRepository(CUIRect MainView);
+	void RenderDTHLessons(CUIRect MainView);
+	void DTHRefreshPythonScripts();
 
 	//login
 	void RenderLoginMenu(CUIRect MainView);
@@ -751,7 +753,6 @@ public:
 		SETTINGS_SOUND,
 		SETTINGS_DDNET,
 		SETTINGS_ASSETS,
-		SETTINGS_PYTHON,
 
 		SETTINGS_LENGTH,
 

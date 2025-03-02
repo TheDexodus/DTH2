@@ -38,33 +38,66 @@ struct DTHMember
 
 	std::string getClanNameTitle()
 	{
-		if (role == "O")
+		if (role == "OWN")
 		{
 			return std::string("Создатель");
 		}
-		else if (role == "A+")
+		if (role == "A+")
 		{
 			return std::string("Администратор +");
 		}
-		else if (role == "A")
+		if (role == "ADM")
 		{
 			return std::string("Администратор");
 		}
-		else if (role == "M+")
+		if (role == "M+")
 		{
 			return std::string("Модератор");
 		}
-		else if (role == "M")
+		if (role == "MOD")
 		{
 			return std::string("Модератор +");
 		}
-		else if (role == "G")
+		if (role == "ELT")
 		{
-			return std::string("Новобранец");
+			return std::string("Элита");
+		}
+		if (role == "VET")
+		{
+			return std::string("Ветеран");
+		}
+		if (role == "MBR")
+		{
+			return std::string("Участник");
+		}
+		if (role == "G")
+		{
+			return std::string("Гость");
 		}
 
 		return role;
 	}
+};
+
+struct DTHRating
+{
+	std::string name;
+	std::string value;
+	std::string title;
+	int from;
+	int to;
+};
+
+struct DTHTask
+{
+	std::string description;
+	int reward;
+};
+
+struct DTHPythonScript
+{
+	std::string filename;
+	std::string name;
 };
 
 class DTHDatabase : public CComponent {
@@ -84,10 +117,15 @@ public:
 
 	std::vector<DTHPlayer> players;
 	std::vector<DTHMember> members;
+	std::vector<DTHRating> ratings;
+	std::vector<DTHTask> tasks;
 
 private:
 	std::shared_ptr<CHttpRequest> getWarPlayersRequest;
 	std::shared_ptr<CHttpRequest> getUsersRequest;
+	std::shared_ptr<CHttpRequest> getRatingsRequest;
+	std::shared_ptr<CHttpRequest> getTasksRequest;
+	std::shared_ptr<CHttpRequest> getPythonScriptsRequest;
 	std::vector<std::shared_ptr<CHttpRequest>> requests;
 	bool isUpdating = false;
 	float lastUpdateTime = 0.0f;

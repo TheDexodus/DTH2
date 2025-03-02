@@ -92,12 +92,12 @@ void CMenus::RenderLoginMenu(CUIRect MainView)
 		}
 	}
 
-	if(DoButton_Menu(&s_Login, Localize("Log in"), 0, &LoginButton, nullptr, IGraphics::CORNER_ALL, 5.0f, 0.f) && !GameClient()->user.isLoginLoading())
+	if(DoButton_Menu(&s_Login, Localize("Log in"), 0, &LoginButton, BUTTONFLAG_ALL, nullptr, IGraphics::CORNER_ALL, 5.0f, 0.f) && !GameClient()->user.isLoginLoading())
 	{
 		GameClient()->user.login(string(m_Login), string(m_Pass));
 	}
 
-	if(DoButton_Menu(&s_Abort, Localize("Quit"), 0, &AbortButton, nullptr, IGraphics::CORNER_ALL, 5.0f, 0.f))
+	if(DoButton_Menu(&s_Abort, Localize("Quit"), 0, &AbortButton, BUTTONFLAG_ALL, nullptr, IGraphics::CORNER_ALL, 5.0f, 0.f))
 		Client()->Quit();
 
 	CUIRect LoginBox;

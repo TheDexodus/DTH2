@@ -21,33 +21,47 @@ class UserData
 public:
 	string clanName = "DTH";
 	string latestClientVersion = "";
+	int rating = 0;
+	string createdAt = "";
 	std::vector<std::string> pythonBlacklistIp;
 
 	string getClanNameTitle()
 	{
-		if (clanName == "O")
+		if (clanName == "OWN")
 		{
 			return string("Создатель");
 		}
-		else if (clanName == "A+")
+		if (clanName == "A+")
 		{
 			return string("Администратор +");
 		}
-		else if (clanName == "A")
+		if (clanName == "ADM")
 		{
 			return string("Администратор");
 		}
-		else if (clanName == "M+")
+		if (clanName == "M+")
 		{
 			return string("Модератор");
 		}
-		else if (clanName == "M")
+		if (clanName == "MOD")
 		{
 			return string("Модератор +");
 		}
-		else if (clanName == "G")
+		if (clanName == "ELT")
 		{
-			return string("Новобранец");
+			return string("Элита");
+		}
+		if (clanName == "VET")
+		{
+			return string("Ветеран");
+		}
+		if (clanName == "MBR")
+		{
+			return string("Участник");
+		}
+		if (clanName == "G")
+		{
+			return string("Гость");
 		}
 
 		return clanName;

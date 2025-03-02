@@ -488,7 +488,7 @@ void CNetTokenCache::SendPacketConnless(CNetChunk *pChunk)
 		ConnlessPacket.m_Addr.type = pChunk->m_Address.type & ~(NETTYPE_IPV4 | NETTYPE_IPV6);
 		mem_copy(ConnlessPacket.m_aData, pChunk->m_pData, pChunk->m_DataSize);
 		ConnlessPacket.m_DataSize = pChunk->m_DataSize;
-		ConnlessPacket.m_Expiry = time_get() + time_freq() * NET_TOKENCACHE_PACKETEXPIRY;
+		ConnlessPacket.m_Expiry = ddnet_time_get() + time_freq() * NET_TOKENCACHE_PACKETEXPIRY;
 
 		unsigned int NetType = pChunk->m_Address.type;
 		auto SavePacketFor = [&](unsigned int Type) {
@@ -536,7 +536,7 @@ void CNetTokenCache::AddToken(const NETADDR *pAddr, TOKEN Token)
 	CAddressInfo Info;
 	Info.m_Addr = *pAddr,
 	Info.m_Token = Token,
-	Info.m_Expiry = time_get() + (time_freq() * NET_TOKENCACHE_ADDRESSEXPIRY);
+	Info.m_Expiry = ddnet_time_get() + (time_freq() * NET_TOKENCACHE_ADDRESSEXPIRY);
 
 	m_TokenCache.push_back(Info);
 }
@@ -563,7 +563,7 @@ TOKEN CNetTokenCache::GenerateToken()
 
 void CNetTokenCache::Update()
 {
-	int64_t Now = time_get();
+	int64_t Now = ddnet_time_get();
 
 	m_TokenCache.erase(
 		std::remove_if(m_TokenCache.begin(), m_TokenCache.end(), [&](const CAddressInfo &Info) {

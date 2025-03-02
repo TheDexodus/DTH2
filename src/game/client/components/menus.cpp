@@ -1222,6 +1222,10 @@ void CMenus::Render()
 			{
 				RenderSettings(MainView);
 			}
+			else if(m_GamePage == PAGE_DTH)
+			{
+				RenderDTH(MainView);
+			}
 			else
 			{
 				dbg_assert(false, "m_GamePage invalid");

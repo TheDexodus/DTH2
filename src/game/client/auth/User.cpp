@@ -218,7 +218,13 @@ bool User::requestUserData()
 
 	const json_value &Json = *resultJson;
 	this->userData.clanName = json_string_get(&Json["clanName"]);
-	GameClient()->dthDatabase.UpdateInfo();
+	this->userData.createdAt = json_string_get(&Json["createdAt"]);
+	this->userData.rating = json_int_get(&Json["rating"]);
+	if (this->gettingLatestClientVersionRequest == nullptr && this->gettingPythonBlacklist == nullptr)
+	{
+		GameClient()->dthDatabase.UpdateInfo();
+		GameClient()->dthDatabase.SendSkinInfo();
+	}
 
 	return getClientVersion();
 }

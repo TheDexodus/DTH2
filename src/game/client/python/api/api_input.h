@@ -237,7 +237,7 @@ static PyObject* API_Input_cancelHumanLike(PyObject* self, PyObject* args)
 
 static PyObject* API_Input_kill(PyObject* self, PyObject* args)
 {
-	PythonAPI_GameClient->SendKill(-1);
+	PythonAPI_GameClient->SendKill();
 	Py_RETURN_NONE;
 }
 

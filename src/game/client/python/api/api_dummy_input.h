@@ -95,7 +95,7 @@ static PyObject* API_DummyInput_enableControl(PyObject* self, PyObject* args)
 
 static PyObject* API_DummyInput_kill(PyObject* self, PyObject* args)
 {
-	PythonAPI_GameClient->SendKill(-1, true);
+	PythonAPI_GameClient->SendKill(true);
 	Py_RETURN_NONE;
 }
 

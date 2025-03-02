@@ -31,6 +31,14 @@ void DTHDatabase::UpdateInfo()
 		this->getUsersRequest->LogProgress(HTTPLOG::FAILURE);
 		Http()->Run(this->getUsersRequest);
 
+		this->getRatingsRequest = HttpGet("https://backend.dth.dexodus.ru/ratings");
+		this->getRatingsRequest->LogProgress(HTTPLOG::FAILURE);
+		Http()->Run(this->getRatingsRequest);
+
+		this->getTasksRequest = HttpGet("https://backend.dth.dexodus.ru/tasks");
+		this->getTasksRequest->LogProgress(HTTPLOG::FAILURE);
+		Http()->Run(this->getTasksRequest);
+
 		this->isUpdating = true;
 		return;
 	}
@@ -86,6 +94,55 @@ void DTHDatabase::UpdateInfo()
 					}
 
 					this->members.push_back(member);
+				}
+			}
+		}
+	}
+	else if (this->getRatingsRequest != nullptr)
+	{
+		if (this->getRatingsRequest->Done())
+		{
+			json_value* ResultJson = this->getRatingsRequest->ResultJson();
+			this->getRatingsRequest = nullptr;
+
+			if (ResultJson)
+			{
+				const json_value &Json = *ResultJson;
+
+				for (size_t i = 0; i < Json.u.array.length; i++)
+				{
+					const json_value& Entry = *Json.u.array.values[i];
+					DTHRating Rating;
+					Rating.name = json_string_get(&Entry["name"]);
+					Rating.value = json_string_get(&Entry["value"]);
+					Rating.title = json_string_get(&Entry["title"]);
+					Rating.from = json_int_get(&Entry["from"]);
+					Rating.to = json_int_get(&Entry["to"]);
+
+					this->ratings.push_back(Rating);
+				}
+			}
+		}
+	}
+	else if (this->getTasksRequest != nullptr)
+	{
+		if (this->getTasksRequest->Done())
+		{
+			json_value* ResultJson = this->getTasksRequest->ResultJson();
+			this->getTasksRequest = nullptr;
+
+			if (ResultJson)
+			{
+				const json_value &Json = *ResultJson;
+
+				for (size_t i = 0; i < Json.u.array.length; i++)
+				{
+					const json_value& Entry = *Json.u.array.values[i];
+					DTHTask Task;
+					Task.description = json_string_get(&Entry["description"]);
+					Task.reward = json_int_get(&Entry["reward"]);
+
+					this->tasks.push_back(Task);
 				}
 			}
 		}
