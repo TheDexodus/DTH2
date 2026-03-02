@@ -9,7 +9,7 @@
 #include "engine/shared/http.h"
 #include "game/client/component.h"
 
-#define BACKEND_URL "http://dexodus.ru/"
+#define BACKEND_URL "https://backend.dth.dexodus.ru/"
 #define BACKEND_LOGIN_ACTION "login/authentication_token"
 #define BACKEND_ME_ACTION "me"
 #define DTH_CLIENT_VERSION "1.1.0"
