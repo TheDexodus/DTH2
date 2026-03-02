@@ -23,19 +23,19 @@ void DTHDatabase::UpdateInfo()
 
 	if (!this->isUpdating)
 	{
-		this->getWarPlayersRequest = HttpGet("https://backend.dth.dexodus.ru/api/players?pagination=false");
+		this->getWarPlayersRequest = HttpGet("http://dexodus.ru/api/players?pagination=false");
 		this->getWarPlayersRequest->LogProgress(HTTPLOG::FAILURE);
 		Http()->Run(this->getWarPlayersRequest);
 
-		this->getUsersRequest = HttpGet("https://backend.dth.dexodus.ru/api/users?pagination=false");
+		this->getUsersRequest = HttpGet("http://dexodus.ru/api/users?pagination=false");
 		this->getUsersRequest->LogProgress(HTTPLOG::FAILURE);
 		Http()->Run(this->getUsersRequest);
 
-		this->getRatingsRequest = HttpGet("https://backend.dth.dexodus.ru/ratings");
+		this->getRatingsRequest = HttpGet("http://dexodus.ru/ratings");
 		this->getRatingsRequest->LogProgress(HTTPLOG::FAILURE);
 		Http()->Run(this->getRatingsRequest);
 
-		this->getTasksRequest = HttpGet("https://backend.dth.dexodus.ru/tasks");
+		this->getTasksRequest = HttpGet("http://dexodus.ru/tasks");
 		this->getTasksRequest->LogProgress(HTTPLOG::FAILURE);
 		Http()->Run(this->getTasksRequest);
 
@@ -172,7 +172,7 @@ void DTHDatabase::SendKillInfo(std::string killedPlayerName)
 	CServerInfo CurrentServerInfo;
 	Client()->GetServerInfo(&CurrentServerInfo);
 	dbg_msg("KILL SEND", killedPlayerName.c_str());
-	shared_ptr<CHttpRequest> request = HttpGet(("https://backend.dth.dexodus.ru/kill/" + killedPlayerName).c_str());
+	shared_ptr<CHttpRequest> request = HttpGet(("http://dexodus.ru/kill/" + killedPlayerName).c_str());
 	string authHeader = "Bearer " + GameClient()->user.token;
 	request->HeaderString("Authorization", authHeader.c_str());
 	request->LogProgress(HTTPLOG::FAILURE);
@@ -183,7 +183,7 @@ void DTHDatabase::SendConnectInfo(std::string address)
 {
 	CServerInfo CurrentServerInfo;
 	Client()->GetServerInfo(&CurrentServerInfo);
-	shared_ptr<CHttpRequest> request = HttpGet(("https://backend.dth.dexodus.ru/connect/" + address).c_str());
+	shared_ptr<CHttpRequest> request = HttpGet(("http://dexodus.ru/connect/" + address).c_str());
 	string authHeader = "Bearer " + GameClient()->user.token;
 	request->HeaderString("Authorization", authHeader.c_str());
 	request->LogProgress(HTTPLOG::FAILURE);
@@ -192,7 +192,7 @@ void DTHDatabase::SendConnectInfo(std::string address)
 
 void DTHDatabase::SendDisconnectInfo()
 {
-	shared_ptr<CHttpRequest> request = HttpGet("https://backend.dth.dexodus.ru/disconnect");
+	shared_ptr<CHttpRequest> request = HttpGet("http://dexodus.ru/disconnect");
 	string authHeader = "Bearer " + GameClient()->user.token;
 	request->HeaderString("Authorization", authHeader.c_str());
 	request->LogProgress(HTTPLOG::FAILURE);
@@ -202,7 +202,7 @@ void DTHDatabase::SendDisconnectInfo()
 void DTHDatabase::SendSkinInfo()
 {
 	const CSkin* skin = m_pClient->m_Skins.Find(g_Config.m_ClPlayerSkin);
-	shared_ptr<CHttpRequest> request = HttpGet((std::string("https://backend.dth.dexodus.ru/change-skin/") + skin->GetName() + "/" + to_string(g_Config.m_ClPlayerColorBody) + "/" + to_string(g_Config.m_ClPlayerColorFeet) + "/" + (g_Config.m_ClPlayerUseCustomColor ? "1" : "0")).c_str());
+	shared_ptr<CHttpRequest> request = HttpGet((std::string("http://dexodus.ru/change-skin/") + skin->GetName() + "/" + to_string(g_Config.m_ClPlayerColorBody) + "/" + to_string(g_Config.m_ClPlayerColorFeet) + "/" + (g_Config.m_ClPlayerUseCustomColor ? "1" : "0")).c_str());
 	string authHeader = "Bearer " + GameClient()->user.token;
 	request->HeaderString("Authorization", authHeader.c_str());
 	request->LogProgress(HTTPLOG::FAILURE);
