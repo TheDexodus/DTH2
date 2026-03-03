@@ -7,7 +7,7 @@
 class ScriptsScanner
 {
 public:
-	ScriptsScanner() : directoryForScanning("release\\python") {}
+	ScriptsScanner() : directoryForScanning("python") {}
 	ScriptsScanner(const char* directoryForScanning)
 	{
 		this->directoryForScanning = directoryForScanning;

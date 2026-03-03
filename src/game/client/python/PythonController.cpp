@@ -1,11 +1,46 @@
 #include "PythonController.h"
 #include "Python.h"
 #include "game/client/python/api/api.h"
+#include "game/client/ui.h"
 
 PythonController::PythonController()
 {
 	PyImport_AppendInittab("API", &PyInit_API);
 	Py_Initialize();
+}
+
+void PythonController::SetScriptShowMenuCursor(const std::string &scriptId, bool show)
+{
+	const bool WasEnabled = !scriptShowMenuCursor.empty();
+	if(show)
+	{
+		scriptShowMenuCursor[scriptId] = true;
+	}
+	else
+	{
+		scriptShowMenuCursor.erase(scriptId);
+	}
+
+	showMenuCursor = !scriptShowMenuCursor.empty();
+	if(!WasEnabled && showMenuCursor)
+	{
+		const vec2 NativeMousePos = Input()->NativeMousePos();
+		const CUIRect *pScreen = Ui()->Screen();
+		const float WindowWidth = Graphics()->WindowWidth();
+		const float WindowHeight = Graphics()->WindowHeight();
+		if(WindowWidth > 0.0f && WindowHeight > 0.0f)
+		{
+			m_ScriptCursorPos.x = clamp(NativeMousePos.x * pScreen->w / WindowWidth, pScreen->x, pScreen->x + pScreen->w - 1.0f);
+			m_ScriptCursorPos.y = clamp(NativeMousePos.y * pScreen->h / WindowHeight, pScreen->y, pScreen->y + pScreen->h - 1.0f);
+			m_ScriptCursorPosInitialized = true;
+		}
+	}
+}
+
+void PythonController::RemoveScriptShowMenuCursor(const std::string &scriptId)
+{
+	scriptShowMenuCursor.erase(scriptId);
+	showMenuCursor = !scriptShowMenuCursor.empty();
 }
 
 void PythonController::AutoloadAdd(PythonScript *pythonScript)
@@ -123,6 +158,7 @@ void PythonController::StopExecuteScript(PythonScript* pythonScript)
 {
 	GameClient()->pythonRender.ResetScriptObjects(pythonScript->filepath);
 	pythonScript->fileExceptions = vector<string>(0);
+	RemoveScriptShowMenuCursor(pythonScript->filepath);
 
 	for (auto iterator = this->executedPythonScripts.begin(); iterator != this->executedPythonScripts.end(); iterator++) {
 		auto executedPythonScript = *iterator;
@@ -315,6 +351,13 @@ void PythonController::OnUpdate()
 	// s_LastUpdateId = g_Config.m_ClDummy;
 	// s_LastUpdateGameTick = Client()->GameTick(g_Config.m_ClDummy);
 
+	// Keep mouse mode in sync with script cursor mode and menu state.
+	Input()->SetNativeCursorVisible(false);
+	if(!Input()->IsMouseModeRelative())
+	{
+		Input()->MouseModeRelative();
+	}
+
 	if(m_pClient->m_Snap.m_pLocalInfo && this->executedPythonScripts.size() > 0)
 	{
 		CServerInfo CurrentServerInfo;
@@ -354,6 +397,32 @@ void PythonController::OnUpdate()
 		}
 		Py_XDECREF(function);
 	}
+}
+
+bool PythonController::OnCursorMove(float x, float y, IInput::ECursorType CursorType)
+{
+	if(!showMenuCursor || GameClient()->m_Menus.IsActive())
+		return false;
+
+	Ui()->ConvertMouseMove(&x, &y, CursorType);
+
+	const CUIRect *pScreen = Ui()->Screen();
+	const float WindowWidth = Graphics()->WindowWidth();
+	const float WindowHeight = Graphics()->WindowHeight();
+	if(WindowWidth <= 0.0f || WindowHeight <= 0.0f)
+		return true;
+
+	if(!m_ScriptCursorPosInitialized)
+	{
+		const vec2 NativeMousePos = Input()->NativeMousePos();
+		m_ScriptCursorPos.x = clamp(NativeMousePos.x * pScreen->w / WindowWidth, pScreen->x, pScreen->x + pScreen->w - 1.0f);
+		m_ScriptCursorPos.y = clamp(NativeMousePos.y * pScreen->h / WindowHeight, pScreen->y, pScreen->y + pScreen->h - 1.0f);
+		m_ScriptCursorPosInitialized = true;
+	}
+
+	m_ScriptCursorPos.x = clamp(m_ScriptCursorPos.x + x * pScreen->w / WindowWidth, pScreen->x, pScreen->x + pScreen->w - 1.0f);
+	m_ScriptCursorPos.y = clamp(m_ScriptCursorPos.y + y * pScreen->h / WindowHeight, pScreen->y, pScreen->y + pScreen->h - 1.0f);
+	return true;
 }
 
 void PythonController::ResetInput(int id)

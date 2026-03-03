@@ -6,6 +6,7 @@
 #define DDNET_API_INPUT_H
 
 #include <functional>
+#include <string>
 #include "api.h"
 #include "api_vector2.h"
 
@@ -57,6 +58,18 @@ static PyObject* API_Input_setBlockUserInput(PyObject* self, PyObject* args)
 	PyArg_ParseTuple(args, "b", &block);
 
 	PythonAPI_GameClient->pythonController.blockUserInput = block;
+	Py_RETURN_NONE;
+}
+
+static PyObject* API_Input_showCursor(PyObject* self, PyObject* args)
+{
+	bool isVisible;
+	if(!PyArg_ParseTuple(args, "b", &isVisible))
+		return NULL;
+
+	const std::string &ScriptId = PythonAPI_GameClient->pythonRender.GetScriptRender();
+	PythonAPI_GameClient->pythonController.SetScriptShowMenuCursor(ScriptId, isVisible);
+
 	Py_RETURN_NONE;
 }
 
@@ -192,6 +205,22 @@ static PyObject* API_Input_getMousePosition(PyObject* self, PyObject* args)
 	return (PyObject*) mousePosObject;
 }
 
+static PyObject* API_Input_getCursorPosition(PyObject* self, PyObject* args)
+{
+	vec2 CursorPos;
+	if(PythonAPI_GameClient->m_Menus.IsActive())
+		CursorPos = PythonAPI_GameClient->Ui()->MousePos();
+	else if(PythonAPI_GameClient->pythonController.showMenuCursor)
+		CursorPos = PythonAPI_GameClient->pythonController.GetScriptCursorPos();
+	else
+		CursorPos = PythonAPI_GameClient->m_Controls.m_aMousePos[g_Config.m_ClDummy];
+
+	Vector2 *pCursorPosObject = (Vector2 *)PyObject_New(Vector2, &Vector2Type);
+	pCursorPosObject->x = CursorPos.x;
+	pCursorPosObject->y = CursorPos.y;
+	return (PyObject *)pCursorPosObject;
+}
+
 static PyObject* API_Input_getTargetPosition(PyObject* self, PyObject* args)
 {
 	Vector2* mousePosObject = (Vector2*) PyObject_New(Vector2, &Vector2Type);
@@ -256,8 +285,10 @@ static PyMethodDef API_InputMethods[] = {
 	{"setTargetHumanLike", API_Input_setTargetHumanLike, METH_VARARGS, "Set Target Human Like position(arg: position, delaySeconds, onAimEnded"},
 	{"moveMouseToPlayer", API_Input_moveMouseToPlayer, METH_VARARGS, "Move mouse to player human Like(arg: playerId, delaySeconds, onAimEnded"},
 	{"setBlockUserInput", API_Input_setBlockUserInput, METH_VARARGS, "Block user input"},
+	{"showCursor", API_Input_showCursor, METH_VARARGS, "Show or hide the in-game menu cursor (arg: isVisible: bool)"},
 	{"isHumanLikeMoveEnded", API_Input_isHumanLikeMoveEnded, METH_NOARGS, "Return true, if human like moving is ended, else false"},
 	{"getMousePosition", API_Input_getMousePosition, METH_NOARGS, "Return mouse position of current player"},
+	{"getCursorPosition", API_Input_getCursorPosition, METH_NOARGS, "Return menu/script cursor position, fallback to game aim cursor when hidden"},
 	{"getTargetPosition", API_Input_getTargetPosition, METH_NOARGS, "Return Python target position of current player"},
 	{"removeMoving", API_Input_removeMoving, METH_NOARGS, "Remove human like moving"},
 	{"setWantedWeapon", API_Input_setWantedWeapon, METH_VARARGS, "Set wanted weapon for current player"},

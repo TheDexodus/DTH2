@@ -12,6 +12,7 @@
 #include "api_graphics.h"
 #include "api_tuning.h"
 #include "api_chat.h"
+#include "api_clan.h"
 #include "api_world.h"
 #include "game/client/gameclient.h"
 #include <thread>
@@ -100,6 +101,7 @@ PyMODINIT_FUNC PyInit_API(void) {
 	PyModule_AddObject(APIModule, "Graphics", PyInit_API_Graphics());
 	PyModule_AddObject(APIModule, "Tuning", PyInit_API_Tuning());
 	PyModule_AddObject(APIModule, "Chat", PyInit_API_Chat());
+	PyModule_AddObject(APIModule, "Clan", PyInit_API_Clan());
 
 	while (PyType_Ready(&Vector2Type) < 0 || PyType_Ready(&PlayerType) < 0 || PyType_Ready(&TeeType) < 0 || PyType_Ready(&CharacterType) < 0 || PyType_Ready(&WorldType) < 0)
 	{

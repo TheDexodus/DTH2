@@ -10,10 +10,23 @@
 
 // ============ API.Console Module ============ //
 static PyObject* API_Console_debug(PyObject* self, PyObject* args) {
-	char* message;
-	PyArg_ParseTuple(args, "s", &message);
+	PyObject *pValue = nullptr;
+	if(!PyArg_ParseTuple(args, "O", &pValue))
+		return NULL;
 
-	dbg_msg("Python Script", message);
+	PyObject *pString = PyObject_Str(pValue);
+	if(pString == nullptr)
+		return NULL;
+
+	const char *pMessage = PyUnicode_AsUTF8(pString);
+	if(pMessage == nullptr)
+	{
+		Py_DECREF(pString);
+		return NULL;
+	}
+
+	dbg_msg("Python Script", "%s", pMessage);
+	Py_DECREF(pString);
 	Py_RETURN_NONE;
 }
 

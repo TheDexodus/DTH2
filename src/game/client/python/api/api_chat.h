@@ -9,17 +9,44 @@
 
 // ============ API.Chat Module ============ //
 static PyObject* API_Chat_sendLocalMessage(PyObject* self, PyObject* args) {
-	char* message;
-	PyArg_ParseTuple(args, "s", &message);
+	PyObject *pValue = nullptr;
+	if(!PyArg_ParseTuple(args, "O", &pValue))
+		return NULL;
 
-	PythonAPI_GameClient->m_Chat.Echo(message);
+	PyObject *pString = PyObject_Str(pValue);
+	if(pString == nullptr)
+		return NULL;
+
+	const char *pMessage = PyUnicode_AsUTF8(pString);
+	if(pMessage == nullptr)
+	{
+		Py_DECREF(pString);
+		return NULL;
+	}
+
+	PythonAPI_GameClient->m_Chat.Echo(pMessage);
+	Py_DECREF(pString);
 	Py_RETURN_NONE;
 }
-static PyObject* API_Chat_sendMessage(PyObject* self, PyObject* args) {
-	char* message;
-	PyArg_ParseTuple(args, "s", &message);
 
-	PythonAPI_GameClient->m_Chat.SendChat(0, message);
+static PyObject* API_Chat_sendMessage(PyObject* self, PyObject* args) {
+	PyObject *pValue = nullptr;
+	if(!PyArg_ParseTuple(args, "O", &pValue))
+		return NULL;
+
+	PyObject *pString = PyObject_Str(pValue);
+	if(pString == nullptr)
+		return NULL;
+
+	const char *pMessage = PyUnicode_AsUTF8(pString);
+	if(pMessage == nullptr)
+	{
+		Py_DECREF(pString);
+		return NULL;
+	}
+
+	PythonAPI_GameClient->m_Chat.SendChat(0, pMessage);
+	Py_DECREF(pString);
 	Py_RETURN_NONE;
 }
 

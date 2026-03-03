@@ -1,6 +1,23 @@
 from typing import Any, Tuple, Callable, List, Optional
 
 
+class ClanMemberSkin:
+    name: str
+    skinColor: int
+    footsColor: int
+    customColors: bool
+
+
+class ClanMember:
+    name: str
+    role: str
+    skin: ClanMemberSkin
+
+class ClanPlayer:
+    name: str
+    status: str
+
+
 class Vector2:
     x: float
     y: float
@@ -191,6 +208,15 @@ class Chat:
     def sendMessage(message: str):
         pass;
 
+class Clan:
+    @staticmethod
+    def getMembers() -> List[ClanMember]:
+        pass
+
+    @staticmethod
+    def getPlayers() -> List[ClanPlayer]:
+        pass
+
 class Console:
     @staticmethod
     def debug(message: str) -> None:
@@ -223,6 +249,10 @@ class Input:
         pass
 
     @staticmethod
+    def showCursor(isVisible: bool) -> None:
+        pass
+
+    @staticmethod
     def setTarget(position: Vector2) -> None:
         pass
 
@@ -240,6 +270,10 @@ class Input:
 
     @staticmethod
     def getMousePosition() -> Vector2:
+        pass
+
+    @staticmethod
+    def getCursorPosition() -> Vector2:
         pass
 
     @staticmethod
@@ -359,6 +393,18 @@ class Graphics:
         pass
 
     @staticmethod
+    def drawRect(positionStart: Vector2, positionEnd: Vector2, filled: bool, color: int = 0xffffffff) -> int:
+        pass
+
+    @staticmethod
+    def drawRoundedRect(positionStart: Vector2, positionEnd: Vector2, filled: bool, borderRadius: float, color: int = 0xffffffff) -> int:
+        pass
+
+    @staticmethod
+    def drawSprite(position: Vector2, spritePath: str, size: float) -> int:
+        pass
+
+    @staticmethod
     def rgba(red: int, green: int, blue: int, alpha: int = 255) -> int:
         pass
 
@@ -371,6 +417,22 @@ class Graphics:
         pass
 
     @staticmethod
+    def moveDrawObject(objectId: int, newCoordinate: Vector2) -> None:
+        pass
+
+    @staticmethod
+    def getDrawObjectPosition(objectId: int) -> Optional[Vector2]:
+        pass
+
+    @staticmethod
+    def setDrawObjectRotation(objectId: int, degree: float) -> None:
+        pass
+
+    @staticmethod
+    def getDrawObjectRotation(objectId: int) -> float:
+        pass
+
+    @staticmethod
     def mapWorldPositionToUI(worldPosition: Vector2) -> Vector2:
         pass
 
@@ -380,6 +442,10 @@ class Graphics:
 
     @staticmethod
     def getTextWidth(fontWeight: float, text: str) -> float:
+        pass
+
+    @staticmethod
+    def isMenuDisplayed() -> bool:
         pass
 
 class Tuning:
