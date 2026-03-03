@@ -3,9 +3,9 @@ from typing import Any, Tuple, Callable, List, Optional
 
 class ClanMemberSkin:
     name: str
-    skinColor: int
-    footsColor: int
-    customColors: bool
+    skin_color: int
+    foots_color: int
+    custom_colors: bool
 
 
 class ClanMember:
@@ -44,79 +44,83 @@ class Vector2:
         pass
 
 class World:
-    def getGameTick(self) -> int:
+    def get_game_tick(self) -> int:
         pass
 
     def predict(self, ticks: int) -> 'World':
         pass
 
-    def getPlayer(self, playerId: int) -> 'Player':
+    def get_player(self, player_id: int) -> 'Player':
         pass
 
-    def inputMove(self, playerId: int, direction: int) -> None:
+    def input_move(self, player_id: int, direction: int) -> None:
         pass
-    def inputSetTarget(self, playerId: int, targetPos: 'Vector2') -> None:
+
+    def input_set_target(self, player_id: int, target_pos: 'Vector2') -> None:
         pass
-    def inputJump(self, playerId: int) -> None:
+
+    def input_jump(self, player_id: int) -> None:
         pass
-    def inputFire(self, playerId: int) -> None:
+
+    def input_fire(self, player_id: int) -> None:
         pass
-    def inputHook(self, playerId: int, hook: bool) -> None:
+
+    def input_hook(self, player_id: int, hook: bool) -> None:
         pass
 
 
 class Tee:
     pos: Vector2
     vel: Vector2
-    hookPos: Vector2
-    hookDir: Vector2
-    hookTeleBase: Vector2
-    hookTick: int
-    hookState: int
-    hookedPlayer: int
-    activeWeapon: int
-    isNewHook: bool
+    hook_pos: Vector2
+    hook_dir: Vector2
+    hook_tele_base: Vector2
+    hook_tick: int
+    hook_state: int
+    hooked_player: int
+    active_weapon: int
+    is_new_hook: bool
     jumped: int
-    jumpedTotal: int
+    jumped_total: int
     jumps: int
     direction: int
     angle: int
-    triggeredEvents: int
+    triggered_events: int
     id: int
-    isReset: bool
-    lastVel: Vector2
+    is_reset: bool
+    last_vel: Vector2
     colliding: int
-    isLeftWall: bool
-    isSolo: bool
-    isJetpack: bool
-    isCollisionDisabled: bool
-    isEndlessHook: bool
-    isEndlessJump: bool
-    isHammerHitDisabled: bool
-    isGrenadeHitDisabled: bool
-    isLaserHitDisabled: bool
-    isShotgunHitDisabled: bool
-    isHookHitDisabled: bool
-    isSuper: bool
-    hasTelegunGun: bool
-    hasTelegunGrenade: bool
-    hasTelegunLaser: bool
-    freezeStart: int
-    freezeEnd: int
-    isInFreeze: bool
-    isDeepFrozen: bool
-    isLiveFrozen: bool
-    inputDirection: int
-    inputTarget: Vector2
-    inputJump: int
-    inputFire: int
-    inputHook: int
-    inputPlayerFlags: int
-    inputWantedWeapon: int
-    inputNextWeapon: int
-    inputPrevWeapon: int
+    is_left_wall: bool
+    is_solo: bool
+    is_jetpack: bool
+    is_collision_disabled: bool
+    is_endless_hook: bool
+    is_endless_jump: bool
+    is_hammer_hit_disabled: bool
+    is_grenade_hit_disabled: bool
+    is_laser_hit_disabled: bool
+    is_shotgun_hit_disabled: bool
+    is_hook_hit_disabled: bool
+    is_super: bool
+    has_telegun_gun: bool
+    has_telegun_grenade: bool
+    has_telegun_laser: bool
+    freeze_start: int
+    freeze_end: int
+    is_in_freeze: bool
+    is_deep_frozen: bool
+    is_live_frozen: bool
+    input_direction: int
+    input_target: Vector2
+    input_jump: int
+    input_fire: int
+    input_hook: int
+    input_player_flags: int
+    input_wanted_weapon: int
+    input_next_weapon: int
+    input_prev_weapon: int
 
-    def getSize(self) -> float:
+    def get_size(self) -> float:
         pass
 
     def predict(self, ticksOffset: int) -> 'Tee':
@@ -124,52 +128,52 @@ class Tee:
 
 
 class Player:
-    useCustomColor: int
-    colorBody: int
-    colorFeet: int
+    use_custom_color: int
+    color_body: int
+    color_feet: int
     name: str
     clan: str
     country: int
-    skinName: str
-    skinColor: int
+    skin_name: str
+    skin_color: int
     team: int
     emoticon: int
-    emoticonStartFraction: float
-    emoticonStartTick: int
-    isSolo: bool
-    isJetpack: bool
-    isCollisionDisabled: bool
-    isEndlessHook: bool
-    isEndlessJump: bool
-    isHammerHitDisabled: bool
-    isGrenadeHitDisabled: bool
-    isLaserHitDisabled: bool
-    isShotgunHitDisabled: bool
-    isHookHitDisabled: bool
-    isSuper: bool
-    isHasTelegunGun: bool
-    isHasTelegunGrenade: bool
-    isHasTelegunLaser: bool
-    freezeEnd: int
-    isDeepFrozen: bool
-    isLiveFrozen: bool
+    emoticon_start_fraction: float
+    emoticon_start_tick: int
+    is_solo: bool
+    is_jetpack: bool
+    is_collision_disabled: bool
+    is_endless_hook: bool
+    is_endless_jump: bool
+    is_hammer_hit_disabled: bool
+    is_grenade_hit_disabled: bool
+    is_laser_hit_disabled: bool
+    is_shotgun_hit_disabled: bool
+    is_hook_hit_disabled: bool
+    is_super: bool
+    has_telegun_gun: bool
+    has_telegun_grenade: bool
+    has_telegun_laser: bool
+    freeze_end: int
+    is_deep_frozen: bool
+    is_live_frozen: bool
     angle: float
-    isActive: bool
-    isChatIgnore: bool
-    isEmoticonIgnore: bool
-    isFriend: bool
-    isFoe: bool
-    authLevel: int
-    isAfk: bool
-    isPaused: bool
-    isSpec: bool
-    renderPos: Vector2
-    isPredicted: bool
-    isPredictedLocal: bool
-    smoothStart: Tuple[int, int]
-    smoothLen: Tuple[int, int]
-    isSpecCharPresent: bool
-    specChar: Vector2
+    is_active: bool
+    is_chat_ignore: bool
+    is_emoticon_ignore: bool
+    is_friend: bool
+    is_foe: bool
+    auth_level: int
+    is_afk: bool
+    is_paused: bool
+    is_spec: bool
+    render_pos: Vector2
+    is_predicted: bool
+    is_predicted_local: bool
+    smooth_start: Tuple[int, int]
+    smooth_len: Tuple[int, int]
+    is_spec_char_present: bool
+    spec_char: Vector2
     tee: Tee
 
     def __init__(self, playerId: int):
@@ -184,37 +188,37 @@ def Timeout(timeoutSeconds: float, callback: Callable[[], None]) -> None:
 
 class Collision:
     @staticmethod
-    def intersectLine(position0: Vector2, position1: Vector2) -> Tuple[int, Vector2, Vector2]:
+    def intersect_line(position0: Vector2, position1: Vector2) -> Tuple[int, Vector2, Vector2]:
         pass
 
     @staticmethod
-    def intersectLineTeleHook(position0: Vector2, position1: Vector2) -> Tuple[int, Vector2, Vector2]:
+    def intersect_line_tele_hook(position0: Vector2, position1: Vector2) -> Tuple[int, Vector2, Vector2]:
         pass
 
     @staticmethod
-    def getMapSize() -> Vector2:
+    def get_map_size() -> Vector2:
         pass
 
     @staticmethod
-    def getTile(position: Vector2) -> int:
+    def get_tile(position: Vector2) -> int:
         pass
 
 class Chat:
     @staticmethod
-    def sendLocalMessage(message: str):
+    def send_local_message(message: Any):
         pass;
 
     @staticmethod
-    def sendMessage(message: str):
+    def send_message(message: Any):
         pass;
 
 class Clan:
     @staticmethod
-    def getMembers() -> List[ClanMember]:
+    def get_members() -> List[ClanMember]:
         pass
 
     @staticmethod
-    def getPlayers() -> List[ClanPlayer]:
+    def get_players() -> List[ClanPlayer]:
         pass
 
 class Console:
@@ -245,47 +249,47 @@ class Input:
         pass
 
     @staticmethod
-    def setBlockUserInput(block: bool) -> None:
+    def set_block_user_input(block: bool) -> None:
         pass
 
     @staticmethod
-    def showCursor(isVisible: bool) -> None:
+    def show_cursor(is_visible: bool) -> None:
         pass
 
     @staticmethod
-    def setTarget(position: Vector2) -> None:
+    def set_target(position: Vector2) -> None:
         pass
 
     @staticmethod
-    def setTargetHumanLike(position: Vector2, moveTime: float, onArrived: Callable[[], None] = None) -> None:
+    def set_target_human_like(position: Vector2, move_time: float, on_arrived: Callable[[], None] = None) -> None:
         pass
 
     @staticmethod
-    def moveMouseToPlayer(playerId: int, moveTime: float, onArrived: Callable[[], None] = None) -> None:
+    def move_mouse_to_player(player_id: int, move_time: float, on_arrived: Callable[[], None] = None) -> None:
         pass
 
     @staticmethod
-    def isHumanLikeMoveEnded() -> bool:
+    def is_human_like_move_ended() -> bool:
         pass
 
     @staticmethod
-    def getMousePosition() -> Vector2:
+    def get_mouse_position() -> Vector2:
         pass
 
     @staticmethod
-    def getCursorPosition() -> Vector2:
+    def get_cursor_position() -> Vector2:
         pass
 
     @staticmethod
-    def getTargetPosition() -> Vector2:
+    def get_target_position() -> Vector2:
         pass
 
     @staticmethod
-    def removeMoving() -> None:
+    def remove_moving() -> None:
         pass
 
     @staticmethod
-    def setWantedWeapon(weapon: int):
+    def set_wanted_weapon(weapon: int):
         pass
 
     @staticmethod
@@ -294,7 +298,7 @@ class Input:
         pass
 
     @staticmethod
-    def cancelHumanLike():
+    def cancel_human_like():
         pass
 
     @staticmethod
@@ -324,23 +328,23 @@ class DummyInput:
         pass
 
     @staticmethod
-    def setTarget(position: Vector2) -> None:
+    def set_target(position: Vector2) -> None:
         pass
 
     @staticmethod
-    def getMousePosition() -> Vector2:
+    def get_mouse_position() -> Vector2:
         pass
 
     @staticmethod
-    def getTargetPosition() -> Vector2:
+    def get_target_position() -> Vector2:
         pass
 
     @staticmethod
-    def setWantedWeapon(weapon: int):
+    def set_wanted_weapon(weapon: int):
         pass
 
     @staticmethod
-    def enableControl(enable: bool) -> None:
+    def enable_control(enable: bool) -> None:
         pass
 
     @staticmethod
@@ -350,30 +354,29 @@ class DummyInput:
 
 class Time:
     @staticmethod
-    def getLocalTime() -> float:
+    def get_local_time() -> float:
         pass
 
     @staticmethod
-    def getGameTick(localPlayerId: int = None) -> int:
+    def get_game_tick(local_player_id: int = None) -> int:
         pass
 
 
 class Predict:
     @staticmethod
-    def predictLaser(shooter: Player, shootPosition: Vector2) -> Tuple[List[Vector2], Optional[Player]]:
+    def predict_laser(shooter: Player, shoot_position: Vector2) -> Tuple[List[Vector2], Optional[Player]]:
         pass
 
-
 class Character:
-    playerFlags: int
+    player_flags: int
     health: int
     armor: int
-    ammoCount: int
+    ammo_count: int
     weapon: int
     emote: int
-    attackTick: int
+    attack_tick: int
 
-    isActive: bool
+    is_active: bool
     position: Vector2
 
     def __init__(self, playerId: int):
@@ -381,290 +384,291 @@ class Character:
 
 class Graphics:
     @staticmethod
-    def drawCircle(position: Vector2, radius: float, color: int = 0xffffffff) -> int:
+    def draw_circle(position: Vector2, radius: float, color: int = 0xffffffff) -> int:
         pass
 
     @staticmethod
-    def drawLine(fromPosition: Vector2, toPosition: Vector2, color: int = 0xffffffff) -> int:
+    def draw_line(from_position: Vector2, to_position: Vector2, color: int = 0xffffffff) -> int:
         pass
 
     @staticmethod
-    def drawText(pos: Vector2, fontWeight: float, text: str, color: int = 0xffffffff) -> int:
+    def draw_text(pos: Vector2, font_weight: float, text: str, color: int = 0xffffffff) -> int:
         pass
 
     @staticmethod
-    def drawRect(positionStart: Vector2, positionEnd: Vector2, filled: bool, color: int = 0xffffffff) -> int:
+    def get_rgba(red: int, green: int, blue: int, alpha: int = 255) -> int:
         pass
 
     @staticmethod
-    def drawRoundedRect(positionStart: Vector2, positionEnd: Vector2, filled: bool, borderRadius: float, color: int = 0xffffffff) -> int:
+    def draw_rect(position_start: Vector2, position_end: Vector2, filled: bool, color: int = 0xffffffff) -> int:
         pass
 
     @staticmethod
-    def drawSprite(position: Vector2, spritePath: str, size: float) -> int:
+    def draw_rounded_rect(position_start: Vector2, position_end: Vector2, filled: bool, border_radius: float, color: int = 0xffffffff) -> int:
         pass
 
     @staticmethod
-    def rgba(red: int, green: int, blue: int, alpha: int = 255) -> int:
+    def draw_sprite(position: Vector2, sprite_path: str, size: float) -> int:
         pass
 
     @staticmethod
-    def getScreenSize() -> Vector2:
+    def get_screen_size() -> Vector2:
         pass
 
     @staticmethod
-    def removeDrawObject(objectId: int) -> None:
+    def remove_draw_object(object_id: int) -> None:
         pass
 
     @staticmethod
-    def moveDrawObject(objectId: int, newCoordinate: Vector2) -> None:
+    def move_draw_object(object_id: int, new_coordinate: Vector2) -> None:
         pass
 
     @staticmethod
-    def getDrawObjectPosition(objectId: int) -> Optional[Vector2]:
+    def get_draw_object_position(object_id: int) -> Optional[Vector2]:
         pass
 
     @staticmethod
-    def setDrawObjectRotation(objectId: int, degree: float) -> None:
+    def set_draw_object_rotation(object_id: int, degree: float) -> None:
         pass
 
     @staticmethod
-    def getDrawObjectRotation(objectId: int) -> float:
+    def get_draw_object_rotation(object_id: int) -> float:
         pass
 
     @staticmethod
-    def mapWorldPositionToUI(worldPosition: Vector2) -> Vector2:
+    def map_world_position_to_ui(world_position: Vector2) -> Vector2:
         pass
 
     @staticmethod
-    def mapUIPositionToWorld(uiPosition: Vector2) -> Vector2:
+    def map_ui_position_to_world(ui_position: Vector2) -> Vector2:
         pass
 
     @staticmethod
-    def getTextWidth(fontWeight: float, text: str) -> float:
+    def get_text_width(font_weight: float, text: str) -> float:
         pass
 
     @staticmethod
-    def isMenuDisplayed() -> bool:
+    def is_menu_displayed() -> bool:
         pass
 
 class Tuning:
     @staticmethod
-    def getGroundControlSpeed() -> float:
+    def get_ground_control_speed() -> float:
         pass
 
     @staticmethod
-    def getGroundControlAccel() -> float:
+    def get_ground_control_accel() -> float:
         pass
 
     @staticmethod
-    def getGroundFriction() -> float:
+    def get_ground_friction() -> float:
         pass
 
     @staticmethod
-    def getGroundJumpImpulse() -> float:
+    def get_ground_jump_impulse() -> float:
         pass
 
     @staticmethod
-    def getAirJumpImpulse() -> float:
+    def get_air_jump_impulse() -> float:
         pass
 
     @staticmethod
-    def getAirControlSpeed() -> float:
+    def get_air_control_speed() -> float:
         pass
 
     @staticmethod
-    def getAirControlAccel() -> float:
+    def get_air_control_accel() -> float:
         pass
 
     @staticmethod
-    def getAirFriction() -> float:
+    def get_air_friction() -> float:
         pass
 
     @staticmethod
-    def getHookLength() -> float:
+    def get_hook_length() -> float:
         pass
 
     @staticmethod
-    def getHookFireSpeed() -> float:
+    def get_hook_fire_speed() -> float:
         pass
 
     @staticmethod
-    def getHookDragAccel() -> float:
+    def get_hook_drag_accel() -> float:
         pass
 
     @staticmethod
-    def getHookDragSpeed() -> float:
+    def get_hook_drag_speed() -> float:
         pass
 
     @staticmethod
-    def getGravity() -> float:
+    def get_gravity() -> float:
         pass
 
     @staticmethod
-    def getVelrampStart() -> float:
+    def get_velramp_start() -> float:
         pass
 
     @staticmethod
-    def getVelrampRange() -> float:
+    def get_velramp_range() -> float:
         pass
 
     @staticmethod
-    def getVelrampCurvature() -> float:
+    def get_velramp_curvature() -> float:
         pass
 
     @staticmethod
-    def getGunCurvature() -> float:
+    def get_gun_curvature() -> float:
         pass
 
     @staticmethod
-    def getGunSpeed() -> float:
+    def get_gun_speed() -> float:
         pass
 
     @staticmethod
-    def getGunLifetime() -> float:
+    def get_gun_lifetime() -> float:
         pass
 
     @staticmethod
-    def getShotgunCurvature() -> float:
+    def get_shotgun_curvature() -> float:
         pass
 
     @staticmethod
-    def getShotgunSpeed() -> float:
+    def get_shotgun_speed() -> float:
         pass
 
     @staticmethod
-    def getShotgunSpeeddiff() -> float:
+    def get_shotgun_speeddiff() -> float:
         pass
 
     @staticmethod
-    def getShotgunLifetime() -> float:
+    def get_shotgun_lifetime() -> float:
         pass
 
     @staticmethod
-    def getGrenadeCurvature() -> float:
+    def get_grenade_curvature() -> float:
         pass
 
     @staticmethod
-    def getGrenadeSpeed() -> float:
+    def get_grenade_speed() -> float:
         pass
 
     @staticmethod
-    def getGrenadeLifetime() -> float:
+    def get_grenade_lifetime() -> float:
         pass
 
     @staticmethod
-    def getLaserReach() -> float:
+    def get_laser_reach() -> float:
         pass
 
     @staticmethod
-    def getLaserBounceDelay() -> float:
+    def get_laser_bounce_delay() -> float:
         pass
 
     @staticmethod
-    def getLaserBounceNum() -> float:
+    def get_laser_bounce_num() -> float:
         pass
 
     @staticmethod
-    def getLaserBounceCost() -> float:
+    def get_laser_bounce_cost() -> float:
         pass
 
     @staticmethod
-    def getLaserDamage() -> float:
+    def get_laser_damage() -> float:
         pass
 
     @staticmethod
-    def getPlayerCollision() -> float:
+    def get_player_collision() -> float:
         pass
 
     @staticmethod
-    def getPlayerHooking() -> float:
+    def get_player_hooking() -> float:
         pass
 
     @staticmethod
-    def getJetpackStrength() -> float:
+    def get_jetpack_strength() -> float:
         pass
 
     @staticmethod
-    def getShotgunStrength() -> float:
+    def get_shotgun_strength() -> float:
         pass
 
     @staticmethod
-    def getExplosionStrength() -> float:
+    def get_explosion_strength() -> float:
         pass
 
     @staticmethod
-    def getHammerStrength() -> float:
+    def get_hammer_strength() -> float:
         pass
 
     @staticmethod
-    def getHookDuration() -> float:
+    def get_hook_duration() -> float:
         pass
 
     @staticmethod
-    def getHammerFireDelay() -> float:
+    def get_hammer_fire_delay() -> float:
         pass
 
     @staticmethod
-    def getGunFireDelay() -> float:
+    def get_gun_fire_delay() -> float:
         pass
 
     @staticmethod
-    def getShotgunFireDelay() -> float:
+    def get_shotgun_fire_delay() -> float:
         pass
 
     @staticmethod
-    def getGrenadeFireDelay() -> float:
+    def get_grenade_fire_delay() -> float:
         pass
 
     @staticmethod
-    def getLaserFireDelay() -> float:
+    def get_laser_fire_delay() -> float:
         pass
 
     @staticmethod
-    def getNinjaFireDelay() -> float:
+    def get_ninja_fire_delay() -> float:
         pass
 
     @staticmethod
-    def getHammerHitFireDelay() -> float:
+    def get_hammer_hit_fire_delay() -> float:
         pass
 
     @staticmethod
-    def getGroundElasticityX() -> float:
+    def get_ground_elasticity_x() -> float:
         pass
 
     @staticmethod
-    def getGroundElasticityY() -> float:
+    def get_ground_elasticity_y() -> float:
         pass
 
 #######################################################
 # For using events, just write in your code function. #
 # for example:                                        #
-#   def onUpdate():                                   #
+#   def on_update():                                  #
 #       ...your_code                                  #
 #######################################################
 class Events:
     @staticmethod
-    def onUpdate() -> None:
-        pass
-
-    # If you want reject user input, return `True` in `onInput`
-    @staticmethod
-    def onInput(keyCode: int, flags: int, keyName: str) -> Optional[bool]:
+    def on_update() -> None:
         pass
 
     @staticmethod
-    def onScriptStarted() -> None:
+    def on_input(key_code: int, flags: int, key_name: str) -> Optional[bool]:
         pass
 
     @staticmethod
-    def onScriptStopped() -> None:
+    def on_script_started() -> None:
         pass
 
     @staticmethod
-    def getScriptName() -> str:
+    def on_script_stopped() -> None:
         pass
 
     @staticmethod
-    def onMessage(clientId: int, team: int, message: str) -> None:
+    def get_script_name() -> str:
         pass
+
+    @staticmethod
+    def on_message(client_id: int, team: int, message: str) -> None:
+        pass
+
+

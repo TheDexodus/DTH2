@@ -16,15 +16,15 @@ using namespace std;
 struct Character {
 	PyObject_HEAD;
 
-	int playerFlags;
+	int player_flags;
 	int health;
 	int armor;
-	int ammoCount;
+	int ammo_count;
 	int weapon;
 	int emote;
-	int attackTick;
+	int attack_tick;
 
-	bool isActive;
+	bool is_active;
 	Vector2 position;
 };
 
@@ -49,15 +49,15 @@ static int Character_init(Character *self, PyObject *args, PyObject *kwds)
 
 	auto snapCharacter = PythonAPI_GameClient->m_Snap.m_aCharacters[id];
 
-	self->playerFlags = snapCharacter.m_Cur.m_PlayerFlags;
+	self->player_flags = snapCharacter.m_Cur.m_PlayerFlags;
 	self->health = snapCharacter.m_Cur.m_Health;
 	self->armor = snapCharacter.m_Cur.m_Armor;
-	self->ammoCount = snapCharacter.m_Cur.m_AmmoCount;
+	self->ammo_count = snapCharacter.m_Cur.m_AmmoCount;
 	self->weapon = snapCharacter.m_Cur.m_Weapon;
 	self->emote = snapCharacter.m_Cur.m_Emote;
-	self->attackTick = snapCharacter.m_Cur.m_AttackTick;
+	self->attack_tick = snapCharacter.m_Cur.m_AttackTick;
 
-	self->isActive = snapCharacter.m_Active;
+	self->is_active = snapCharacter.m_Active;
 	self->position = snapCharacter.m_Position;
 
 	return 0;
@@ -68,9 +68,9 @@ static void Character_dealloc(Character* self)
 	Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
-static PyObject* Character_getplayerFlags(Character* self, void* closure)
+static PyObject* Character_getplayer_flags(Character* self, void* closure)
 {
-	return Py_BuildValue("i", self->playerFlags);
+	return Py_BuildValue("i", self->player_flags);
 }
 
 static PyObject* Character_gethealth(Character* self, void* closure)
@@ -83,9 +83,9 @@ static PyObject* Character_getarmor(Character* self, void* closure)
 	return Py_BuildValue("i", self->armor);
 }
 
-static PyObject* Character_getammoCount(Character* self, void* closure)
+static PyObject* Character_getammo_count(Character* self, void* closure)
 {
-	return Py_BuildValue("i", self->ammoCount);
+	return Py_BuildValue("i", self->ammo_count);
 }
 
 static PyObject* Character_getweapon(Character* self, void* closure)
@@ -98,14 +98,14 @@ static PyObject* Character_getemote(Character* self, void* closure)
 	return Py_BuildValue("i", self->emote);
 }
 
-static PyObject* Character_getattackTick(Character* self, void* closure)
+static PyObject* Character_getattack_tick(Character* self, void* closure)
 {
-	return Py_BuildValue("i", self->attackTick);
+	return Py_BuildValue("i", self->attack_tick);
 }
 
-static PyObject* Character_getisActive(Character* self, void* closure)
+static PyObject* Character_getis_active(Character* self, void* closure)
 {
-	return Py_BuildValue("b", self->isActive);
+	return Py_BuildValue("b", self->is_active);
 }
 
 static PyObject* Character_getposition(Character* self, void* closure)
@@ -118,14 +118,14 @@ static PyObject* Character_getposition(Character* self, void* closure)
 }
 
 static PyGetSetDef Character_getseters[] = {
-	{"playerFlags", (getter) Character_getplayerFlags, NULL, "playerFlags (integer)", NULL},
+	{"player_flags", (getter) Character_getplayer_flags, NULL, "player_flags (integer)", NULL},
 	{"health", (getter) Character_gethealth, NULL, "health (integer)", NULL},
 	{"armor", (getter) Character_getarmor, NULL, "armor (integer)", NULL},
-	{"ammoCount", (getter) Character_getammoCount, NULL, "ammoCount (string)", NULL},
+	{"ammo_count", (getter) Character_getammo_count, NULL, "ammo_count (string)", NULL},
 	{"weapon", (getter) Character_getweapon, NULL, "weapon (string)", NULL},
 	{"emote", (getter) Character_getemote, NULL, "emote (integer)", NULL},
-	{"attackTick", (getter) Character_getattackTick, NULL, "attackTick (string)", NULL},
-	{"isActive", (getter) Character_getisActive, NULL, "isActive (bool)", NULL},
+	{"attack_tick", (getter) Character_getattack_tick, NULL, "attack_tick (string)", NULL},
+	{"is_active", (getter) Character_getis_active, NULL, "is_active (bool)", NULL},
 	{"position", (getter) Character_getposition, NULL, "position (Vector2)", NULL},
 	{NULL}  /* Sentinel */
 };
@@ -172,3 +172,4 @@ inline PyTypeObject CharacterType = {
 };
 
 #endif // DDNET_API_CHARACTER_H
+

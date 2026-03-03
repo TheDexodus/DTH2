@@ -80,10 +80,10 @@ static PyObject* API_Collision_GetMapSize(PyObject* self, PyObject* args)
 }
 
 static PyMethodDef API_CollisionMethods[] = {
-	{"intersectLine", API_Collision_IntersectLine, METH_VARARGS, "Intersect Line"},
-	{"intersectLineTeleHook", API_Collision_IntersectLineTeleHook, METH_VARARGS, "Intersect Line Tele Hook"},
-	{"getTile", API_Collision_GetTile, METH_VARARGS, "Get Tile"},
-	{"getMapSize", API_Collision_GetMapSize, METH_VARARGS, "Return Vector2 that is map size"},
+	{"intersect_line", API_Collision_IntersectLine, METH_VARARGS, "intersect_line(position0, position1)"},
+	{"intersect_line_tele_hook", API_Collision_IntersectLineTeleHook, METH_VARARGS, "intersect_line_tele_hook(position0, position1)"},
+	{"get_tile", API_Collision_GetTile, METH_VARARGS, "get_tile(position)"},
+	{"get_map_size", API_Collision_GetMapSize, METH_VARARGS, "get_map_size() -> Vector2"},
 	{NULL, NULL, 0, NULL}
 };
 

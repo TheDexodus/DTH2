@@ -21,8 +21,8 @@ static PyObject* API_Time_getGameTick(PyObject* self, PyObject* args)
 }
 
 static PyMethodDef API_TimeMethods[] = {
-	{"getLocalTime", API_Time_getLocalTime, METH_VARARGS, "Return Client->LocalTime(). 1 unit it's 1 second"},
-	{"getGameTick", API_Time_getGameTick, METH_NOARGS, "Jump tee"},
+	{"get_local_time", API_Time_getLocalTime, METH_VARARGS, "get_local_time()"},
+	{"get_game_tick", API_Time_getGameTick, METH_NOARGS, "get_game_tick(local_player_id=None)"},
 	{NULL, NULL, 0, NULL}
 };
 

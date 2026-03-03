@@ -3,6 +3,13 @@
 #include "game/client/python/api/api.h"
 #include "game/client/ui.h"
 
+static PyObject *GetScriptFunction(PyObject *pModule, const char *pSnakeCase)
+{
+	if(PyObject_HasAttrString(pModule, pSnakeCase))
+		return PyObject_GetAttrString(pModule, pSnakeCase);
+	return nullptr;
+}
+
 PythonController::PythonController()
 {
 	PyImport_AppendInittab("API", &PyInit_API);
@@ -78,12 +85,12 @@ bool PythonController::OnChatMessage(int MsgType, void *pRawMsg)
 	CNetMsg_Sv_Chat *pMsg = (CNetMsg_Sv_Chat *)pRawMsg;
 
 	for (auto ExecutedPythonScript : this->executedPythonScripts) {
-		if (!PyObject_HasAttrString(ExecutedPythonScript->module, "onMessage")) {
+		PyObject *Function = GetScriptFunction(ExecutedPythonScript->module, "on_message");
+		if(Function == nullptr)
+		{
 			ExecutedPythonScript->updateExceptions();
 			continue;
 		}
-
-		PyObject* Function = PyObject_GetAttrString(ExecutedPythonScript->module, "onMessage");
 
 		if (Function != nullptr && PyCallable_Check(Function)) {
 			GameClient()->pythonRender.SetScriptRender(ExecutedPythonScript->filepath);
@@ -98,9 +105,11 @@ bool PythonController::OnChatMessage(int MsgType, void *pRawMsg)
 			Py_XDECREF(KeyCodeObject);
 			Py_XDECREF(KeyFlagsObject);
 			Py_XDECREF(KeyNameObject);
+			Py_XDECREF(result);
 		} else {
 			PyErr_Clear();
 		}
+		Py_XDECREF(Function);
 
 		ExecutedPythonScript->updateExceptions();
 	}
@@ -135,9 +144,9 @@ void PythonController::StartExecuteScript(PythonScript* pythonScript)
 
 	PyObject* function = nullptr;
 
-	if (PyObject_HasAttrString(pythonScript->module, "onScriptStarted")) {
-		function = PyObject_GetAttrString(pythonScript->module, "onScriptStarted");
-	} else {
+	function = GetScriptFunction(pythonScript->module, "on_script_started");
+	if(function == nullptr)
+	{
 		pythonScript->updateExceptions();
 	}
 
@@ -168,9 +177,9 @@ void PythonController::StopExecuteScript(PythonScript* pythonScript)
 
 			PyObject* function = nullptr;
 
-			if (PyObject_HasAttrString(executedPythonScript->module, "onScriptStopped")) {
-				function = PyObject_GetAttrString(pythonScript->module, "onScriptStopped");
-			} else {
+			function = GetScriptFunction(executedPythonScript->module, "on_script_stopped");
+			if(function == nullptr)
+			{
 				executedPythonScript->updateExceptions();
 			}
 
@@ -197,12 +206,12 @@ bool PythonController::OnInput(const IInput::CEvent &Event)
 	bool NeedBrakeInput = false;
 
 	for (auto ExecutedPythonScript : this->executedPythonScripts) {
-		if (!PyObject_HasAttrString(ExecutedPythonScript->module, "onInput")) {
+		PyObject *Function = GetScriptFunction(ExecutedPythonScript->module, "on_input");
+		if(Function == nullptr)
+		{
 			ExecutedPythonScript->updateExceptions();
 			continue;
 		}
-
-		PyObject* Function = PyObject_GetAttrString(ExecutedPythonScript->module, "onInput");
 
 		if (Function != nullptr && PyCallable_Check(Function)) {
 			GameClient()->pythonRender.SetScriptRender(ExecutedPythonScript->filepath);
@@ -221,9 +230,11 @@ bool PythonController::OnInput(const IInput::CEvent &Event)
 			Py_XDECREF(KeyCodeObject);
 			Py_XDECREF(KeyFlagsObject);
 			Py_XDECREF(KeyNameObject);
+			Py_XDECREF(result);
 		} else {
 			PyErr_Clear();
 		}
+		Py_XDECREF(Function);
 
 		ExecutedPythonScript->updateExceptions();
 	}
@@ -377,12 +388,18 @@ void PythonController::OnUpdate()
 
 	for (auto executedPythonScript : this->executedPythonScripts) {
 		executedPythonScript->updateExceptions();
-		if (!PyModule_Check(executedPythonScript->module) || !PyObject_HasAttrString(executedPythonScript->module, "onUpdate")) {
+		if(!PyModule_Check(executedPythonScript->module))
+		{
 			executedPythonScript->updateExceptions();
 			continue;
 		}
 
-		PyObject* function = PyObject_GetAttrString(executedPythonScript->module, "onUpdate");
+		PyObject* function = GetScriptFunction(executedPythonScript->module, "on_update");
+		if(function == nullptr)
+		{
+			executedPythonScript->updateExceptions();
+			continue;
+		}
 
 		if (function != nullptr && PyCallable_Check(function)) {
 			GameClient()->pythonRender.SetScriptRender(executedPythonScript->filepath);

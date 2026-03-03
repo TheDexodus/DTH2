@@ -1,6 +1,13 @@
 #include "PythonScript.h"
 #include "Python.h"
 
+static PyObject *GetScriptFunction(PyObject *pModule, const char *pSnakeCase)
+{
+	if(PyObject_HasAttrString(pModule, pSnakeCase))
+		return PyObject_GetAttrString(pModule, pSnakeCase);
+	return nullptr;
+}
+
 PythonScript::PythonScript(string filepath)
 {
 	this->filepath = filepath;
@@ -81,7 +88,7 @@ void PythonScript::init()
 		return;
 	}
 
-	PyObject* getScriptNameFunction = PyObject_GetAttrString(this->module, "getScriptName");
+	PyObject* getScriptNameFunction = GetScriptFunction(this->module, "get_script_name");
 	if (getScriptNameFunction && PyCallable_Check(getScriptNameFunction)) {
 		PyObject* args = PyTuple_Pack(0);
 		PyObject* getScriptNameFunctionReturn = PyObject_CallObject(getScriptNameFunction, args);

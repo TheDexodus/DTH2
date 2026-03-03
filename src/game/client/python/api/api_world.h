@@ -23,106 +23,106 @@ static Player* World_getPlayer(World* self, PyObject *args)
 	CCharacter* character = self->world.GetCharacterById(playerId);
 
 	Player *player = (Player *)PyObject_New(Player, &PlayerType);
-	player->useCustomColor = clientData.m_UseCustomColor;
-	player->colorBody = clientData.m_ColorBody;
-	player->colorFeet = clientData.m_ColorFeet;
+	player->use_custom_color = clientData.m_UseCustomColor;
+	player->color_body = clientData.m_ColorBody;
+	player->color_feet = clientData.m_ColorFeet;
 
 	strcpy(player->name, clientData.m_aName);
 	strcpy(player->clan, clientData.m_aClan);
 	player->country = clientData.m_Country;
-	strcpy(player->skinName, clientData.m_aSkinName);
-	player->skinColor = clientData.m_SkinColor;
+	strcpy(player->skin_name, clientData.m_aSkinName);
+	player->skin_color = clientData.m_SkinColor;
 	player->team = character->Team();
 	player->emoticon = clientData.m_Emoticon;
-	player->emoticonStartFraction = clientData.m_EmoticonStartFraction;
-	player->emoticonStartTick = clientData.m_EmoticonStartTick;
-	player->isSolo = clientData.m_Solo;
-	player->isJetpack = clientData.m_Jetpack;
-	player->isCollisionDisabled = clientData.m_CollisionDisabled;
-	player->isEndlessHook = clientData.m_EndlessHook;
-	player->isEndlessJump = clientData.m_EndlessJump;
-	player->isHammerHitDisabled = clientData.m_HammerHitDisabled;
-	player->isGrenadeHitDisabled = clientData.m_GrenadeHitDisabled;
-	player->isLaserHitDisabled = clientData.m_LaserHitDisabled;
-	player->isShotgunHitDisabled = clientData.m_ShotgunHitDisabled;
-	player->isHookHitDisabled = clientData.m_HookHitDisabled;
-	player->isSuper = clientData.m_Super;
-	player->isHasTelegunGun = clientData.m_HasTelegunGun;
-	player->isHasTelegunGrenade = clientData.m_HasTelegunGrenade;
-	player->isHasTelegunLaser = clientData.m_HasTelegunLaser;
-	player->freezeEnd = clientData.m_FreezeEnd;
-	player->isDeepFrozen = clientData.m_DeepFrozen;
-	player->isLiveFrozen = clientData.m_LiveFrozen;
+	player->emoticon_start_fraction = clientData.m_EmoticonStartFraction;
+	player->emoticon_start_tick = clientData.m_EmoticonStartTick;
+	player->is_solo = clientData.m_Solo;
+	player->is_jetpack = clientData.m_Jetpack;
+	player->is_collision_disabled = clientData.m_CollisionDisabled;
+	player->is_endless_hook = clientData.m_EndlessHook;
+	player->is_endless_jump = clientData.m_EndlessJump;
+	player->is_hammer_hit_disabled = clientData.m_HammerHitDisabled;
+	player->is_grenade_hit_disabled = clientData.m_GrenadeHitDisabled;
+	player->is_laser_hit_disabled = clientData.m_LaserHitDisabled;
+	player->is_shotgun_hit_disabled = clientData.m_ShotgunHitDisabled;
+	player->is_hook_hit_disabled = clientData.m_HookHitDisabled;
+	player->is_super = clientData.m_Super;
+	player->has_telegun_gun = clientData.m_HasTelegunGun;
+	player->has_telegun_grenade = clientData.m_HasTelegunGrenade;
+	player->has_telegun_laser = clientData.m_HasTelegunLaser;
+	player->freeze_end = clientData.m_FreezeEnd;
+	player->is_deep_frozen = clientData.m_DeepFrozen;
+	player->is_live_frozen = clientData.m_LiveFrozen;
 	player->angle = clientData.m_Angle;
-	player->isActive = clientData.m_Active;
-	player->isChatIgnore = clientData.m_ChatIgnore;
-	player->isEmoticonIgnore = clientData.m_EmoticonIgnore;
-	player->isFriend = clientData.m_Friend;
-	player->isFoe = clientData.m_Foe;
+	player->is_active = clientData.m_Active;
+	player->is_chat_ignore = clientData.m_ChatIgnore;
+	player->is_emoticon_ignore = clientData.m_EmoticonIgnore;
+	player->is_friend = clientData.m_Friend;
+	player->is_foe = clientData.m_Foe;
 
-	player->authLevel = clientData.m_AuthLevel;
-	player->isAfk = clientData.m_Afk;
-	player->isPaused = clientData.m_Paused;
-	player->isSpec = clientData.m_Spec;
+	player->auth_level = clientData.m_AuthLevel;
+	player->is_afk = clientData.m_Afk;
+	player->is_paused = clientData.m_Paused;
+	player->is_spec = clientData.m_Spec;
 
-	player->renderPos = Vector2(clientData.m_RenderPos);
-	player->isPredicted = clientData.m_IsPredicted;
-	player->isPredictedLocal = clientData.m_IsPredictedLocal;
-	player->smoothStart[0] = clientData.m_aSmoothStart[0];
-	player->smoothStart[1] = clientData.m_aSmoothStart[1];
-	player->smoothLen[0] = clientData.m_aSmoothLen[0];
-	player->smoothLen[1] = clientData.m_aSmoothLen[1];
-	player->isSpecCharPresent = clientData.m_SpecCharPresent;
-	player->specChar = clientData.m_SpecChar;
+	player->render_pos = Vector2(clientData.m_RenderPos);
+	player->is_predicted = clientData.m_IsPredicted;
+	player->is_predicted_local = clientData.m_IsPredictedLocal;
+	player->smooth_start[0] = clientData.m_aSmoothStart[0];
+	player->smooth_start[1] = clientData.m_aSmoothStart[1];
+	player->smooth_len[0] = clientData.m_aSmoothLen[0];
+	player->smooth_len[1] = clientData.m_aSmoothLen[1];
+	player->is_spec_char_present = clientData.m_SpecCharPresent;
+	player->spec_char = clientData.m_SpecChar;
 
 	player->tee.pos = Vector2(character->Core()->m_Pos);
 	player->tee.vel = Vector2(character->Core()->m_Vel);
-	player->tee.hookPos = Vector2(character->Core()->m_HookPos);
-	player->tee.hookDir = Vector2(character->Core()->m_HookDir);
-	player->tee.hookTeleBase = Vector2(character->Core()->m_HookTeleBase);
-	player->tee.hookTick = character->Core()->m_HookTick;
-	player->tee.hookState = character->Core()->m_HookState;
-	player->tee.activeWeapon = character->Core()->m_ActiveWeapon;
-	player->tee.isNewHook = character->Core()->m_NewHook;
+	player->tee.hook_pos = Vector2(character->Core()->m_HookPos);
+	player->tee.hook_dir = Vector2(character->Core()->m_HookDir);
+	player->tee.hook_tele_base = Vector2(character->Core()->m_HookTeleBase);
+	player->tee.hook_tick = character->Core()->m_HookTick;
+	player->tee.hook_state = character->Core()->m_HookState;
+	player->tee.active_weapon = character->Core()->m_ActiveWeapon;
+	player->tee.is_new_hook = character->Core()->m_NewHook;
 	player->tee.jumped = character->Core()->m_Jumped;
-	player->tee.jumpedTotal = character->Core()->m_JumpedTotal;
+	player->tee.jumped_total = character->Core()->m_JumpedTotal;
 	player->tee.jumps = character->Core()->m_Jumps;
 	player->tee.direction = character->Core()->m_Direction;
 	player->tee.angle = character->Core()->m_Angle;
-	player->tee.triggeredEvents = character->Core()->m_TriggeredEvents;
+	player->tee.triggered_events = character->Core()->m_TriggeredEvents;
 	player->tee.id = character->Core()->m_Id;
-	player->tee.isReset = character->Core()->m_Reset;
+	player->tee.is_reset = character->Core()->m_Reset;
 	player->tee.colliding = character->Core()->m_Colliding;
-	player->tee.isLeftWall = character->Core()->m_LeftWall;
-	player->tee.isSolo = character->Core()->m_Solo;
-	player->tee.isJetpack = character->Core()->m_Jetpack;
-	player->tee.isCollisionDisabled = character->Core()->m_CollisionDisabled;
-	player->tee.isEndlessHook = character->Core()->m_EndlessHook;
-	player->tee.isEndlessJump = character->Core()->m_EndlessJump;
-	player->tee.isHammerHitDisabled = character->Core()->m_HammerHitDisabled;
-	player->tee.isGrenadeHitDisabled = character->Core()->m_GrenadeHitDisabled;
-	player->tee.isLaserHitDisabled = character->Core()->m_LaserHitDisabled;
-	player->tee.isShotgunHitDisabled = character->Core()->m_ShotgunHitDisabled;
-	player->tee.isHookHitDisabled = character->Core()->m_HookHitDisabled;
-	player->tee.isSuper = character->Core()->m_Super;
-	player->tee.hasTelegunGun = character->Core()->m_HasTelegunGun;
-	player->tee.hasTelegunGrenade = character->Core()->m_HasTelegunGrenade;
-	player->tee.hasTelegunLaser = character->Core()->m_HasTelegunLaser;
-	player->tee.freezeStart = character->Core()->m_FreezeStart;
-	player->tee.freezeEnd = character->Core()->m_FreezeEnd;
-	player->tee.isInFreeze = character->Core()->m_IsInFreeze;
-	player->tee.isDeepFrozen = character->Core()->m_DeepFrozen;
-	player->tee.isLiveFrozen = character->Core()->m_LiveFrozen;
+	player->tee.is_left_wall = character->Core()->m_LeftWall;
+	player->tee.is_solo = character->Core()->m_Solo;
+	player->tee.is_jetpack = character->Core()->m_Jetpack;
+	player->tee.is_collision_disabled = character->Core()->m_CollisionDisabled;
+	player->tee.is_endless_hook = character->Core()->m_EndlessHook;
+	player->tee.is_endless_jump = character->Core()->m_EndlessJump;
+	player->tee.is_hammer_hit_disabled = character->Core()->m_HammerHitDisabled;
+	player->tee.is_grenade_hit_disabled = character->Core()->m_GrenadeHitDisabled;
+	player->tee.is_laser_hit_disabled = character->Core()->m_LaserHitDisabled;
+	player->tee.is_shotgun_hit_disabled = character->Core()->m_ShotgunHitDisabled;
+	player->tee.is_hook_hit_disabled = character->Core()->m_HookHitDisabled;
+	player->tee.is_super = character->Core()->m_Super;
+	player->tee.has_telegun_gun = character->Core()->m_HasTelegunGun;
+	player->tee.has_telegun_grenade = character->Core()->m_HasTelegunGrenade;
+	player->tee.has_telegun_laser = character->Core()->m_HasTelegunLaser;
+	player->tee.freeze_start = character->Core()->m_FreezeStart;
+	player->tee.freeze_end = character->Core()->m_FreezeEnd;
+	player->tee.is_in_freeze = character->Core()->m_IsInFreeze;
+	player->tee.is_deep_frozen = character->Core()->m_DeepFrozen;
+	player->tee.is_live_frozen = character->Core()->m_LiveFrozen;
 
-	player->tee.inputDirection = character->Core()->m_Input.m_Direction;
-	player->tee.inputTarget = Vector2(vec2(character->Core()->m_Input.m_TargetX, character->Core()->m_Input.m_TargetY));
-	player->tee.inputJump = character->Core()->m_Input.m_Jump;
-	player->tee.inputFire = character->Core()->m_Input.m_Fire;
-	player->tee.inputHook = character->Core()->m_Input.m_Hook;
-	player->tee.inputPlayerFlags = character->Core()->m_Input.m_PlayerFlags;
-	player->tee.inputWantedWeapon = character->Core()->m_Input.m_WantedWeapon;
-	player->tee.inputNextWeapon = character->Core()->m_Input.m_NextWeapon;
-	player->tee.inputPrevWeapon = character->Core()->m_Input.m_PrevWeapon;
+	player->tee.input_direction = character->Core()->m_Input.m_Direction;
+	player->tee.input_target = Vector2(vec2(character->Core()->m_Input.m_TargetX, character->Core()->m_Input.m_TargetY));
+	player->tee.input_jump = character->Core()->m_Input.m_Jump;
+	player->tee.input_fire = character->Core()->m_Input.m_Fire;
+	player->tee.input_hook = character->Core()->m_Input.m_Hook;
+	player->tee.input_player_flags = character->Core()->m_Input.m_PlayerFlags;
+	player->tee.input_wanted_weapon = character->Core()->m_Input.m_WantedWeapon;
+	player->tee.input_next_weapon = character->Core()->m_Input.m_NextWeapon;
+	player->tee.input_prev_weapon = character->Core()->m_Input.m_PrevWeapon;
 
 	return player;
 }
@@ -222,14 +222,14 @@ static PyObject* World_GetGameTick(World* self, PyObject *args)
 }
 
 static PyMethodDef World_methods[] = {
-	{"getGameTick", (PyCFunction)World_GetGameTick, METH_VARARGS, "Get world game tick"},
+	{"get_game_tick", (PyCFunction)World_GetGameTick, METH_VARARGS, "get_game_tick()"},
+	{"get_player", (PyCFunction)World_getPlayer, METH_VARARGS, "get_player(player_id)"},
+	{"input_move", (PyCFunction)World_InputMove, METH_VARARGS, "input_move(player_id, direction)"},
+	{"input_set_target", (PyCFunction)World_InputSetTarget, METH_VARARGS, "input_set_target(player_id, target_pos)"},
+	{"input_jump", (PyCFunction)World_InputJump, METH_VARARGS, "input_jump(player_id)"},
+	{"input_fire", (PyCFunction)World_InputFire, METH_VARARGS, "input_fire(player_id)"},
+	{"input_hook", (PyCFunction)World_InputHook, METH_VARARGS, "input_hook(player_id, hook)"},
 	{"predict", (PyCFunction)World_predict, METH_VARARGS, "Predict world on ticks"},
-	{"getPlayer", (PyCFunction)World_getPlayer, METH_VARARGS, "Get player from this world"},
-	{"inputMove", (PyCFunction)World_InputMove, METH_VARARGS, "No doc"},
-	{"inputSetTarget", (PyCFunction)World_InputSetTarget, METH_VARARGS, "No doc"},
-	{"inputJump", (PyCFunction)World_InputJump, METH_VARARGS, "No doc"},
-	{"inputFire", (PyCFunction)World_InputFire, METH_VARARGS, "No doc"},
-	{"inputHook", (PyCFunction)World_InputHook, METH_VARARGS, "No doc"},
 	{NULL}  /* Sentinel */
 };
 
@@ -312,3 +312,4 @@ inline PyTypeObject WorldType = {
 };
 
 #endif // DDNET_API_WORLD_H
+

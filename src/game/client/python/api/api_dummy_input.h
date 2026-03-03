@@ -104,11 +104,11 @@ static PyMethodDef API_DummyInputMethods[] = {
 	{"jump", API_DummyInput_jump, METH_NOARGS, "Jump tee"},
 	{"hook", API_DummyInput_Hook, METH_VARARGS, "Hook tee"},
 	{"fire", API_DummyInput_fire, METH_NOARGS, "Fire tee"},
-	{"setTarget", API_DummyInput_setTarget, METH_VARARGS, "Set Target position(arg: {'x': int, 'y': int})"},
-	{"getMousePosition", API_DummyInput_getMousePosition, METH_NOARGS, "Return mouse position of current player"},
-	{"getTargetPosition", API_DummyInput_getTargetPosition, METH_NOARGS, "Return Python target position of current player"},
-	{"setWantedWeapon", API_DummyInput_setWantedWeapon, METH_VARARGS, "Set wanted weapon for current player"},
-	{"enableControl", API_DummyInput_enableControl, METH_VARARGS, "Enable/Disable control of dummy"},
+	{"set_target", API_DummyInput_setTarget, METH_VARARGS, "set_target(position)"},
+	{"get_mouse_position", API_DummyInput_getMousePosition, METH_NOARGS, "get_mouse_position() -> Vector2"},
+	{"get_target_position", API_DummyInput_getTargetPosition, METH_NOARGS, "get_target_position() -> Vector2"},
+	{"set_wanted_weapon", API_DummyInput_setWantedWeapon, METH_VARARGS, "set_wanted_weapon(weapon)"},
+	{"enable_control", API_DummyInput_enableControl, METH_VARARGS, "enable_control(enable)"},
 	{"kill", API_DummyInput_kill, METH_VARARGS, "Kill the dummy"},
 	{NULL, NULL, 0, NULL}
 };

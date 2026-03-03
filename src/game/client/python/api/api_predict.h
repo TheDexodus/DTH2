@@ -71,7 +71,7 @@ static PyObject* API_Predict_predictLaser(PyObject* self, PyObject* args)
 }
 
 static PyMethodDef API_PredictMethods[] = {
-	{"predictLaser", API_Predict_predictLaser, METH_VARARGS, "Return Client->LocalPredict(). 1 unit it's 1 second"},
+	{"predict_laser", API_Predict_predictLaser, METH_VARARGS, "predict_laser(shooter, shoot_position)"},
 	{NULL, NULL, 0, NULL}
 };
 

@@ -16,71 +16,71 @@ typedef struct {
 	Vector2 pos;
 	Vector2 vel;
 
-	Vector2 hookPos;
-	Vector2 hookDir;
-	Vector2 hookTeleBase;
-	int hookTick;
-	int hookState;
-	int hookedPlayer;
+	Vector2 hook_pos;
+	Vector2 hook_dir;
+	Vector2 hook_tele_base;
+	int hook_tick;
+	int hook_state;
+	int hooked_player;
 
-	int activeWeapon;
+	int active_weapon;
 
-	bool isNewHook;
+	bool is_new_hook;
 
 	int jumped;
 	// m_JumpedTotal counts the jumps performed in the air
-	int jumpedTotal;
+	int jumped_total;
 	int jumps;
 
 	int direction;
 	int angle;
 
-	int triggeredEvents;
+	int triggered_events;
 
 	// DDRace
 	int id;
-	bool isReset;
+	bool is_reset;
 
-	Vector2 lastVel;
+	Vector2 last_vel;
 	int colliding;
-	bool isLeftWall;
+	bool is_left_wall;
 
 	// DDNet Character
-	bool isSolo;
-	bool isJetpack;
-	bool isCollisionDisabled;
-	bool isEndlessHook;
-	bool isEndlessJump;
-	bool isHammerHitDisabled;
-	bool isGrenadeHitDisabled;
-	bool isLaserHitDisabled;
-	bool isShotgunHitDisabled;
-	bool isHookHitDisabled;
-	bool isSuper;
-	bool hasTelegunGun;
-	bool hasTelegunGrenade;
-	bool hasTelegunLaser;
-	int freezeStart;
-	int freezeEnd;
-	bool isInFreeze;
-	bool isDeepFrozen;
-	bool isLiveFrozen;
+	bool is_solo;
+	bool is_jetpack;
+	bool is_collision_disabled;
+	bool is_endless_hook;
+	bool is_endless_jump;
+	bool is_hammer_hit_disabled;
+	bool is_grenade_hit_disabled;
+	bool is_laser_hit_disabled;
+	bool is_shotgun_hit_disabled;
+	bool is_hook_hit_disabled;
+	bool is_super;
+	bool has_telegun_gun;
+	bool has_telegun_grenade;
+	bool has_telegun_laser;
+	int freeze_start;
+	int freeze_end;
+	bool is_in_freeze;
+	bool is_deep_frozen;
+	bool is_live_frozen;
 
 	// Input
-	int inputDirection;
-	Vector2 inputTarget;
-	int inputJump;
-	int inputFire;
-	int inputHook;
-	int inputPlayerFlags;
-	int inputWantedWeapon;
-	int inputNextWeapon;
-	int inputPrevWeapon;
+	int input_direction;
+	Vector2 input_target;
+	int input_jump;
+	int input_fire;
+	int input_hook;
+	int input_player_flags;
+	int input_wanted_weapon;
+	int input_next_weapon;
+	int input_prev_weapon;
 } Tee;
 
 extern PyTypeObject TeeType;
 
-static PyObject* Tee_getSize(Tee* self, void* closure)
+static PyObject* Tee_get_size(Tee* self, void* closure)
 {
 	return PyFloat_FromDouble(28.0);
 }
@@ -99,13 +99,13 @@ static Tee *Tee_predict(Tee *self, PyObject *args)
 
 	clone.m_Pos = self->pos.toVec2();
 	clone.m_Vel = self->vel.toVec2();
-	clone.m_HookPos = self->hookPos.toVec2();
-	clone.m_HookDir = self->hookDir.toVec2();
-	clone.m_HookTeleBase = self->hookTeleBase.toVec2();
-	clone.m_HookTick = self->hookTick;
-	clone.m_HookState = self->hookState;
+	clone.m_HookPos = self->hook_pos.toVec2();
+	clone.m_HookDir = self->hook_dir.toVec2();
+	clone.m_HookTeleBase = self->hook_tele_base.toVec2();
+	clone.m_HookTick = self->hook_tick;
+	clone.m_HookState = self->hook_state;
 	clone.m_AttachedPlayers = original.m_AttachedPlayers;
-	clone.m_ActiveWeapon = self->activeWeapon;
+	clone.m_ActiveWeapon = self->active_weapon;
 	clone.m_aWeapons[0] = original.m_aWeapons[0];
 	clone.m_aWeapons[1] = original.m_aWeapons[1];
 	clone.m_aWeapons[2] = original.m_aWeapons[2];
@@ -113,37 +113,37 @@ static Tee *Tee_predict(Tee *self, PyObject *args)
 	clone.m_aWeapons[4] = original.m_aWeapons[4];
 	clone.m_aWeapons[5] = original.m_aWeapons[5];
 	clone.m_Ninja = original.m_Ninja;
-	clone.m_NewHook = self->isNewHook;
+	clone.m_NewHook = self->is_new_hook;
 	clone.m_Jumped = self->jumped;
-	clone.m_JumpedTotal = self->jumpedTotal;
+	clone.m_JumpedTotal = self->jumped_total;
 	clone.m_Jumps = self->jumps;
 	clone.m_Direction = self->direction;
 	clone.m_Angle = self->angle;
 	clone.m_Input = original.m_Input;
-	clone.m_TriggeredEvents = self->triggeredEvents;
+	clone.m_TriggeredEvents = self->triggered_events;
 	clone.m_Id = self->id;
-	clone.m_Reset = self->isReset;
+	clone.m_Reset = self->is_reset;
 	clone.m_Colliding = self->colliding;
-	clone.m_LeftWall = self->isLeftWall;
-	clone.m_Solo = self->isSolo;
-	clone.m_Jetpack = self->isJetpack;
-	clone.m_CollisionDisabled = self->isCollisionDisabled;
-	clone.m_EndlessHook = self->isEndlessHook;
-	clone.m_EndlessJump = self->isEndlessJump;
-	clone.m_HammerHitDisabled = self->isHammerHitDisabled;
-	clone.m_GrenadeHitDisabled = self->isGrenadeHitDisabled;
-	clone.m_LaserHitDisabled = self->isLaserHitDisabled;
-	clone.m_ShotgunHitDisabled = self->isShotgunHitDisabled;
-	clone.m_HookHitDisabled = self->isHookHitDisabled;
-	clone.m_Super = self->isSuper;
-	clone.m_HasTelegunGun = self->hasTelegunGun;
-	clone.m_HasTelegunGrenade = self->hasTelegunGrenade;
-	clone.m_HasTelegunLaser = self->hasTelegunLaser;
-	clone.m_FreezeStart = self->freezeStart;
-	clone.m_FreezeEnd = self->freezeEnd;
-	clone.m_IsInFreeze = self->isInFreeze;
-	clone.m_DeepFrozen = self->isDeepFrozen;
-	clone.m_LiveFrozen = self->isLiveFrozen;
+	clone.m_LeftWall = self->is_left_wall;
+	clone.m_Solo = self->is_solo;
+	clone.m_Jetpack = self->is_jetpack;
+	clone.m_CollisionDisabled = self->is_collision_disabled;
+	clone.m_EndlessHook = self->is_endless_hook;
+	clone.m_EndlessJump = self->is_endless_jump;
+	clone.m_HammerHitDisabled = self->is_hammer_hit_disabled;
+	clone.m_GrenadeHitDisabled = self->is_grenade_hit_disabled;
+	clone.m_LaserHitDisabled = self->is_laser_hit_disabled;
+	clone.m_ShotgunHitDisabled = self->is_shotgun_hit_disabled;
+	clone.m_HookHitDisabled = self->is_hook_hit_disabled;
+	clone.m_Super = self->is_super;
+	clone.m_HasTelegunGun = self->has_telegun_gun;
+	clone.m_HasTelegunGrenade = self->has_telegun_grenade;
+	clone.m_HasTelegunLaser = self->has_telegun_laser;
+	clone.m_FreezeStart = self->freeze_start;
+	clone.m_FreezeEnd = self->freeze_end;
+	clone.m_IsInFreeze = self->is_in_freeze;
+	clone.m_DeepFrozen = self->is_deep_frozen;
+	clone.m_LiveFrozen = self->is_live_frozen;
 	clone.m_isClone = true;
 	clone.ForceSetHookedPlayer(original.HookedPlayer());
 	clone.SetTeamsCore(original.getTeams());
@@ -156,48 +156,48 @@ static Tee *Tee_predict(Tee *self, PyObject *args)
 	Tee *tee = (Tee *)PyObject_New(Tee, &TeeType);
 	tee->pos = Vector2(predictedCore.m_Pos);
 	tee->vel = Vector2(predictedCore.m_Vel);
-	tee->hookPos = Vector2(predictedCore.m_HookPos);
-	tee->hookDir = Vector2(predictedCore.m_HookDir);
-	tee->hookTeleBase = Vector2(predictedCore.m_HookTeleBase);
-	tee->hookTick = predictedCore.m_HookTick;
-	tee->hookState = predictedCore.m_HookState;
-	tee->activeWeapon = predictedCore.m_ActiveWeapon;
-	tee->isNewHook = predictedCore.m_NewHook;
+	tee->hook_pos = Vector2(predictedCore.m_HookPos);
+	tee->hook_dir = Vector2(predictedCore.m_HookDir);
+	tee->hook_tele_base = Vector2(predictedCore.m_HookTeleBase);
+	tee->hook_tick = predictedCore.m_HookTick;
+	tee->hook_state = predictedCore.m_HookState;
+	tee->active_weapon = predictedCore.m_ActiveWeapon;
+	tee->is_new_hook = predictedCore.m_NewHook;
 	tee->jumped = predictedCore.m_Jumped;
-	tee->jumpedTotal = predictedCore.m_JumpedTotal;
+	tee->jumped_total = predictedCore.m_JumpedTotal;
 	tee->jumps = predictedCore.m_Jumps;
 	tee->direction = predictedCore.m_Direction;
 	tee->angle = predictedCore.m_Angle;
-	tee->triggeredEvents = predictedCore.m_TriggeredEvents;
+	tee->triggered_events = predictedCore.m_TriggeredEvents;
 	tee->id = predictedCore.m_Id;
-	tee->isReset = predictedCore.m_Reset;
+	tee->is_reset = predictedCore.m_Reset;
 	tee->colliding = predictedCore.m_Colliding;
-	tee->isLeftWall = predictedCore.m_LeftWall;
-	tee->isSolo = predictedCore.m_Solo;
-	tee->isJetpack = predictedCore.m_Jetpack;
-	tee->isCollisionDisabled = predictedCore.m_CollisionDisabled;
-	tee->isEndlessHook = predictedCore.m_EndlessHook;
-	tee->isEndlessJump = predictedCore.m_EndlessJump;
-	tee->isHammerHitDisabled = predictedCore.m_HammerHitDisabled;
-	tee->isGrenadeHitDisabled = predictedCore.m_GrenadeHitDisabled;
-	tee->isLaserHitDisabled = predictedCore.m_LaserHitDisabled;
-	tee->isShotgunHitDisabled = predictedCore.m_ShotgunHitDisabled;
-	tee->isHookHitDisabled = predictedCore.m_HookHitDisabled;
-	tee->isSuper = predictedCore.m_Super;
-	tee->hasTelegunGun = predictedCore.m_HasTelegunGun;
-	tee->hasTelegunGrenade = predictedCore.m_HasTelegunGrenade;
-	tee->hasTelegunLaser = predictedCore.m_HasTelegunLaser;
-	tee->freezeStart = predictedCore.m_FreezeStart;
-	tee->freezeEnd = predictedCore.m_FreezeEnd;
-	tee->isInFreeze = predictedCore.m_IsInFreeze;
-	tee->isDeepFrozen = predictedCore.m_DeepFrozen;
-	tee->isLiveFrozen = predictedCore.m_LiveFrozen;
+	tee->is_left_wall = predictedCore.m_LeftWall;
+	tee->is_solo = predictedCore.m_Solo;
+	tee->is_jetpack = predictedCore.m_Jetpack;
+	tee->is_collision_disabled = predictedCore.m_CollisionDisabled;
+	tee->is_endless_hook = predictedCore.m_EndlessHook;
+	tee->is_endless_jump = predictedCore.m_EndlessJump;
+	tee->is_hammer_hit_disabled = predictedCore.m_HammerHitDisabled;
+	tee->is_grenade_hit_disabled = predictedCore.m_GrenadeHitDisabled;
+	tee->is_laser_hit_disabled = predictedCore.m_LaserHitDisabled;
+	tee->is_shotgun_hit_disabled = predictedCore.m_ShotgunHitDisabled;
+	tee->is_hook_hit_disabled = predictedCore.m_HookHitDisabled;
+	tee->is_super = predictedCore.m_Super;
+	tee->has_telegun_gun = predictedCore.m_HasTelegunGun;
+	tee->has_telegun_grenade = predictedCore.m_HasTelegunGrenade;
+	tee->has_telegun_laser = predictedCore.m_HasTelegunLaser;
+	tee->freeze_start = predictedCore.m_FreezeStart;
+	tee->freeze_end = predictedCore.m_FreezeEnd;
+	tee->is_in_freeze = predictedCore.m_IsInFreeze;
+	tee->is_deep_frozen = predictedCore.m_DeepFrozen;
+	tee->is_live_frozen = predictedCore.m_LiveFrozen;
 
 	return tee;
 }
 
 static PyMethodDef Tee_methods[] = {
-	{"getSize", (PyCFunction)Tee_getSize, METH_NOARGS, "Return the size of the tee"},
+	{"get_size", (PyCFunction)Tee_get_size, METH_NOARGS, "Return the size of the tee"},
 	{"predict", (PyCFunction)Tee_predict, METH_VARARGS, "Predict current tee on ticksOffset"},
 	{NULL}  /* Sentinel */
 };
@@ -225,56 +225,56 @@ static PyObject* Tee_getvel(Tee* self, void* closure)
 	return (PyObject *) vector;
 }
 
-static PyObject* Tee_gethookPos(Tee* self, void* closure)
+static PyObject* Tee_gethook_pos(Tee* self, void* closure)
 {
 	Vector2 *vector = (Vector2 *)PyObject_New(Vector2, &Vector2Type);
-	vector->x = self->hookPos.x;
-	vector->y = self->hookPos.y;
+	vector->x = self->hook_pos.x;
+	vector->y = self->hook_pos.y;
 
 	return (PyObject *) vector;
 }
 
-static PyObject* Tee_gethookDir(Tee* self, void* closure)
+static PyObject* Tee_gethook_dir(Tee* self, void* closure)
 {
 	Vector2 *vector = (Vector2 *)PyObject_New(Vector2, &Vector2Type);
-	vector->x = self->hookDir.x;
-	vector->y = self->hookDir.y;
+	vector->x = self->hook_dir.x;
+	vector->y = self->hook_dir.y;
 
 	return (PyObject *) vector;
 }
 
-static PyObject* Tee_gethookTeleBase(Tee* self, void* closure)
+static PyObject* Tee_gethook_tele_base(Tee* self, void* closure)
 {
 	Vector2 *vector = (Vector2 *)PyObject_New(Vector2, &Vector2Type);
-	vector->x = self->hookTeleBase.x;
-	vector->y = self->hookTeleBase.y;
+	vector->x = self->hook_tele_base.x;
+	vector->y = self->hook_tele_base.y;
 
 	return (PyObject *) vector;
 }
 
-static PyObject* Tee_gethookTick(Tee* self, void* closure)
+static PyObject* Tee_gethook_tick(Tee* self, void* closure)
 {
-	return Py_BuildValue("i", self->hookTick);
+	return Py_BuildValue("i", self->hook_tick);
 }
 
-static PyObject* Tee_gethookState(Tee* self, void* closure)
+static PyObject* Tee_gethook_state(Tee* self, void* closure)
 {
-	return Py_BuildValue("i", self->hookState);
+	return Py_BuildValue("i", self->hook_state);
 }
 
-static PyObject* Tee_gethookedPlayer(Tee* self, void* closure)
+static PyObject* Tee_gethooked_player(Tee* self, void* closure)
 {
-	return Py_BuildValue("i", self->hookedPlayer);
+	return Py_BuildValue("i", self->hooked_player);
 }
 
-static PyObject* Tee_getactiveWeapon(Tee* self, void* closure)
+static PyObject* Tee_getactive_weapon(Tee* self, void* closure)
 {
-	return Py_BuildValue("i", self->activeWeapon);
+	return Py_BuildValue("i", self->active_weapon);
 }
 
-static PyObject* Tee_getisNewHook(Tee* self, void* closure)
+static PyObject* Tee_getis_new_hook(Tee* self, void* closure)
 {
-	return Py_BuildValue("b", self->isNewHook);
+	return Py_BuildValue("b", self->is_new_hook);
 }
 
 static PyObject* Tee_getjumped(Tee* self, void* closure)
@@ -282,9 +282,9 @@ static PyObject* Tee_getjumped(Tee* self, void* closure)
 	return Py_BuildValue("i", self->jumped);
 }
 
-static PyObject* Tee_getjumpedTotal(Tee* self, void* closure)
+static PyObject* Tee_getjumped_total(Tee* self, void* closure)
 {
-	return Py_BuildValue("i", self->jumpedTotal);
+	return Py_BuildValue("i", self->jumped_total);
 }
 
 static PyObject* Tee_getjumps(Tee* self, void* closure)
@@ -302,9 +302,9 @@ static PyObject* Tee_getangle(Tee* self, void* closure)
 	return Py_BuildValue("i", self->angle);
 }
 
-static PyObject* Tee_gettriggeredEvents(Tee* self, void* closure)
+static PyObject* Tee_gettriggered_events(Tee* self, void* closure)
 {
-	return Py_BuildValue("i", self->triggeredEvents);
+	return Py_BuildValue("i", self->triggered_events);
 }
 
 static PyObject* Tee_getid(Tee* self, void* closure)
@@ -312,16 +312,16 @@ static PyObject* Tee_getid(Tee* self, void* closure)
 	return Py_BuildValue("i", self->id);
 }
 
-static PyObject* Tee_getisReset(Tee* self, void* closure)
+static PyObject* Tee_getis_reset(Tee* self, void* closure)
 {
-	return Py_BuildValue("b", self->isReset);
+	return Py_BuildValue("b", self->is_reset);
 }
 
-static PyObject* Tee_getlastVel(Tee* self, void* closure)
+static PyObject* Tee_getlast_vel(Tee* self, void* closure)
 {
 	Vector2 *vector = (Vector2 *)PyObject_New(Vector2, &Vector2Type);
-	vector->x = self->lastVel.x;
-	vector->y = self->lastVel.y;
+	vector->x = self->last_vel.x;
+	vector->y = self->last_vel.y;
 
 	return (PyObject *) vector;
 }
@@ -331,153 +331,153 @@ static PyObject* Tee_getcolliding(Tee* self, void* closure)
 	return Py_BuildValue("i", self->colliding);
 }
 
-static PyObject* Tee_getisLeftWall(Tee* self, void* closure)
+static PyObject* Tee_getis_left_wall(Tee* self, void* closure)
 {
-	return Py_BuildValue("b", self->isLeftWall);
+	return Py_BuildValue("b", self->is_left_wall);
 }
 
-static PyObject* Tee_getisSolo(Tee* self, void* closure)
+static PyObject* Tee_getis_solo(Tee* self, void* closure)
 {
-	return Py_BuildValue("b", self->isSolo);
+	return Py_BuildValue("b", self->is_solo);
 }
 
-static PyObject* Tee_getisJetpack(Tee* self, void* closure)
+static PyObject* Tee_getis_jetpack(Tee* self, void* closure)
 {
-	return Py_BuildValue("b", self->isJetpack);
+	return Py_BuildValue("b", self->is_jetpack);
 }
 
-static PyObject* Tee_getisCollisionDisabled(Tee* self, void* closure)
+static PyObject* Tee_getis_collision_disabled(Tee* self, void* closure)
 {
-	return Py_BuildValue("b", self->isCollisionDisabled);
+	return Py_BuildValue("b", self->is_collision_disabled);
 }
 
-static PyObject* Tee_getisEndlessHook(Tee* self, void* closure)
+static PyObject* Tee_getis_endless_hook(Tee* self, void* closure)
 {
-	return Py_BuildValue("b", self->isEndlessHook);
+	return Py_BuildValue("b", self->is_endless_hook);
 }
 
-static PyObject* Tee_getisEndlessJump(Tee* self, void* closure)
+static PyObject* Tee_getis_endless_jump(Tee* self, void* closure)
 {
-	return Py_BuildValue("b", self->isEndlessJump);
+	return Py_BuildValue("b", self->is_endless_jump);
 }
 
-static PyObject* Tee_getisHammerHitDisabled(Tee* self, void* closure)
+static PyObject* Tee_getis_hammer_hit_disabled(Tee* self, void* closure)
 {
-	return Py_BuildValue("b", self->isHammerHitDisabled);
+	return Py_BuildValue("b", self->is_hammer_hit_disabled);
 }
 
-static PyObject* Tee_getisGrenadeHitDisabled(Tee* self, void* closure)
+static PyObject* Tee_getis_grenade_hit_disabled(Tee* self, void* closure)
 {
-	return Py_BuildValue("b", self->isGrenadeHitDisabled);
+	return Py_BuildValue("b", self->is_grenade_hit_disabled);
 }
 
-static PyObject* Tee_getisLaserHitDisabled(Tee* self, void* closure)
+static PyObject* Tee_getis_laser_hit_disabled(Tee* self, void* closure)
 {
-	return Py_BuildValue("b", self->isLaserHitDisabled);
+	return Py_BuildValue("b", self->is_laser_hit_disabled);
 }
 
-static PyObject* Tee_getisShotgunHitDisabled(Tee* self, void* closure)
+static PyObject* Tee_getis_shotgun_hit_disabled(Tee* self, void* closure)
 {
-	return Py_BuildValue("b", self->isShotgunHitDisabled);
+	return Py_BuildValue("b", self->is_shotgun_hit_disabled);
 }
 
-static PyObject* Tee_getisHookHitDisabled(Tee* self, void* closure)
+static PyObject* Tee_getis_hook_hit_disabled(Tee* self, void* closure)
 {
-	return Py_BuildValue("b", self->isHookHitDisabled);
+	return Py_BuildValue("b", self->is_hook_hit_disabled);
 }
 
-static PyObject* Tee_getisSuper(Tee* self, void* closure)
+static PyObject* Tee_getis_super(Tee* self, void* closure)
 {
-	return Py_BuildValue("b", self->isSuper);
+	return Py_BuildValue("b", self->is_super);
 }
 
-static PyObject* Tee_gethasTelegunGun(Tee* self, void* closure)
+static PyObject* Tee_gethas_telegun_gun(Tee* self, void* closure)
 {
-	return Py_BuildValue("b", self->hasTelegunGun);
+	return Py_BuildValue("b", self->has_telegun_gun);
 }
 
-static PyObject* Tee_gethasTelegunGrenade(Tee* self, void* closure)
+static PyObject* Tee_gethas_telegun_grenade(Tee* self, void* closure)
 {
-	return Py_BuildValue("b", self->hasTelegunGrenade);
+	return Py_BuildValue("b", self->has_telegun_grenade);
 }
 
-static PyObject* Tee_gethasTelegunLaser(Tee* self, void* closure)
+static PyObject* Tee_gethas_telegun_laser(Tee* self, void* closure)
 {
-	return Py_BuildValue("b", self->hasTelegunLaser);
+	return Py_BuildValue("b", self->has_telegun_laser);
 }
 
-static PyObject* Tee_getfreezeStart(Tee* self, void* closure)
+static PyObject* Tee_getfreeze_start(Tee* self, void* closure)
 {
-	return Py_BuildValue("i", self->freezeStart);
+	return Py_BuildValue("i", self->freeze_start);
 }
 
-static PyObject* Tee_getfreezeEnd(Tee* self, void* closure)
+static PyObject* Tee_getfreeze_end(Tee* self, void* closure)
 {
-	return Py_BuildValue("i", self->freezeEnd);
+	return Py_BuildValue("i", self->freeze_end);
 }
 
-static PyObject* Tee_getisInFreeze(Tee* self, void* closure)
+static PyObject* Tee_getis_in_freeze(Tee* self, void* closure)
 {
-	return Py_BuildValue("b", self->isInFreeze);
+	return Py_BuildValue("b", self->is_in_freeze);
 }
 
-static PyObject* Tee_getisDeepFrozen(Tee* self, void* closure)
+static PyObject* Tee_getis_deep_frozen(Tee* self, void* closure)
 {
-	return Py_BuildValue("b", self->isDeepFrozen);
+	return Py_BuildValue("b", self->is_deep_frozen);
 }
 
-static PyObject* Tee_getisLiveFrozen(Tee* self, void* closure)
+static PyObject* Tee_getis_live_frozen(Tee* self, void* closure)
 {
-	return Py_BuildValue("b", self->isLiveFrozen);
+	return Py_BuildValue("b", self->is_live_frozen);
 }
 
 static PyObject* Tee_getInputDirection(Tee* self, void* closure)
 {
-	return Py_BuildValue("i", self->inputDirection);
+	return Py_BuildValue("i", self->input_direction);
 }
 
 static PyObject* Tee_getInputTarget(Tee* self, void* closure)
 {
 	Vector2 *vector = (Vector2 *)PyObject_New(Vector2, &Vector2Type);
-	vector->x = self->inputTarget.x;
-	vector->y = self->inputTarget.y;
+	vector->x = self->input_target.x;
+	vector->y = self->input_target.y;
 
 	return (PyObject *) vector;
 }
 
 static PyObject* Tee_getInputJump(Tee* self, void* closure)
 {
-	return Py_BuildValue("i", self->inputJump);
+	return Py_BuildValue("i", self->input_jump);
 }
 
 static PyObject* Tee_getInputFire(Tee* self, void* closure)
 {
-	return Py_BuildValue("i", self->inputFire);
+	return Py_BuildValue("i", self->input_fire);
 }
 
 static PyObject* Tee_getInputHook(Tee* self, void* closure)
 {
-	return Py_BuildValue("i", self->inputHook);
+	return Py_BuildValue("i", self->input_hook);
 }
 
 static PyObject* Tee_getInputPlayerFlags(Tee* self, void* closure)
 {
-	return Py_BuildValue("i", self->inputPlayerFlags);
+	return Py_BuildValue("i", self->input_player_flags);
 }
 
 static PyObject* Tee_getInputWantedWeapon(Tee* self, void* closure)
 {
-	return Py_BuildValue("i", self->inputWantedWeapon);
+	return Py_BuildValue("i", self->input_wanted_weapon);
 }
 
 static PyObject* Tee_getInputNextWeapon(Tee* self, void* closure)
 {
-	return Py_BuildValue("i", self->inputNextWeapon);
+	return Py_BuildValue("i", self->input_next_weapon);
 }
 
 static PyObject* Tee_getInputPrevWeapon(Tee* self, void* closure)
 {
-	return Py_BuildValue("i", self->inputPrevWeapon);
+	return Py_BuildValue("i", self->input_prev_weapon);
 }
 
 static void Tee_dealloc(Tee* self)
@@ -488,53 +488,53 @@ static void Tee_dealloc(Tee* self)
 static PyGetSetDef Tee_getseters[] = {
 	{"pos", (getter) Tee_getpos, NULL, "Position of the player (Vector2)", NULL},
 	{"vel", (getter) Tee_getvel, NULL, "Velocity of the player (Vector2)", NULL},
-	{"hookPos", (getter) Tee_gethookPos, NULL, "Hook position (Vector2)", NULL},
-	{"hookDir", (getter) Tee_gethookDir, NULL, "Direction of the hook (Vector2)", NULL},
-	{"hookTeleBase", (getter) Tee_gethookTeleBase, NULL, "Base position of the tele hook (Vector2)", NULL},
-	{"hookTick", (getter) Tee_gethookTick, NULL, "Hook tick count (integer)", NULL},
-	{"hookState", (getter) Tee_gethookState, NULL, "State of the hook (integer)", NULL},
-	{"hookedPlayer", (getter) Tee_gethookedPlayer, NULL, "Hooked player id (integer)", NULL},
-	{"activeWeapon", (getter) Tee_getactiveWeapon, NULL, "Active weapon id (integer)", NULL},
-	{"isNewHook", (getter) Tee_getisNewHook, NULL, "Check if it is a new hook or not (boolean)", NULL},
+	{"hook_pos", (getter) Tee_gethook_pos, NULL, "Hook position (Vector2)", NULL},
+	{"hook_dir", (getter) Tee_gethook_dir, NULL, "Direction of the hook (Vector2)", NULL},
+	{"hook_tele_base", (getter) Tee_gethook_tele_base, NULL, "Base position of the tele hook (Vector2)", NULL},
+	{"hook_tick", (getter) Tee_gethook_tick, NULL, "Hook tick count (integer)", NULL},
+	{"hook_state", (getter) Tee_gethook_state, NULL, "State of the hook (integer)", NULL},
+	{"hooked_player", (getter) Tee_gethooked_player, NULL, "Hooked player id (integer)", NULL},
+	{"active_weapon", (getter) Tee_getactive_weapon, NULL, "Active weapon id (integer)", NULL},
+	{"is_new_hook", (getter) Tee_getis_new_hook, NULL, "Check if it is a new hook or not (boolean)", NULL},
 	{"jumped", (getter) Tee_getjumped, NULL, "Check if player jumped (integer)", NULL},
-	{"jumpedTotal", (getter) Tee_getjumpedTotal, NULL, "Total jumps made by player (integer)", NULL},
+	{"jumped_total", (getter) Tee_getjumped_total, NULL, "Total jumps made by player (integer)", NULL},
 	{"jumps", (getter) Tee_getjumps, NULL, "Number of jumps thats left for player (integer)", NULL},
 	{"direction", (getter) Tee_getdirection, NULL, "Direction in which player is facing (integer)", NULL},
 	{"angle", (getter) Tee_getangle, NULL, "Angle which player is facing (integer)", NULL},
-	{"triggeredEvents", (getter) Tee_gettriggeredEvents, NULL, "Events triggered by player (integer)", NULL},
+	{"triggered_events", (getter) Tee_gettriggered_events, NULL, "Events triggered by player (integer)", NULL},
 	{"id", (getter) Tee_getid, NULL, "Player id (integer)", NULL},
-	{"isReset", (getter) Tee_getisReset, NULL, "Check if player is resetted or not (boolean)", NULL},
-	{"lastVel", (getter) Tee_getlastVel, NULL, "Last velocity of player (Vector2)", NULL},
+	{"is_reset", (getter) Tee_getis_reset, NULL, "Check if player is resetted or not (boolean)", NULL},
+	{"last_vel", (getter) Tee_getlast_vel, NULL, "Last velocity of player (Vector2)", NULL},
 	{"colliding", (getter) Tee_getcolliding, NULL, "Check if player is colliding (integer)", NULL},
-	{"isLeftWall", (getter) Tee_getisLeftWall, NULL, "Check if player is touching left wall (boolean)", NULL},
-	{"isSolo", (getter) Tee_getisSolo, NULL, "Check if player is solo or not (boolean)", NULL},
-	{"isJetpack", (getter) Tee_getisJetpack, NULL, "Check if jetpack is activated or not (boolean)", NULL},
-	{"isCollisionDisabled", (getter) Tee_getisCollisionDisabled, NULL, "Check if collision is disabled or not (boolean)", NULL},
-	{"isEndlessHook", (getter) Tee_getisEndlessHook, NULL, "Check if endless hook is activated or not (boolean)", NULL},
-	{"isEndlessJump", (getter) Tee_getisEndlessJump, NULL, "Check if endless jump is activated or not (boolean)", NULL},
-	{"isHammerHitDisabled", (getter) Tee_getisHammerHitDisabled, NULL, "Check if hammer hit is disabled or not (boolean)", NULL},
-	{"isGrenadeHitDisabled", (getter) Tee_getisGrenadeHitDisabled, NULL, "Check if grenade hit is disabled or not (boolean)", NULL},
-	{"isLaserHitDisabled", (getter) Tee_getisLaserHitDisabled, NULL, "Check if laser hit is disabled or not (boolean)", NULL},
-	{"isShotgunHitDisabled", (getter) Tee_getisShotgunHitDisabled, NULL, "Check if shotgun hit is disabled or not (boolean)", NULL},
-	{"isHookHitDisabled", (getter) Tee_getisHookHitDisabled, NULL, "Check if hook hit is disabled or not (boolean)", NULL},
-	{"isSuper", (getter) Tee_getisSuper, NULL, "Check if player is super or not (boolean)", NULL},
-	{"hasTelegunGun", (getter) Tee_gethasTelegunGun, NULL, "Check if player has tele gun or not (boolean)", NULL},
-	{"hasTelegunGrenade", (getter) Tee_gethasTelegunGrenade, NULL, "Check if player has tele grenade or not (boolean)", NULL},
-	{"hasTelegunLaser", (getter) Tee_gethasTelegunLaser, NULL, "Check if player has tele laser or not (boolean)", NULL},
-	{"freezeStart", (getter) Tee_getfreezeStart, NULL, "Freeze start tick count (integer)", NULL},
-	{"freezeEnd", (getter) Tee_getfreezeEnd, NULL, "Freeze end tick count (integer)", NULL},
-	{"isInFreeze", (getter) Tee_getisInFreeze, NULL, "Check if player is in freeze or not (boolean)", NULL},
-	{"isDeepFrozen", (getter) Tee_getisDeepFrozen, NULL, "Check if player is deeply frozen or not (boolean)", NULL},
-	{"isLiveFrozen", (getter) Tee_getisLiveFrozen, NULL, "Check if player is live frozen or not (boolean)", NULL},
+	{"is_left_wall", (getter) Tee_getis_left_wall, NULL, "Check if player is touching left wall (boolean)", NULL},
+	{"is_solo", (getter) Tee_getis_solo, NULL, "Check if player is solo or not (boolean)", NULL},
+	{"is_jetpack", (getter) Tee_getis_jetpack, NULL, "Check if jetpack is activated or not (boolean)", NULL},
+	{"is_collision_disabled", (getter) Tee_getis_collision_disabled, NULL, "Check if collision is disabled or not (boolean)", NULL},
+	{"is_endless_hook", (getter) Tee_getis_endless_hook, NULL, "Check if endless hook is activated or not (boolean)", NULL},
+	{"is_endless_jump", (getter) Tee_getis_endless_jump, NULL, "Check if endless jump is activated or not (boolean)", NULL},
+	{"is_hammer_hit_disabled", (getter) Tee_getis_hammer_hit_disabled, NULL, "Check if hammer hit is disabled or not (boolean)", NULL},
+	{"is_grenade_hit_disabled", (getter) Tee_getis_grenade_hit_disabled, NULL, "Check if grenade hit is disabled or not (boolean)", NULL},
+	{"is_laser_hit_disabled", (getter) Tee_getis_laser_hit_disabled, NULL, "Check if laser hit is disabled or not (boolean)", NULL},
+	{"is_shotgun_hit_disabled", (getter) Tee_getis_shotgun_hit_disabled, NULL, "Check if shotgun hit is disabled or not (boolean)", NULL},
+	{"is_hook_hit_disabled", (getter) Tee_getis_hook_hit_disabled, NULL, "Check if hook hit is disabled or not (boolean)", NULL},
+	{"is_super", (getter) Tee_getis_super, NULL, "Check if player is super or not (boolean)", NULL},
+	{"has_telegun_gun", (getter) Tee_gethas_telegun_gun, NULL, "Check if player has tele gun or not (boolean)", NULL},
+	{"has_telegun_grenade", (getter) Tee_gethas_telegun_grenade, NULL, "Check if player has tele grenade or not (boolean)", NULL},
+	{"has_telegun_laser", (getter) Tee_gethas_telegun_laser, NULL, "Check if player has tele laser or not (boolean)", NULL},
+	{"freeze_start", (getter) Tee_getfreeze_start, NULL, "Freeze start tick count (integer)", NULL},
+	{"freeze_end", (getter) Tee_getfreeze_end, NULL, "Freeze end tick count (integer)", NULL},
+	{"is_in_freeze", (getter) Tee_getis_in_freeze, NULL, "Check if player is in freeze or not (boolean)", NULL},
+	{"is_deep_frozen", (getter) Tee_getis_deep_frozen, NULL, "Check if player is deeply frozen or not (boolean)", NULL},
+	{"is_live_frozen", (getter) Tee_getis_live_frozen, NULL, "Check if player is live frozen or not (boolean)", NULL},
 
-	{"inputDirection", (getter) Tee_getInputDirection, NULL, "Get input value of direction", NULL},
-	{"inputTarget", (getter) Tee_getInputTarget, NULL, "Get input value of target", NULL},
-	{"inputJump", (getter) Tee_getInputJump, NULL, "Get input value of jump", NULL},
-	{"inputFire", (getter) Tee_getInputFire, NULL, "Get input value of fire", NULL},
-	{"inputHook", (getter) Tee_getInputHook, NULL, "Get input value of hook", NULL},
-	{"inputPlayerFlags", (getter) Tee_getInputPlayerFlags, NULL, "Get input value of playerFlags", NULL},
-	{"inputWantedWeapon", (getter) Tee_getInputWantedWeapon, NULL, "Get input value of wantedWeapon", NULL},
-	{"inputNextWeapon", (getter) Tee_getInputNextWeapon, NULL, "Get input value of nextWeapon", NULL},
+	{"input_direction", (getter) Tee_getInputDirection, NULL, "Get input value of direction", NULL},
+	{"input_target", (getter) Tee_getInputTarget, NULL, "Get input value of target", NULL},
+	{"input_jump", (getter) Tee_getInputJump, NULL, "Get input value of jump", NULL},
+	{"input_fire", (getter) Tee_getInputFire, NULL, "Get input value of fire", NULL},
+	{"input_hook", (getter) Tee_getInputHook, NULL, "Get input value of hook", NULL},
+	{"input_player_flags", (getter) Tee_getInputPlayerFlags, NULL, "Get input value of player_flags", NULL},
+	{"input_wanted_weapon", (getter) Tee_getInputWantedWeapon, NULL, "Get input value of wantedWeapon", NULL},
+	{"input_next_weapon", (getter) Tee_getInputNextWeapon, NULL, "Get input value of nextWeapon", NULL},
 
 	{NULL}  /* Sentinel */
 };
@@ -547,31 +547,31 @@ static PyObject* Tee_str(Tee* self)
 	// Создание строковых представлений для обьектов типа Vector2.
 	PyObject* pos_str_obj = Vector2_str(&(self->pos));
 	PyObject* vel_str_obj = Vector2_str(&(self->vel));
-	PyObject* hookPos_str_obj = Vector2_str(&(self->hookPos));
-	PyObject* hookDir_str_obj = Vector2_str(&(self->hookDir));
-	PyObject* hookTeleBase_str_obj = Vector2_str(&(self->hookTeleBase));
-	PyObject* lastVel_str_obj = Vector2_str(&(self->lastVel));
-	PyObject* inputTarget_str_obj = Vector2_str(&(self->inputTarget));
+	PyObject* hook_pos_str_obj = Vector2_str(&(self->hook_pos));
+	PyObject* hook_dir_str_obj = Vector2_str(&(self->hook_dir));
+	PyObject* hook_tele_base_str_obj = Vector2_str(&(self->hook_tele_base));
+	PyObject* last_vel_str_obj = Vector2_str(&(self->last_vel));
+	PyObject* input_target_str_obj = Vector2_str(&(self->input_target));
 
 	// Получение указателей на C-строки.
 	const char *pos_str = PyUnicode_AsUTF8(pos_str_obj);
 	const char *vel_str = PyUnicode_AsUTF8(vel_str_obj);
-	const char *hookPos_str = PyUnicode_AsUTF8(hookPos_str_obj);
-	const char *hookDir_str = PyUnicode_AsUTF8(hookDir_str_obj);
-	const char *hookTeleBase_str = PyUnicode_AsUTF8(hookTeleBase_str_obj);
-	const char *lastVel_str = PyUnicode_AsUTF8(lastVel_str_obj);
-	const char *inputTarget_str = PyUnicode_AsUTF8(inputTarget_str_obj);
+	const char *hook_pos_str = PyUnicode_AsUTF8(hook_pos_str_obj);
+	const char *hook_dir_str = PyUnicode_AsUTF8(hook_dir_str_obj);
+	const char *hook_tele_base_str = PyUnicode_AsUTF8(hook_tele_base_str_obj);
+	const char *last_vel_str = PyUnicode_AsUTF8(last_vel_str_obj);
+	const char *input_target_str = PyUnicode_AsUTF8(input_target_str_obj);
 
 	// Проверка получения всех указателей на строки.
-	if (!pos_str || !vel_str || !hookPos_str || !hookDir_str || !hookTeleBase_str || !lastVel_str) {
+	if (!pos_str || !vel_str || !hook_pos_str || !hook_dir_str || !hook_tele_base_str || !last_vel_str) {
 		// Освобождение всех PyObject, если не удалось получить строки.
 		Py_XDECREF(pos_str_obj);
 		Py_XDECREF(vel_str_obj);
-		Py_XDECREF(hookPos_str_obj);
-		Py_XDECREF(hookDir_str_obj);
-		Py_XDECREF(hookTeleBase_str_obj);
-		Py_XDECREF(lastVel_str_obj);
-		Py_XDECREF(inputTarget_str_obj);
+		Py_XDECREF(hook_pos_str_obj);
+		Py_XDECREF(hook_dir_str_obj);
+		Py_XDECREF(hook_tele_base_str_obj);
+		Py_XDECREF(last_vel_str_obj);
+		Py_XDECREF(input_target_str_obj);
 		return NULL;
 	}
 
@@ -580,83 +580,83 @@ static PyObject* Tee_str(Tee* self)
 		"Tee(\n"
 			"	pos: %s,\n"
 			"	vel: %s,\n"
-			"	hookPos: %s,\n"
-			"	hookDir: %s,\n"
-			"	hookTeleBase: %s,\n"
-			"	hookTick: %d,\n"
-			"	hookState: %d,\n"
-			"	hookedPlayer: %d,\n"
-			"	activeWeapon: %d,\n"
-			"	isNewHook: %s,\n"
+			"	hook_pos: %s,\n"
+			"	hook_dir: %s,\n"
+			"	hook_tele_base: %s,\n"
+			"	hook_tick: %d,\n"
+			"	hook_state: %d,\n"
+			"	hooked_player: %d,\n"
+			"	active_weapon: %d,\n"
+			"	is_new_hook: %s,\n"
 			"	jumped: %d,\n"
-			"	jumpedTotal: %d,\n"
+			"	jumped_total: %d,\n"
 			"	jumps: %d,\n"
 			"	direction: %d,\n"
 			"	angle: %d,\n"
-			"	triggeredEvents: %d,\n"
+			"	triggered_events: %d,\n"
 			"	id: %d,\n"
-			"	isReset: %s,\n"
-			"	lastVel: %s,\n"
+			"	is_reset: %s,\n"
+			"	last_vel: %s,\n"
 			"	colliding: %d,\n"
-			"	isLeftWall: %s,\n"
-			"	isSolo: %s,\n"
-			"	isJetpack: %s,\n"
-			"	isCollisionDisabled: %s,\n"
-			"	isEndlessHook: %s,\n"
-			"	isEndlessJump: %s,\n"
-			"	isHammerHitDisabled: %s,\n"
-			"	isGrenadeHitDisabled: %s,\n"
-			"	isLaserHitDisabled: %s,\n"
-			"	isShotgunHitDisabled: %s,\n"
-			"	isHookHitDisabled: %s,\n"
-			"	isSuper: %s,\n"
-			"	hasTelegunGun: %s,\n"
-			"	hasTelegunGrenade: %s,\n"
-			"	hasTelegunLaser: %s,\n"
-			"	freezeStart: %d,\n"
-			"	freezeEnd: %d,\n"
-			"	isInFreeze: %s,\n"
-			"	isDeepFrozen: %s,\n"
-			"	isLiveFrozen: %s\n"
-			"	inputDirection: %d\n"
-			"	inputTarget: %s\n"
-			"	inputJump: %d\n"
-			"	inputFire: %d\n"
-			"	inputHook: %d\n"
-			"	inputPlayerFlags: %d\n"
-			"	inputWantedWeapon: %d\n"
-			"	inputNextWeapon: %d\n"
-			"	inputPrevWeapon: %d\n"
+			"	is_left_wall: %s,\n"
+			"	is_solo: %s,\n"
+			"	is_jetpack: %s,\n"
+			"	is_collision_disabled: %s,\n"
+			"	is_endless_hook: %s,\n"
+			"	is_endless_jump: %s,\n"
+			"	is_hammer_hit_disabled: %s,\n"
+			"	is_grenade_hit_disabled: %s,\n"
+			"	is_laser_hit_disabled: %s,\n"
+			"	is_shotgun_hit_disabled: %s,\n"
+			"	is_hook_hit_disabled: %s,\n"
+			"	is_super: %s,\n"
+			"	has_telegun_gun: %s,\n"
+			"	has_telegun_grenade: %s,\n"
+			"	has_telegun_laser: %s,\n"
+			"	freeze_start: %d,\n"
+			"	freeze_end: %d,\n"
+			"	is_in_freeze: %s,\n"
+			"	is_deep_frozen: %s,\n"
+			"	is_live_frozen: %s\n"
+			"	input_direction: %d\n"
+			"	input_target: %s\n"
+			"	input_jump: %d\n"
+			"	input_fire: %d\n"
+			"	input_hook: %d\n"
+			"	input_player_flags: %d\n"
+			"	input_wanted_weapon: %d\n"
+			"	input_next_weapon: %d\n"
+			"	input_prev_weapon: %d\n"
 		")",
-		pos_str, vel_str, hookPos_str, hookDir_str, hookTeleBase_str, self->hookTick, self->hookState,
-		self->hookedPlayer, self->activeWeapon, self->isNewHook ? "true" : "false", self->jumped, self->jumpedTotal, self->jumps,
-		self->direction, self->angle, self->triggeredEvents, self->id, self->isReset ? "true" : "false", lastVel_str,
-		self->colliding, self->isLeftWall ? "true" : "false", self->isSolo ? "true" : "false", self->isJetpack ? "true" : "false",
-		self->isCollisionDisabled ? "true" : "false", self->isEndlessHook ? "true" : "false", self->isEndlessJump ? "true" : "false",
-		self->isHammerHitDisabled ? "true" : "false", self->isGrenadeHitDisabled ? "true" : "false",
-		self->isLaserHitDisabled ? "true" : "false", self->isShotgunHitDisabled ? "true" : "false",
-		self->isHookHitDisabled ? "true" : "false", self->isSuper ? "true" : "false", self->hasTelegunGun ? "true" : "false",
-		self->hasTelegunGrenade ? "true" : "false", self->hasTelegunLaser ? "true" : "false", self->freezeStart,
-		self->freezeEnd, self->isInFreeze ? "true" : "false", self->isDeepFrozen ? "true" : "false", self->isLiveFrozen ? "true" : "false",
-		self->inputDirection,
-		inputTarget_str,
-		self->inputJump,
-		self->inputFire,
-		self->inputHook,
-		self->inputPlayerFlags,
-		self->inputWantedWeapon,
-		self->inputNextWeapon,
-		self->inputPrevWeapon
+		pos_str, vel_str, hook_pos_str, hook_dir_str, hook_tele_base_str, self->hook_tick, self->hook_state,
+		self->hooked_player, self->active_weapon, self->is_new_hook ? "true" : "false", self->jumped, self->jumped_total, self->jumps,
+		self->direction, self->angle, self->triggered_events, self->id, self->is_reset ? "true" : "false", last_vel_str,
+		self->colliding, self->is_left_wall ? "true" : "false", self->is_solo ? "true" : "false", self->is_jetpack ? "true" : "false",
+		self->is_collision_disabled ? "true" : "false", self->is_endless_hook ? "true" : "false", self->is_endless_jump ? "true" : "false",
+		self->is_hammer_hit_disabled ? "true" : "false", self->is_grenade_hit_disabled ? "true" : "false",
+		self->is_laser_hit_disabled ? "true" : "false", self->is_shotgun_hit_disabled ? "true" : "false",
+		self->is_hook_hit_disabled ? "true" : "false", self->is_super ? "true" : "false", self->has_telegun_gun ? "true" : "false",
+		self->has_telegun_grenade ? "true" : "false", self->has_telegun_laser ? "true" : "false", self->freeze_start,
+		self->freeze_end, self->is_in_freeze ? "true" : "false", self->is_deep_frozen ? "true" : "false", self->is_live_frozen ? "true" : "false",
+		self->input_direction,
+		input_target_str,
+		self->input_jump,
+		self->input_fire,
+		self->input_hook,
+		self->input_player_flags,
+		self->input_wanted_weapon,
+		self->input_next_weapon,
+		self->input_prev_weapon
 	);
 
 	// Уменьшение счетчика ссылок на все PyObject.
 	Py_DECREF(pos_str_obj);
 	Py_DECREF(vel_str_obj);
-	Py_DECREF(hookPos_str_obj);
-	Py_DECREF(hookDir_str_obj);
-	Py_DECREF(hookTeleBase_str_obj);
-	Py_DECREF(lastVel_str_obj);
-	Py_DECREF(inputTarget_str_obj);
+	Py_DECREF(hook_pos_str_obj);
+	Py_DECREF(hook_dir_str_obj);
+	Py_DECREF(hook_tele_base_str_obj);
+	Py_DECREF(last_vel_str_obj);
+	Py_DECREF(input_target_str_obj);
 
 	return PyUnicode_FromString(buf);
 }
@@ -703,3 +703,4 @@ inline PyTypeObject TeeType = {
 };
 
 #endif // DDNET_API_TEE_H
+

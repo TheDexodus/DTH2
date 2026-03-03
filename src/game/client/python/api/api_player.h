@@ -15,56 +15,56 @@ using namespace std;
 
 struct Player {
 	PyObject_HEAD;
-	int useCustomColor;
-	int colorBody;
-	int colorFeet;
+	int use_custom_color;
+	int color_body;
+	int color_feet;
 
 	char name[16];
 	char clan[12];
 	int country;
-	char skinName[64];
-	int skinColor;
+	char skin_name[64];
+	int skin_color;
 	int team;
 	int emoticon;
-	float emoticonStartFraction;
-	int emoticonStartTick;
-	bool isSolo;
-	bool isJetpack;
-	bool isCollisionDisabled;
-	bool isEndlessHook;
-	bool isEndlessJump;
-	bool isHammerHitDisabled;
-	bool isGrenadeHitDisabled;
-	bool isLaserHitDisabled;
-	bool isShotgunHitDisabled;
-	bool isHookHitDisabled;
-	bool isSuper;
-	bool isHasTelegunGun;
-	bool isHasTelegunGrenade;
-	bool isHasTelegunLaser;
-	int freezeEnd;
-	bool isDeepFrozen;
-	bool isLiveFrozen;
+	float emoticon_start_fraction;
+	int emoticon_start_tick;
+	bool is_solo;
+	bool is_jetpack;
+	bool is_collision_disabled;
+	bool is_endless_hook;
+	bool is_endless_jump;
+	bool is_hammer_hit_disabled;
+	bool is_grenade_hit_disabled;
+	bool is_laser_hit_disabled;
+	bool is_shotgun_hit_disabled;
+	bool is_hook_hit_disabled;
+	bool is_super;
+	bool has_telegun_gun;
+	bool has_telegun_grenade;
+	bool has_telegun_laser;
+	int freeze_end;
+	bool is_deep_frozen;
+	bool is_live_frozen;
 
 	float angle;
-	bool isActive;
-	bool isChatIgnore;
-	bool isEmoticonIgnore;
-	bool isFriend;
-	bool isFoe;
+	bool is_active;
+	bool is_chat_ignore;
+	bool is_emoticon_ignore;
+	bool is_friend;
+	bool is_foe;
 
-	int authLevel;
-	bool isAfk;
-	bool isPaused;
-	bool isSpec;
+	int auth_level;
+	bool is_afk;
+	bool is_paused;
+	bool is_spec;
 
-	Vector2 renderPos;
-	bool isPredicted;
-	bool isPredictedLocal;
-	int64_t smoothStart[2];
-	int64_t smoothLen[2];
-	bool isSpecCharPresent;
-	Vector2 specChar;
+	Vector2 render_pos;
+	bool is_predicted;
+	bool is_predicted_local;
+	int64_t smooth_start[2];
+	int64_t smooth_len[2];
+	bool is_spec_char_present;
+	Vector2 spec_char;
 
 	Tee tee;
 };
@@ -96,107 +96,107 @@ static int Player_init(Player *self, PyObject *args, PyObject *kwds)
 	CGameClient::CClientData clientData = PythonAPI_GameClient->m_aClients[id];
 	// clientData.m_RenderInfo->
 
-	self->useCustomColor = clientData.m_UseCustomColor;
-	self->colorBody = clientData.m_ColorBody;
-	self->colorFeet = clientData.m_ColorFeet;
+	self->use_custom_color = clientData.m_UseCustomColor;
+	self->color_body = clientData.m_ColorBody;
+	self->color_feet = clientData.m_ColorFeet;
 
 	strcpy(self->name, clientData.m_aName);
 	strcpy(self->clan, clientData.m_aClan);
 	self->country = clientData.m_Country;
-	strcpy(self->skinName, clientData.m_aSkinName);
-	self->skinColor = clientData.m_SkinColor;
+	strcpy(self->skin_name, clientData.m_aSkinName);
+	self->skin_color = clientData.m_SkinColor;
 	self->team = clientData.m_Team;
 	self->emoticon = clientData.m_Emoticon;
-	self->emoticonStartFraction = clientData.m_EmoticonStartFraction;
-	self->emoticonStartTick = clientData.m_EmoticonStartTick;
-	self->isSolo = clientData.m_Solo;
-	self->isJetpack = clientData.m_Jetpack;
-	self->isCollisionDisabled = clientData.m_CollisionDisabled;
-	self->isEndlessHook = clientData.m_EndlessHook;
-	self->isEndlessJump = clientData.m_EndlessJump;
-	self->isHammerHitDisabled = clientData.m_HammerHitDisabled;
-	self->isGrenadeHitDisabled = clientData.m_GrenadeHitDisabled;
-	self->isLaserHitDisabled = clientData.m_LaserHitDisabled;
-	self->isShotgunHitDisabled = clientData.m_ShotgunHitDisabled;
-	self->isHookHitDisabled = clientData.m_HookHitDisabled;
-	self->isSuper = clientData.m_Super;
-	self->isHasTelegunGun = clientData.m_HasTelegunGun;
-	self->isHasTelegunGrenade = clientData.m_HasTelegunGrenade;
-	self->isHasTelegunLaser = clientData.m_HasTelegunLaser;
-	self->freezeEnd = clientData.m_FreezeEnd;
-	self->isDeepFrozen = clientData.m_DeepFrozen;
-	self->isLiveFrozen = clientData.m_LiveFrozen;
+	self->emoticon_start_fraction = clientData.m_EmoticonStartFraction;
+	self->emoticon_start_tick = clientData.m_EmoticonStartTick;
+	self->is_solo = clientData.m_Solo;
+	self->is_jetpack = clientData.m_Jetpack;
+	self->is_collision_disabled = clientData.m_CollisionDisabled;
+	self->is_endless_hook = clientData.m_EndlessHook;
+	self->is_endless_jump = clientData.m_EndlessJump;
+	self->is_hammer_hit_disabled = clientData.m_HammerHitDisabled;
+	self->is_grenade_hit_disabled = clientData.m_GrenadeHitDisabled;
+	self->is_laser_hit_disabled = clientData.m_LaserHitDisabled;
+	self->is_shotgun_hit_disabled = clientData.m_ShotgunHitDisabled;
+	self->is_hook_hit_disabled = clientData.m_HookHitDisabled;
+	self->is_super = clientData.m_Super;
+	self->has_telegun_gun = clientData.m_HasTelegunGun;
+	self->has_telegun_grenade = clientData.m_HasTelegunGrenade;
+	self->has_telegun_laser = clientData.m_HasTelegunLaser;
+	self->freeze_end = clientData.m_FreezeEnd;
+	self->is_deep_frozen = clientData.m_DeepFrozen;
+	self->is_live_frozen = clientData.m_LiveFrozen;
 
 	self->angle = clientData.m_Angle;
-	self->isActive = clientData.m_Active;
-	self->isChatIgnore = clientData.m_ChatIgnore;
-	self->isEmoticonIgnore = clientData.m_EmoticonIgnore;
-	self->isFriend = clientData.m_Friend;
-	self->isFoe = clientData.m_Foe;
+	self->is_active = clientData.m_Active;
+	self->is_chat_ignore = clientData.m_ChatIgnore;
+	self->is_emoticon_ignore = clientData.m_EmoticonIgnore;
+	self->is_friend = clientData.m_Friend;
+	self->is_foe = clientData.m_Foe;
 
-	self->authLevel = clientData.m_AuthLevel;
-	self->isAfk = clientData.m_Afk;
-	self->isPaused = clientData.m_Paused;
-	self->isSpec = clientData.m_Spec;
+	self->auth_level = clientData.m_AuthLevel;
+	self->is_afk = clientData.m_Afk;
+	self->is_paused = clientData.m_Paused;
+	self->is_spec = clientData.m_Spec;
 
-	self->renderPos = Vector2(clientData.m_RenderPos);
-	self->isPredicted = clientData.m_IsPredicted;
-	self->isPredictedLocal = clientData.m_IsPredictedLocal;
-	self->smoothStart[0] = clientData.m_aSmoothStart[0];
-	self->smoothStart[1] = clientData.m_aSmoothStart[1];
-	self->smoothLen[0] = clientData.m_aSmoothLen[0];
-	self->smoothLen[1] = clientData.m_aSmoothLen[1];
-	self->isSpecCharPresent = clientData.m_SpecCharPresent;
-	self->specChar = clientData.m_SpecChar;
+	self->render_pos = Vector2(clientData.m_RenderPos);
+	self->is_predicted = clientData.m_IsPredicted;
+	self->is_predicted_local = clientData.m_IsPredictedLocal;
+	self->smooth_start[0] = clientData.m_aSmoothStart[0];
+	self->smooth_start[1] = clientData.m_aSmoothStart[1];
+	self->smooth_len[0] = clientData.m_aSmoothLen[0];
+	self->smooth_len[1] = clientData.m_aSmoothLen[1];
+	self->is_spec_char_present = clientData.m_SpecCharPresent;
+	self->spec_char = clientData.m_SpecChar;
 
 	self->tee.pos = Vector2(clientData.m_Predicted.m_Pos);
 	self->tee.vel = Vector2(clientData.m_Predicted.m_Vel);
-	self->tee.hookPos = Vector2(clientData.m_Predicted.m_HookPos);
-	self->tee.hookDir = Vector2(clientData.m_Predicted.m_HookDir);
-	self->tee.hookTeleBase = Vector2(clientData.m_Predicted.m_HookTeleBase);
-	self->tee.hookTick = clientData.m_Predicted.m_HookTick;
-	self->tee.hookState = clientData.m_Predicted.m_HookState;
-	self->tee.activeWeapon = clientData.m_Predicted.m_ActiveWeapon;
-	self->tee.isNewHook = clientData.m_Predicted.m_NewHook;
+	self->tee.hook_pos = Vector2(clientData.m_Predicted.m_HookPos);
+	self->tee.hook_dir = Vector2(clientData.m_Predicted.m_HookDir);
+	self->tee.hook_tele_base = Vector2(clientData.m_Predicted.m_HookTeleBase);
+	self->tee.hook_tick = clientData.m_Predicted.m_HookTick;
+	self->tee.hook_state = clientData.m_Predicted.m_HookState;
+	self->tee.active_weapon = clientData.m_Predicted.m_ActiveWeapon;
+	self->tee.is_new_hook = clientData.m_Predicted.m_NewHook;
 	self->tee.jumped = clientData.m_Predicted.m_Jumped;
-	self->tee.jumpedTotal = clientData.m_Predicted.m_JumpedTotal;
+	self->tee.jumped_total = clientData.m_Predicted.m_JumpedTotal;
 	self->tee.jumps = clientData.m_Predicted.m_Jumps;
 	self->tee.direction = clientData.m_Predicted.m_Direction;
 	self->tee.angle = clientData.m_Predicted.m_Angle;
-	self->tee.triggeredEvents = clientData.m_Predicted.m_TriggeredEvents;
+	self->tee.triggered_events = clientData.m_Predicted.m_TriggeredEvents;
 	self->tee.id = clientData.m_Predicted.m_Id;
-	self->tee.isReset = clientData.m_Predicted.m_Reset;
+	self->tee.is_reset = clientData.m_Predicted.m_Reset;
 	self->tee.colliding = clientData.m_Predicted.m_Colliding;
-	self->tee.isLeftWall = clientData.m_Predicted.m_LeftWall;
-	self->tee.isSolo = clientData.m_Predicted.m_Solo;
-	self->tee.isJetpack = clientData.m_Predicted.m_Jetpack;
-	self->tee.isCollisionDisabled = clientData.m_Predicted.m_CollisionDisabled;
-	self->tee.isEndlessHook = clientData.m_Predicted.m_EndlessHook;
-	self->tee.isEndlessJump = clientData.m_Predicted.m_EndlessJump;
-	self->tee.isHammerHitDisabled = clientData.m_Predicted.m_HammerHitDisabled;
-	self->tee.isGrenadeHitDisabled = clientData.m_Predicted.m_GrenadeHitDisabled;
-	self->tee.isLaserHitDisabled = clientData.m_Predicted.m_LaserHitDisabled;
-	self->tee.isShotgunHitDisabled = clientData.m_Predicted.m_ShotgunHitDisabled;
-	self->tee.isHookHitDisabled = clientData.m_Predicted.m_HookHitDisabled;
-	self->tee.isSuper = clientData.m_Predicted.m_Super;
-	self->tee.hasTelegunGun = clientData.m_Predicted.m_HasTelegunGun;
-	self->tee.hasTelegunGrenade = clientData.m_Predicted.m_HasTelegunGrenade;
-	self->tee.hasTelegunLaser = clientData.m_Predicted.m_HasTelegunLaser;
-	self->tee.freezeStart = clientData.m_Predicted.m_FreezeStart;
-	self->tee.freezeEnd = clientData.m_Predicted.m_FreezeEnd;
-	self->tee.isInFreeze = clientData.m_Predicted.m_IsInFreeze;
-	self->tee.isDeepFrozen = clientData.m_Predicted.m_DeepFrozen;
-	self->tee.isLiveFrozen = clientData.m_Predicted.m_LiveFrozen;
+	self->tee.is_left_wall = clientData.m_Predicted.m_LeftWall;
+	self->tee.is_solo = clientData.m_Predicted.m_Solo;
+	self->tee.is_jetpack = clientData.m_Predicted.m_Jetpack;
+	self->tee.is_collision_disabled = clientData.m_Predicted.m_CollisionDisabled;
+	self->tee.is_endless_hook = clientData.m_Predicted.m_EndlessHook;
+	self->tee.is_endless_jump = clientData.m_Predicted.m_EndlessJump;
+	self->tee.is_hammer_hit_disabled = clientData.m_Predicted.m_HammerHitDisabled;
+	self->tee.is_grenade_hit_disabled = clientData.m_Predicted.m_GrenadeHitDisabled;
+	self->tee.is_laser_hit_disabled = clientData.m_Predicted.m_LaserHitDisabled;
+	self->tee.is_shotgun_hit_disabled = clientData.m_Predicted.m_ShotgunHitDisabled;
+	self->tee.is_hook_hit_disabled = clientData.m_Predicted.m_HookHitDisabled;
+	self->tee.is_super = clientData.m_Predicted.m_Super;
+	self->tee.has_telegun_gun = clientData.m_Predicted.m_HasTelegunGun;
+	self->tee.has_telegun_grenade = clientData.m_Predicted.m_HasTelegunGrenade;
+	self->tee.has_telegun_laser = clientData.m_Predicted.m_HasTelegunLaser;
+	self->tee.freeze_start = clientData.m_Predicted.m_FreezeStart;
+	self->tee.freeze_end = clientData.m_Predicted.m_FreezeEnd;
+	self->tee.is_in_freeze = clientData.m_Predicted.m_IsInFreeze;
+	self->tee.is_deep_frozen = clientData.m_Predicted.m_DeepFrozen;
+	self->tee.is_live_frozen = clientData.m_Predicted.m_LiveFrozen;
 
-	self->tee.inputDirection = clientData.m_Predicted.m_Input.m_Direction;
-	self->tee.inputTarget = Vector2(vec2(clientData.m_Predicted.m_Input.m_TargetX, clientData.m_Predicted.m_Input.m_TargetY));
-	self->tee.inputJump = clientData.m_Predicted.m_Input.m_Jump;
-	self->tee.inputFire = clientData.m_Predicted.m_Input.m_Fire;
-	self->tee.inputHook = clientData.m_Predicted.m_Input.m_Hook;
-	self->tee.inputPlayerFlags = clientData.m_Predicted.m_Input.m_PlayerFlags;
-	self->tee.inputWantedWeapon = clientData.m_Predicted.m_Input.m_WantedWeapon;
-	self->tee.inputNextWeapon = clientData.m_Predicted.m_Input.m_NextWeapon;
-	self->tee.inputPrevWeapon = clientData.m_Predicted.m_Input.m_PrevWeapon;
+	self->tee.input_direction = clientData.m_Predicted.m_Input.m_Direction;
+	self->tee.input_target = Vector2(vec2(clientData.m_Predicted.m_Input.m_TargetX, clientData.m_Predicted.m_Input.m_TargetY));
+	self->tee.input_jump = clientData.m_Predicted.m_Input.m_Jump;
+	self->tee.input_fire = clientData.m_Predicted.m_Input.m_Fire;
+	self->tee.input_hook = clientData.m_Predicted.m_Input.m_Hook;
+	self->tee.input_player_flags = clientData.m_Predicted.m_Input.m_PlayerFlags;
+	self->tee.input_wanted_weapon = clientData.m_Predicted.m_Input.m_WantedWeapon;
+	self->tee.input_next_weapon = clientData.m_Predicted.m_Input.m_NextWeapon;
+	self->tee.input_prev_weapon = clientData.m_Predicted.m_Input.m_PrevWeapon;
 
 	return 0;
 }
@@ -206,19 +206,19 @@ static void Player_dealloc(Player* self)
 	Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
-static PyObject* Player_getuseCustomColor(Player* self, void* closure)
+static PyObject* Player_getuse_custom_color(Player* self, void* closure)
 {
-	return Py_BuildValue("i", self->useCustomColor);
+	return Py_BuildValue("i", self->use_custom_color);
 }
 
-static PyObject* Player_getcolorBody(Player* self, void* closure)
+static PyObject* Player_getcolor_body(Player* self, void* closure)
 {
-	return Py_BuildValue("i", self->colorBody);
+	return Py_BuildValue("i", self->color_body);
 }
 
-static PyObject* Player_getcolorFeet(Player* self, void* closure)
+static PyObject* Player_getcolor_feet(Player* self, void* closure)
 {
-	return Py_BuildValue("i", self->colorFeet);
+	return Py_BuildValue("i", self->color_feet);
 }
 
 static PyObject* Player_getname(Player* self, void* closure)
@@ -236,14 +236,14 @@ static PyObject* Player_getcountry(Player* self, void* closure)
 	return Py_BuildValue("i", self->country);
 }
 
-static PyObject* Player_getskinName(Player* self, void* closure)
+static PyObject* Player_getskin_name(Player* self, void* closure)
 {
-	return Py_BuildValue("s", self->skinName);
+	return Py_BuildValue("s", self->skin_name);
 }
 
-static PyObject* Player_getskinColor(Player* self, void* closure)
+static PyObject* Player_getskin_color(Player* self, void* closure)
 {
-	return Py_BuildValue("i", self->skinColor);
+	return Py_BuildValue("i", self->skin_color);
 }
 
 static PyObject* Player_getteam(Player* self, void* closure)
@@ -256,99 +256,99 @@ static PyObject* Player_getemoticon(Player* self, void* closure)
 	return Py_BuildValue("i", self->emoticon);
 }
 
-static PyObject* Player_getemoticonStartFraction(Player* self, void* closure)
+static PyObject* Player_getemoticon_start_fraction(Player* self, void* closure)
 {
-	return Py_BuildValue("d", (double) self->emoticonStartFraction);
+	return Py_BuildValue("d", (double) self->emoticon_start_fraction);
 }
 
-static PyObject* Player_getemoticonStartTick(Player* self, void* closure)
+static PyObject* Player_getemoticon_start_tick(Player* self, void* closure)
 {
-	return Py_BuildValue("i", self->emoticonStartTick);
+	return Py_BuildValue("i", self->emoticon_start_tick);
 }
 
-static PyObject* Player_getisSolo(Player* self, void* closure)
+static PyObject* Player_getis_solo(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isSolo);
+	return Py_BuildValue("b", self->is_solo);
 }
 
-static PyObject* Player_getisJetpack(Player* self, void* closure)
+static PyObject* Player_getis_jetpack(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isJetpack);
+	return Py_BuildValue("b", self->is_jetpack);
 }
 
-static PyObject* Player_getisCollisionDisabled(Player* self, void* closure)
+static PyObject* Player_getis_collision_disabled(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isCollisionDisabled);
+	return Py_BuildValue("b", self->is_collision_disabled);
 }
 
-static PyObject* Player_getisEndlessHook(Player* self, void* closure)
+static PyObject* Player_getis_endless_hook(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isEndlessHook);
+	return Py_BuildValue("b", self->is_endless_hook);
 }
 
-static PyObject* Player_getisEndlessJump(Player* self, void* closure)
+static PyObject* Player_getis_endless_jump(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isEndlessJump);
+	return Py_BuildValue("b", self->is_endless_jump);
 }
 
-static PyObject* Player_getisHammerHitDisabled(Player* self, void* closure)
+static PyObject* Player_getis_hammer_hit_disabled(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isHammerHitDisabled);
+	return Py_BuildValue("b", self->is_hammer_hit_disabled);
 }
 
-static PyObject* Player_getisGrenadeHitDisabled(Player* self, void* closure)
+static PyObject* Player_getis_grenade_hit_disabled(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isGrenadeHitDisabled);
+	return Py_BuildValue("b", self->is_grenade_hit_disabled);
 }
 
-static PyObject* Player_getisLaserHitDisabled(Player* self, void* closure)
+static PyObject* Player_getis_laser_hit_disabled(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isLaserHitDisabled);
+	return Py_BuildValue("b", self->is_laser_hit_disabled);
 }
 
-static PyObject* Player_getisShotgunHitDisabled(Player* self, void* closure)
+static PyObject* Player_getis_shotgun_hit_disabled(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isShotgunHitDisabled);
+	return Py_BuildValue("b", self->is_shotgun_hit_disabled);
 }
 
-static PyObject* Player_getisHookHitDisabled(Player* self, void* closure)
+static PyObject* Player_getis_hook_hit_disabled(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isHookHitDisabled);
+	return Py_BuildValue("b", self->is_hook_hit_disabled);
 }
 
-static PyObject* Player_getisSuper(Player* self, void* closure)
+static PyObject* Player_getis_super(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isSuper);
+	return Py_BuildValue("b", self->is_super);
 }
 
-static PyObject* Player_getisHasTelegunGun(Player* self, void* closure)
+static PyObject* Player_gethas_telegun_gun(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isHasTelegunGun);
+	return Py_BuildValue("b", self->has_telegun_gun);
 }
 
-static PyObject* Player_getisHasTelegunGrenade(Player* self, void* closure)
+static PyObject* Player_gethas_telegun_grenade(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isHasTelegunGrenade);
+	return Py_BuildValue("b", self->has_telegun_grenade);
 }
 
-static PyObject* Player_getisHasTelegunLaser(Player* self, void* closure)
+static PyObject* Player_gethas_telegun_laser(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isHasTelegunLaser);
+	return Py_BuildValue("b", self->has_telegun_laser);
 }
 
-static PyObject* Player_getfreezeEnd(Player* self, void* closure)
+static PyObject* Player_getfreeze_end(Player* self, void* closure)
 {
-	return Py_BuildValue("i", self->freezeEnd);
+	return Py_BuildValue("i", self->freeze_end);
 }
 
-static PyObject* Player_getisDeepFrozen(Player* self, void* closure)
+static PyObject* Player_getis_deep_frozen(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isDeepFrozen);
+	return Py_BuildValue("b", self->is_deep_frozen);
 }
 
-static PyObject* Player_getisLiveFrozen(Player* self, void* closure)
+static PyObject* Player_getis_live_frozen(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isLiveFrozen);
+	return Py_BuildValue("b", self->is_live_frozen);
 }
 
 static PyObject* Player_getangle(Player* self, void* closure)
@@ -356,90 +356,90 @@ static PyObject* Player_getangle(Player* self, void* closure)
 	return Py_BuildValue("d", (double) self->angle);
 }
 
-static PyObject* Player_getisActive(Player* self, void* closure)
+static PyObject* Player_getis_active(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isActive);
+	return Py_BuildValue("b", self->is_active);
 }
 
-static PyObject* Player_getisChatIgnore(Player* self, void* closure)
+static PyObject* Player_getis_chat_ignore(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isChatIgnore);
+	return Py_BuildValue("b", self->is_chat_ignore);
 }
 
-static PyObject* Player_getisEmoticonIgnore(Player* self, void* closure)
+static PyObject* Player_getis_emoticon_ignore(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isEmoticonIgnore);
+	return Py_BuildValue("b", self->is_emoticon_ignore);
 }
 
-static PyObject* Player_getisFriend(Player* self, void* closure)
+static PyObject* Player_getis_friend(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isFriend);
+	return Py_BuildValue("b", self->is_friend);
 }
 
-static PyObject* Player_getisFoe(Player* self, void* closure)
+static PyObject* Player_getis_foe(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isFoe);
+	return Py_BuildValue("b", self->is_foe);
 }
 
-static PyObject* Player_getauthLevel(Player* self, void* closure)
+static PyObject* Player_getauth_level(Player* self, void* closure)
 {
-	return Py_BuildValue("i", self->authLevel);
+	return Py_BuildValue("i", self->auth_level);
 }
 
-static PyObject* Player_getisAfk(Player* self, void* closure)
+static PyObject* Player_getis_afk(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isAfk);
+	return Py_BuildValue("b", self->is_afk);
 }
 
-static PyObject* Player_getisPaused(Player* self, void* closure)
+static PyObject* Player_getis_paused(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isPaused);
+	return Py_BuildValue("b", self->is_paused);
 }
 
-static PyObject* Player_getisSpec(Player* self, void* closure)
+static PyObject* Player_getis_spec(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isSpec);
+	return Py_BuildValue("b", self->is_spec);
 }
 
-static PyObject* Player_getrenderPos(Player* self, void* closure)
+static PyObject* Player_getrender_pos(Player* self, void* closure)
 {
 	Vector2 *vector = (Vector2 *)PyObject_New(Vector2, &Vector2Type);
-	vector->x = self->renderPos.x;
-	vector->y = self->renderPos.y;
+	vector->x = self->render_pos.x;
+	vector->y = self->render_pos.y;
 
 	return (PyObject *) vector;
 }
 
-static PyObject* Player_getisPredicted(Player* self, void* closure)
+static PyObject* Player_getis_predicted(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isPredicted);
+	return Py_BuildValue("b", self->is_predicted);
 }
 
-static PyObject* Player_getisPredictedLocal(Player* self, void* closure)
+static PyObject* Player_getis_predicted_local(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isPredictedLocal);
+	return Py_BuildValue("b", self->is_predicted_local);
 }
 
-static PyObject* Player_getsmoothStart(Player* self, void* closure)
+static PyObject* Player_getsmooth_start(Player* self, void* closure)
 {
-	return Py_BuildValue("(LL)", self->smoothStart[0], self->smoothStart[1]);
+	return Py_BuildValue("(LL)", self->smooth_start[0], self->smooth_start[1]);
 }
 
-static PyObject* Player_getsmoothLen(Player* self, void* closure)
+static PyObject* Player_getsmooth_len(Player* self, void* closure)
 {
-	return Py_BuildValue("(LL)", self->smoothLen[0], self->smoothLen[1]);
+	return Py_BuildValue("(LL)", self->smooth_len[0], self->smooth_len[1]);
 }
 
-static PyObject* Player_getisSpecCharPresent(Player* self, void* closure)
+static PyObject* Player_getis_spec_char_present(Player* self, void* closure)
 {
-	return Py_BuildValue("b", self->isSpecCharPresent);
+	return Py_BuildValue("b", self->is_spec_char_present);
 }
 
-static PyObject* Player_getspecChar(Player* self, void* closure)
+static PyObject* Player_getspec_char(Player* self, void* closure)
 {
 	Vector2 *vector = (Vector2 *)PyObject_New(Vector2, &Vector2Type);
-	vector->x = self->specChar.x;
-	vector->y = self->specChar.y;
+	vector->x = self->spec_char.x;
+	vector->y = self->spec_char.y;
 
 	return (PyObject *) vector;
 }
@@ -450,95 +450,95 @@ static PyObject* Player_gettee(Player* self, void* closure)
 
 	tee->pos = self->tee.pos;
 	tee->vel = self->tee.vel;
-	tee->hookPos = self->tee.hookPos;
-	tee->hookDir = self->tee.hookDir;
-	tee->hookTeleBase = self->tee.hookTeleBase;
-	tee->hookTick = self->tee.hookTick;
-	tee->hookState = self->tee.hookState;
-	tee->hookedPlayer = self->tee.hookedPlayer;
-	tee->activeWeapon = self->tee.activeWeapon;
-	tee->isNewHook = self->tee.isNewHook;
+	tee->hook_pos = self->tee.hook_pos;
+	tee->hook_dir = self->tee.hook_dir;
+	tee->hook_tele_base = self->tee.hook_tele_base;
+	tee->hook_tick = self->tee.hook_tick;
+	tee->hook_state = self->tee.hook_state;
+	tee->hooked_player = self->tee.hooked_player;
+	tee->active_weapon = self->tee.active_weapon;
+	tee->is_new_hook = self->tee.is_new_hook;
 	tee->jumped = self->tee.jumped;
-	tee->jumpedTotal = self->tee.jumpedTotal;
+	tee->jumped_total = self->tee.jumped_total;
 	tee->jumps = self->tee.jumps;
 	tee->direction = self->tee.direction;
 	tee->angle = self->tee.angle;
-	tee->triggeredEvents = self->tee.triggeredEvents;
+	tee->triggered_events = self->tee.triggered_events;
 	tee->id = self->tee.id;
-	tee->isReset = self->tee.isReset;
-	tee->lastVel = self->tee.lastVel;
+	tee->is_reset = self->tee.is_reset;
+	tee->last_vel = self->tee.last_vel;
 	tee->colliding = self->tee.colliding;
-	tee->isLeftWall = self->tee.isLeftWall;
-	tee->isSolo = self->tee.isSolo;
-	tee->isJetpack = self->tee.isJetpack;
-	tee->isCollisionDisabled = self->tee.isCollisionDisabled;
-	tee->isEndlessHook = self->tee.isEndlessHook;
-	tee->isEndlessJump = self->tee.isEndlessJump;
-	tee->isHammerHitDisabled = self->tee.isHammerHitDisabled;
-	tee->isGrenadeHitDisabled = self->tee.isGrenadeHitDisabled;
-	tee->isLaserHitDisabled = self->tee.isLaserHitDisabled;
-	tee->isShotgunHitDisabled = self->tee.isShotgunHitDisabled;
-	tee->isHookHitDisabled = self->tee.isHookHitDisabled;
-	tee->isSuper = self->tee.isSuper;
-	tee->hasTelegunGun = self->tee.hasTelegunGun;
-	tee->hasTelegunGrenade = self->tee.hasTelegunGrenade;
-	tee->hasTelegunLaser = self->tee.hasTelegunLaser;
-	tee->freezeStart = self->tee.freezeStart;
-	tee->freezeEnd = self->tee.freezeEnd;
-	tee->isInFreeze = self->tee.isInFreeze;
-	tee->isDeepFrozen = self->tee.isDeepFrozen;
-	tee->isLiveFrozen = self->tee.isLiveFrozen;
+	tee->is_left_wall = self->tee.is_left_wall;
+	tee->is_solo = self->tee.is_solo;
+	tee->is_jetpack = self->tee.is_jetpack;
+	tee->is_collision_disabled = self->tee.is_collision_disabled;
+	tee->is_endless_hook = self->tee.is_endless_hook;
+	tee->is_endless_jump = self->tee.is_endless_jump;
+	tee->is_hammer_hit_disabled = self->tee.is_hammer_hit_disabled;
+	tee->is_grenade_hit_disabled = self->tee.is_grenade_hit_disabled;
+	tee->is_laser_hit_disabled = self->tee.is_laser_hit_disabled;
+	tee->is_shotgun_hit_disabled = self->tee.is_shotgun_hit_disabled;
+	tee->is_hook_hit_disabled = self->tee.is_hook_hit_disabled;
+	tee->is_super = self->tee.is_super;
+	tee->has_telegun_gun = self->tee.has_telegun_gun;
+	tee->has_telegun_grenade = self->tee.has_telegun_grenade;
+	tee->has_telegun_laser = self->tee.has_telegun_laser;
+	tee->freeze_start = self->tee.freeze_start;
+	tee->freeze_end = self->tee.freeze_end;
+	tee->is_in_freeze = self->tee.is_in_freeze;
+	tee->is_deep_frozen = self->tee.is_deep_frozen;
+	tee->is_live_frozen = self->tee.is_live_frozen;
 
 	return (PyObject *) tee;
 }
 
 static PyGetSetDef Player_getseters[] = {
-	{"useCustomColor", (getter) Player_getuseCustomColor, NULL, "useCustomColor (integer)", NULL},
-	{"colorBody", (getter) Player_getcolorBody, NULL, "colorBody (integer)", NULL},
-	{"colorFeet", (getter) Player_getcolorFeet, NULL, "colorFeet (integer)", NULL},
+	{"use_custom_color", (getter) Player_getuse_custom_color, NULL, "use_custom_color (integer)", NULL},
+	{"color_body", (getter) Player_getcolor_body, NULL, "color_body (integer)", NULL},
+	{"color_feet", (getter) Player_getcolor_feet, NULL, "color_feet (integer)", NULL},
 	{"name", (getter) Player_getname, NULL, "name (string)", NULL},
 	{"clan", (getter) Player_getclan, NULL, "clan (string)", NULL},
 	{"country", (getter) Player_getcountry, NULL, "country (integer)", NULL},
-	{"skinName", (getter) Player_getskinName, NULL, "skinName (string)", NULL},
-	{"skinColor", (getter) Player_getskinColor, NULL, "skinColor (integer)", NULL},
+	{"skin_name", (getter) Player_getskin_name, NULL, "skin_name (string)", NULL},
+	{"skin_color", (getter) Player_getskin_color, NULL, "skin_color (integer)", NULL},
 	{"team", (getter) Player_getteam, NULL, "team (integer)", NULL},
 	{"emoticon", (getter) Player_getemoticon, NULL, "emoticon (integer)", NULL},
-	{"emoticonStartFraction", (getter) Player_getemoticonStartFraction, NULL, "emoticonStartFraction (double)", NULL},
-	{"emoticonStartTick", (getter) Player_getemoticonStartTick, NULL, "emoticonStartTick (integer)", NULL},
-	{"isSolo", (getter) Player_getisSolo, NULL, "isSolo (boolean)", NULL},
-	{"isJetpack", (getter) Player_getisJetpack, NULL, "isJetpack (boolean)", NULL},
-	{"isCollisionDisabled", (getter) Player_getisCollisionDisabled, NULL, "isCollisionDisabled (boolean)", NULL},
-	{"isEndlessHook", (getter) Player_getisEndlessHook, NULL, "isEndlessHook (boolean)", NULL},
-	{"isEndlessJump", (getter) Player_getisEndlessJump, NULL, "isEndlessJump (boolean)", NULL},
-	{"isHammerHitDisabled", (getter) Player_getisHammerHitDisabled, NULL, "isHammerHitDisabled (boolean)", NULL},
-	{"isGrenadeHitDisabled", (getter) Player_getisGrenadeHitDisabled, NULL, "isGrenadeHitDisabled (boolean)", NULL},
-	{"isLaserHitDisabled", (getter) Player_getisLaserHitDisabled, NULL, "isLaserHitDisabled (boolean)", NULL},
-	{"isShotgunHitDisabled", (getter) Player_getisShotgunHitDisabled, NULL, "isShotgunHitDisabled (boolean)", NULL},
-	{"isHookHitDisabled", (getter) Player_getisHookHitDisabled, NULL, "isHookHitDisabled (boolean)", NULL},
-	{"isSuper", (getter) Player_getisSuper, NULL, "isSuper (boolean)", NULL},
-	{"isHasTelegunGun", (getter) Player_getisHasTelegunGun, NULL, "isHasTelegunGun (boolean)", NULL},
-	{"isHasTelegunGrenade", (getter) Player_getisHasTelegunGrenade, NULL, "isHasTelegunGrenade (boolean)", NULL},
-	{"isHasTelegunLaser", (getter) Player_getisHasTelegunLaser, NULL, "isHasTelegunLaser (boolean)", NULL},
-	{"freezeEnd", (getter) Player_getfreezeEnd, NULL, "freezeEnd (integer)", NULL},
-	{"isDeepFrozen", (getter) Player_getisDeepFrozen, NULL, "isDeepFrozen (boolean)", NULL},
-	{"isLiveFrozen", (getter) Player_getisLiveFrozen, NULL, "isLiveFrozen (boolean)", NULL},
+	{"emoticon_start_fraction", (getter) Player_getemoticon_start_fraction, NULL, "emoticon_start_fraction (double)", NULL},
+	{"emoticon_start_tick", (getter) Player_getemoticon_start_tick, NULL, "emoticon_start_tick (integer)", NULL},
+	{"is_solo", (getter) Player_getis_solo, NULL, "is_solo (boolean)", NULL},
+	{"is_jetpack", (getter) Player_getis_jetpack, NULL, "is_jetpack (boolean)", NULL},
+	{"is_collision_disabled", (getter) Player_getis_collision_disabled, NULL, "is_collision_disabled (boolean)", NULL},
+	{"is_endless_hook", (getter) Player_getis_endless_hook, NULL, "is_endless_hook (boolean)", NULL},
+	{"is_endless_jump", (getter) Player_getis_endless_jump, NULL, "is_endless_jump (boolean)", NULL},
+	{"is_hammer_hit_disabled", (getter) Player_getis_hammer_hit_disabled, NULL, "is_hammer_hit_disabled (boolean)", NULL},
+	{"is_grenade_hit_disabled", (getter) Player_getis_grenade_hit_disabled, NULL, "is_grenade_hit_disabled (boolean)", NULL},
+	{"is_laser_hit_disabled", (getter) Player_getis_laser_hit_disabled, NULL, "is_laser_hit_disabled (boolean)", NULL},
+	{"is_shotgun_hit_disabled", (getter) Player_getis_shotgun_hit_disabled, NULL, "is_shotgun_hit_disabled (boolean)", NULL},
+	{"is_hook_hit_disabled", (getter) Player_getis_hook_hit_disabled, NULL, "is_hook_hit_disabled (boolean)", NULL},
+	{"is_super", (getter) Player_getis_super, NULL, "is_super (boolean)", NULL},
+	{"has_telegun_gun", (getter) Player_gethas_telegun_gun, NULL, "has_telegun_gun (boolean)", NULL},
+	{"has_telegun_grenade", (getter) Player_gethas_telegun_grenade, NULL, "has_telegun_grenade (boolean)", NULL},
+	{"has_telegun_laser", (getter) Player_gethas_telegun_laser, NULL, "has_telegun_laser (boolean)", NULL},
+	{"freeze_end", (getter) Player_getfreeze_end, NULL, "freeze_end (integer)", NULL},
+	{"is_deep_frozen", (getter) Player_getis_deep_frozen, NULL, "is_deep_frozen (boolean)", NULL},
+	{"is_live_frozen", (getter) Player_getis_live_frozen, NULL, "is_live_frozen (boolean)", NULL},
 	{"angle", (getter) Player_getangle, NULL, "angle (double)", NULL},
-	{"isActive", (getter) Player_getisActive, NULL, "isActive (boolean)", NULL},
-	{"isChatIgnore", (getter) Player_getisChatIgnore, NULL, "isChatIgnore (boolean)", NULL},
-	{"isEmoticonIgnore", (getter) Player_getisEmoticonIgnore, NULL, "isEmoticonIgnore (boolean)", NULL},
-	{"isFriend", (getter) Player_getisFriend, NULL, "isFriend (boolean)", NULL},
-	{"isFoe", (getter) Player_getisFoe, NULL, "isFoe (boolean)", NULL},
-	{"authLevel", (getter) Player_getauthLevel, NULL, "authLevel (integer)", NULL},
-	{"isAfk", (getter) Player_getisAfk, NULL, "isAfk (boolean)", NULL},
-	{"isPaused", (getter) Player_getisPaused, NULL, "isPaused (boolean)", NULL},
-	{"isSpec", (getter) Player_getisSpec, NULL, "isSpec (boolean)", NULL},
-	{"renderPos", (getter) Player_getrenderPos, NULL, "renderPos (Vector2)", NULL},
-	{"isPredicted", (getter) Player_getisPredicted, NULL, "isPredicted (boolean)", NULL},
-	{"isPredictedLocal", (getter) Player_getisPredictedLocal, NULL, "isPredictedLocal (boolean)", NULL},
-	{"smoothStart", (getter) Player_getsmoothStart, NULL, "smoothStart (pair of long int)", NULL},
-	{"smoothLen", (getter) Player_getsmoothLen, NULL, "smoothLen (pair of long int)", NULL},
-	{"isSpecCharPresent", (getter) Player_getisSpecCharPresent, NULL, "isSpecCharPresent (boolean)", NULL},
-	{"specChar", (getter) Player_getspecChar, NULL, "specChar (Vector2)", NULL},
+	{"is_active", (getter) Player_getis_active, NULL, "is_active (boolean)", NULL},
+	{"is_chat_ignore", (getter) Player_getis_chat_ignore, NULL, "is_chat_ignore (boolean)", NULL},
+	{"is_emoticon_ignore", (getter) Player_getis_emoticon_ignore, NULL, "is_emoticon_ignore (boolean)", NULL},
+	{"is_friend", (getter) Player_getis_friend, NULL, "is_friend (boolean)", NULL},
+	{"is_foe", (getter) Player_getis_foe, NULL, "is_foe (boolean)", NULL},
+	{"auth_level", (getter) Player_getauth_level, NULL, "auth_level (integer)", NULL},
+	{"is_afk", (getter) Player_getis_afk, NULL, "is_afk (boolean)", NULL},
+	{"is_paused", (getter) Player_getis_paused, NULL, "is_paused (boolean)", NULL},
+	{"is_spec", (getter) Player_getis_spec, NULL, "is_spec (boolean)", NULL},
+	{"render_pos", (getter) Player_getrender_pos, NULL, "render_pos (Vector2)", NULL},
+	{"is_predicted", (getter) Player_getis_predicted, NULL, "is_predicted (boolean)", NULL},
+	{"is_predicted_local", (getter) Player_getis_predicted_local, NULL, "is_predicted_local (boolean)", NULL},
+	{"smooth_start", (getter) Player_getsmooth_start, NULL, "smooth_start (pair of long int)", NULL},
+	{"smooth_len", (getter) Player_getsmooth_len, NULL, "smooth_len (pair of long int)", NULL},
+	{"is_spec_char_present", (getter) Player_getis_spec_char_present, NULL, "is_spec_char_present (boolean)", NULL},
+	{"spec_char", (getter) Player_getspec_char, NULL, "spec_char (Vector2)", NULL},
 	{"tee", (getter) Player_gettee, NULL, "tee (Tee)", NULL},
 	{NULL}  /* Sentinel */
 };
@@ -549,95 +549,95 @@ static PyObject* Player_str(Player* self)
 
 	PyObject* name_str = PyUnicode_FromString(self->name);
 	PyObject* clan_str = PyUnicode_FromString(self->clan);
-	PyObject* skinName_str = PyUnicode_FromString(self->skinName);
-	PyObject* renderPos_str_obj = Vector2_str(&self->renderPos);
-	PyObject* specChar_str_obj = Vector2_str(&self->specChar);
+	PyObject* skin_name_str = PyUnicode_FromString(self->skin_name);
+	PyObject* render_pos_str_obj = Vector2_str(&self->render_pos);
+	PyObject* spec_char_str_obj = Vector2_str(&self->spec_char);
 	PyObject* tee_str_obj = Tee_str(&self->tee);
 
-	const char *renderPos_str = PyUnicode_AsUTF8(renderPos_str_obj);
+	const char *render_pos_str = PyUnicode_AsUTF8(render_pos_str_obj);
 	const char *tee_str = PyUnicode_AsUTF8(tee_str_obj);
-	const char *specChar_str = PyUnicode_AsUTF8(specChar_str_obj);
+	const char *spec_char_str = PyUnicode_AsUTF8(spec_char_str_obj);
 
-	if (!renderPos_str || !tee_str || !specChar_str) {
-		Py_XDECREF(renderPos_str_obj);
+	if (!render_pos_str || !tee_str || !spec_char_str) {
+		Py_XDECREF(render_pos_str_obj);
 		Py_XDECREF(tee_str_obj);
-		Py_XDECREF(specChar_str_obj);
+		Py_XDECREF(spec_char_str_obj);
 		return NULL;
 	}
 
 	sprintf(
 		buf,
 		"Player(\n"
-		"useCustomColor: %d,\n"
-		"colorBody: %d,\n"
-		"colorFeet: %d,\n"
+		"use_custom_color: %d,\n"
+		"color_body: %d,\n"
+		"color_feet: %d,\n"
 		"name: %s,\n"
 		"clan: %s,\n"
 		"country: %d,\n"
-		"skinName: %s,\n"
-		"skinColor: %d,\n"
+		"skin_name: %s,\n"
+		"skin_color: %d,\n"
 		"team: %d,\n"
 		"emoticon: %d,\n"
-		"emoticonStartFraction: %.2f,\n"
-		"emoticonStartTick: %d,\n"
-		"isSolo: %s,\n"
-		"isJetpack: %s,\n"
-		"isCollisionDisabled: %s,\n"
-		"isEndlessHook: %s,\n"
-		"isEndlessJump: %s,\n"
-		"isHammerHitDisabled: %s,\n"
-		"isGrenadeHitDisabled: %s,\n"
-		"isLaserHitDisabled: %s,\n"
-		"isShotgunHitDisabled: %s,\n"
-		"isHookHitDisabled: %s,\n"
-		"isSuper: %s,\n"
-		"isHasTelegunGun: %s,\n"
-		"isHasTelegunGrenade: %s,\n"
-		"isHasTelegunLaser: %s,\n"
-		"freezeEnd: %d,\n"
-		"isDeepFrozen: %s,\n"
-		"isLiveFrozen: %s,\n"
+		"emoticon_start_fraction: %.2f,\n"
+		"emoticon_start_tick: %d,\n"
+		"is_solo: %s,\n"
+		"is_jetpack: %s,\n"
+		"is_collision_disabled: %s,\n"
+		"is_endless_hook: %s,\n"
+		"is_endless_jump: %s,\n"
+		"is_hammer_hit_disabled: %s,\n"
+		"is_grenade_hit_disabled: %s,\n"
+		"is_laser_hit_disabled: %s,\n"
+		"is_shotgun_hit_disabled: %s,\n"
+		"is_hook_hit_disabled: %s,\n"
+		"is_super: %s,\n"
+		"has_telegun_gun: %s,\n"
+		"has_telegun_grenade: %s,\n"
+		"has_telegun_laser: %s,\n"
+		"freeze_end: %d,\n"
+		"is_deep_frozen: %s,\n"
+		"is_live_frozen: %s,\n"
 		"angle: %.2f,\n"
-		"isActive: %s,\n"
-		"isChatIgnore: %s,\n"
-		"isEmoticonIgnore: %s,\n"
-		"isFriend: %s,\n"
-		"isFoe: %s,\n"
-		"authLevel: %d,\n"
-		"isAfk: %s,\n"
-		"isPaused: %s,\n"
-		"isSpec: %s,\n"
-		"renderPos: %s,\n"
-		"isSpecCharPresent: %s,\n"
-		"isPredicted: %s,\n"
-		"isPredictedLocal: %s,\n"
-		"specChar: %s,\n"
+		"is_active: %s,\n"
+		"is_chat_ignore: %s,\n"
+		"is_emoticon_ignore: %s,\n"
+		"is_friend: %s,\n"
+		"is_foe: %s,\n"
+		"auth_level: %d,\n"
+		"is_afk: %s,\n"
+		"is_paused: %s,\n"
+		"is_spec: %s,\n"
+		"render_pos: %s,\n"
+		"is_spec_char_present: %s,\n"
+		"is_predicted: %s,\n"
+		"is_predicted_local: %s,\n"
+		"spec_char: %s,\n"
 		"tee: %s\n"
 		")",
-		self->useCustomColor, self->colorBody, self->colorFeet, PyUnicode_AsUTF8(name_str), PyUnicode_AsUTF8(clan_str),
-		self->country, PyUnicode_AsUTF8(skinName_str), self->skinColor, self->team, self->emoticon,
-		self->emoticonStartFraction, self->emoticonStartTick, self->isSolo ? "true" : "false",
-		self->isJetpack ? "true" : "false", self->isCollisionDisabled ? "true" : "false",
-		self->isEndlessHook ? "true" : "false", self->isEndlessJump ? "true" : "false",
-		self->isHammerHitDisabled ? "true" : "false", self->isGrenadeHitDisabled ? "true" : "false",
-		self->isLaserHitDisabled ? "true" : "false", self->isShotgunHitDisabled ? "true" : "false",
-		self->isHookHitDisabled ? "true" : "false", self->isSuper ? "true" : "false",
-		self->isHasTelegunGun ? "true" : "false", self->isHasTelegunGrenade ? "true" : "false",
-		self->isHasTelegunLaser ? "true" : "false", self->freezeEnd, self->isDeepFrozen ? "true" : "false",
-		self->isLiveFrozen ? "true" : "false", self->angle, self->isActive ? "true" : "false",
-		self->isChatIgnore ? "true" : "false", self->isEmoticonIgnore ? "true" : "false",
-		self->isFriend ? "true" : "false", self->isFoe ? "true" : "false", self->authLevel,
-		self->isAfk ? "true" : "false", self->isPaused ? "true" : "false", self->isSpec ? "true" : "false",
-		renderPos_str, self->isSpecCharPresent ? "true" : "false", self->isPredicted ? "true" : "false",
-		self->isPredictedLocal ? "true" : "false", specChar_str, tee_str
+		self->use_custom_color, self->color_body, self->color_feet, PyUnicode_AsUTF8(name_str), PyUnicode_AsUTF8(clan_str),
+		self->country, PyUnicode_AsUTF8(skin_name_str), self->skin_color, self->team, self->emoticon,
+		self->emoticon_start_fraction, self->emoticon_start_tick, self->is_solo ? "true" : "false",
+		self->is_jetpack ? "true" : "false", self->is_collision_disabled ? "true" : "false",
+		self->is_endless_hook ? "true" : "false", self->is_endless_jump ? "true" : "false",
+		self->is_hammer_hit_disabled ? "true" : "false", self->is_grenade_hit_disabled ? "true" : "false",
+		self->is_laser_hit_disabled ? "true" : "false", self->is_shotgun_hit_disabled ? "true" : "false",
+		self->is_hook_hit_disabled ? "true" : "false", self->is_super ? "true" : "false",
+		self->has_telegun_gun ? "true" : "false", self->has_telegun_grenade ? "true" : "false",
+		self->has_telegun_laser ? "true" : "false", self->freeze_end, self->is_deep_frozen ? "true" : "false",
+		self->is_live_frozen ? "true" : "false", self->angle, self->is_active ? "true" : "false",
+		self->is_chat_ignore ? "true" : "false", self->is_emoticon_ignore ? "true" : "false",
+		self->is_friend ? "true" : "false", self->is_foe ? "true" : "false", self->auth_level,
+		self->is_afk ? "true" : "false", self->is_paused ? "true" : "false", self->is_spec ? "true" : "false",
+		render_pos_str, self->is_spec_char_present ? "true" : "false", self->is_predicted ? "true" : "false",
+		self->is_predicted_local ? "true" : "false", spec_char_str, tee_str
 	);
 
-	Py_DECREF(renderPos_str_obj);
+	Py_DECREF(render_pos_str_obj);
 	Py_DECREF(tee_str_obj);
 	Py_DECREF(name_str);
 	Py_DECREF(clan_str);
-	Py_DECREF(skinName_str);
-	Py_DECREF(specChar_str);
+	Py_DECREF(skin_name_str);
+	Py_DECREF(spec_char_str);
 
 	return PyUnicode_FromString(buf);
 }
@@ -684,3 +684,4 @@ inline PyTypeObject PlayerType = {
 };
 
 #endif // DDNET_API_PLAYER_H
+
