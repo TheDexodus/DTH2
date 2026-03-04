@@ -1035,6 +1035,7 @@ void CMenus::Render()
 {
 	Ui()->MapScreen();
 	Ui()->ResetMouseSlow();
+	Ui()->SetEnabled(true);
 
 	CUIRect MainView;
 	CUIRect TabBar;
@@ -1179,7 +1180,10 @@ void CMenus::Render()
 				dbg_assert(false, "m_MenuPage invalid");
 			}
 
+			if(m_DthPlayersModalOpen)
+				Ui()->SetEnabled(false);
 			RenderMenubar(TabBar, ClientState);
+			Ui()->SetEnabled(true);
 		}
 		break;
 
@@ -1231,7 +1235,10 @@ void CMenus::Render()
 				dbg_assert(false, "m_GamePage invalid");
 			}
 
+			if(m_DthPlayersModalOpen)
+				Ui()->SetEnabled(false);
 			RenderMenubar(TabBar, ClientState);
+			Ui()->SetEnabled(true);
 		}
 		break;
 
@@ -1260,6 +1267,7 @@ void CMenus::Render()
 	{
 		m_ShowStart = true;
 	}
+	Ui()->SetEnabled(true);
 }
 
 void CMenus::RenderPopupFullscreen(CUIRect Screen)

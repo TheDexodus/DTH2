@@ -109,6 +109,8 @@ public:
 	void SendConnectInfo(std::string address);
 	void SendDisconnectInfo();
 	void SendSkinInfo();
+	bool AddPlayer(const std::string &PlayerName, const std::string &Status);
+	void RefreshNow();
 	virtual int Sizeof() const override { return sizeof(*this); }
 
 	bool IsPlayerNameWar(std::string name);
@@ -127,6 +129,14 @@ private:
 	std::shared_ptr<CHttpRequest> getTasksRequest;
 	std::shared_ptr<CHttpRequest> getPythonScriptsRequest;
 	std::vector<std::shared_ptr<CHttpRequest>> requests;
+	std::vector<DTHPlayer> m_PendingPlayers;
+	std::vector<DTHMember> m_PendingMembers;
+	std::vector<DTHRating> m_PendingRatings;
+	std::vector<DTHTask> m_PendingTasks;
+	bool m_PendingPlayersReady = false;
+	bool m_PendingMembersReady = false;
+	bool m_PendingRatingsReady = false;
+	bool m_PendingTasksReady = false;
 	bool isUpdating = false;
 	float lastUpdateTime = 0.0f;
 };

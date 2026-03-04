@@ -29,6 +29,7 @@ void CMenus::RenderLoginMenu(CUIRect MainView)
 
 	static int init = 0;
 	static int rememberMe = 0;
+	static int showPassword = 0;
 	static bool ShowInvalidCredentials = false;
 	static bool ShowNotLatestVersion = false;
 
@@ -49,6 +50,7 @@ void CMenus::RenderLoginMenu(CUIRect MainView)
 	CUIRect Button, LoginButton, AbortButton, PassLine, LoginLine, Label;
 	CUIRect Box;
 	static CButtonContainer s_Login, s_Abort;
+	static int s_FocusReset;
 
 	const float VMargin = MainView.w / 2 - 265.0f;
 
@@ -92,7 +94,39 @@ void CMenus::RenderLoginMenu(CUIRect MainView)
 		}
 	}
 
-	if(DoButton_Menu(&s_Login, Localize("Log in"), 0, &LoginButton, BUTTONFLAG_ALL, nullptr, IGraphics::CORNER_ALL, 5.0f, 0.f) && !GameClient()->user.isLoginLoading())
+	if(Ui()->ConsumeHotkey(CUi::HOTKEY_TAB))
+	{
+		const bool LoginIsActive = m_LogInLogin.IsActive();
+		const bool PasswordIsActive = m_LogInPassword.IsActive();
+		if(LoginIsActive)
+		{
+			Ui()->SetActiveItem(&m_LogInPassword);
+			m_LogInPassword.SetCursorOffset(m_LogInPassword.GetLength());
+			m_LogInPassword.SelectNothing();
+		}
+		else if(PasswordIsActive)
+		{
+			Ui()->SetActiveItem(&m_LogInLogin);
+			m_LogInLogin.SetCursorOffset(m_LogInLogin.GetLength());
+			m_LogInLogin.SelectNothing();
+		}
+		else
+		{
+			Ui()->SetActiveItem(&m_LogInLogin);
+			m_LogInLogin.SetCursorOffset(m_LogInLogin.GetLength());
+			m_LogInLogin.SelectNothing();
+		}
+	}
+
+	const bool PressedEnter = Ui()->ConsumeHotkey(CUi::HOTKEY_ENTER);
+	if(PressedEnter)
+	{
+		Ui()->SetActiveItem(&s_FocusReset);
+		m_LogInLogin.Deactivate();
+		m_LogInPassword.Deactivate();
+	}
+
+	if((DoButton_Menu(&s_Login, Localize("Log in"), 0, &LoginButton, BUTTONFLAG_ALL, nullptr, IGraphics::CORNER_ALL, 5.0f, 0.f) || PressedEnter) && !GameClient()->user.isLoginLoading())
 	{
 		GameClient()->user.login(string(m_Login), string(m_Pass));
 	}
@@ -127,7 +161,10 @@ void CMenus::RenderLoginMenu(CUIRect MainView)
 	{
 		CUIRect LoginLoadingLabel;
 		LoginBox.HSplitTop(100.0f, &LoginBox, &LoginLoadingLabel);
-		Ui()->DoLabel(&LoginLoadingLabel, Localize("Is logging"), 24.0f, TEXTALIGN_CENTER);
+		std::string LoadingText = Localize("Авторизация");
+		const int DotsCount = ((int)(Client()->LocalTime() * 2.0f)) % 4;
+		LoadingText.append(DotsCount, '.');
+		Ui()->DoLabel(&LoginLoadingLabel, LoadingText.c_str(), 24.0f, TEXTALIGN_CENTER);
 	}
 
 	LoginBox.HSplitTop(LoginBox.w/3.0f, 0, &LoginBox);
@@ -164,14 +201,19 @@ void CMenus::RenderLoginMenu(CUIRect MainView)
 	Button.VSplitLeft(50.0f, 0, &Button);
 	Button.VSplitRight(50.0f, &Button, 0);
 
-	if(DoButton_CheckBox(&rememberMe, Localize("Remember me"), rememberMe, &Button))
+	CUIRect RememberButton, ShowPasswordButton;
+	Button.VSplitMid(&RememberButton, &ShowPasswordButton, 20.0f);
+
+	if(DoButton_CheckBox(&rememberMe, Localize("Remember me"), rememberMe, &RememberButton))
 		rememberMe ^= 1;
+	if(DoButton_CheckBox(&showPassword, Localize("Show password"), showPassword, &ShowPasswordButton))
+		showPassword ^= 1;
 
 
 	m_LogInLogin.SetBuffer(m_Login, sizeof(m_Login));
 	Ui()->DoClearableEditBox(&m_LogInLogin, &LoginLine, 18.0f);
 
 	m_LogInPassword.SetBuffer(m_Pass, sizeof(m_Pass));
-	m_LogInPassword.SetHidden(true);
+	m_LogInPassword.SetHidden(!showPassword);
 	Ui()->DoClearableEditBox(&m_LogInPassword, &PassLine, 12.0f);
 }

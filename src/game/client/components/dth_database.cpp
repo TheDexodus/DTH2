@@ -6,6 +6,7 @@
 
 #include "game/client/gameclient.h"
 
+#include <base/system.h>
 #include <engine/shared/json.h>
 
 void DTHDatabase::Reset()
@@ -155,6 +156,18 @@ void DTHDatabase::UpdateInfo()
 
 void DTHDatabase::OnUpdate()
 {
+	for(auto It = requests.begin(); It != requests.end();)
+	{
+		if(*It == nullptr || (*It)->Done())
+		{
+			It = requests.erase(It);
+		}
+		else
+		{
+			++It;
+		}
+	}
+
 	if(this->isUpdating)
 	{
 		UpdateInfo();
@@ -162,6 +175,38 @@ void DTHDatabase::OnUpdate()
 	else if(this->lastUpdateTime <= GameClient()->Client()->LocalTime() && GameClient()->user.isAuthorized())
 	{
 		this->lastUpdateTime = GameClient()->Client()->LocalTime() + 120.0f;
+		Reset();
+		UpdateInfo();
+	}
+}
+
+bool DTHDatabase::AddPlayer(const std::string &PlayerName, const std::string &Status)
+{
+	if(!GameClient()->user.isAuthorized() || PlayerName.empty() || (Status != "war" && Status != "peace"))
+	{
+		return false;
+	}
+
+	char aEscapedName[256];
+	EscapeJson(aEscapedName, sizeof(aEscapedName), PlayerName.c_str());
+
+	char aBody[512];
+	str_format(aBody, sizeof(aBody), "{\"playerName\":\"%s\",\"status\":\"%s\"}", aEscapedName, Status.c_str());
+
+	shared_ptr<CHttpRequest> request = HttpPostJson("https://backend.dth.dexodus.ru/api/players.jsonld", aBody);
+	string authHeader = "Bearer " + GameClient()->user.token;
+	request->HeaderString("Authorization", authHeader.c_str());
+	request->LogProgress(HTTPLOG::FAILURE);
+	Http()->Run(request);
+	requests.push_back(request);
+	return true;
+}
+
+void DTHDatabase::RefreshNow()
+{
+	lastUpdateTime = 0.0f;
+	if(!isUpdating)
+	{
 		Reset();
 		UpdateInfo();
 	}

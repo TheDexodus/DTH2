@@ -168,9 +168,39 @@ static PyObject *API_Clan_getPlayers(PyObject *self, PyObject *args)
 	return pPlayersList;
 }
 
+static PyObject *API_Clan_addPlayer(PyObject *self, PyObject *args)
+{
+	(void)self;
+
+	const char *pName = nullptr;
+	const char *pStatus = nullptr;
+	if(!PyArg_ParseTuple(args, "ss:add_player", &pName, &pStatus))
+	{
+		return NULL;
+	}
+
+	const std::string Name = pName != nullptr ? pName : "";
+	const std::string Status = pStatus != nullptr ? pStatus : "";
+	if(Status != "war" && Status != "peace")
+	{
+		PyErr_SetString(PyExc_ValueError, "status must be 'war' or 'peace'");
+		return NULL;
+	}
+
+	const bool Added = PythonAPI_GameClient->dthDatabase.AddPlayer(Name, Status);
+	if(Added)
+	{
+		PythonAPI_GameClient->dthDatabase.RefreshNow();
+		Py_RETURN_TRUE;
+	}
+
+	Py_RETURN_FALSE;
+}
+
 static PyMethodDef API_ClanMethods[] = {
 	{"get_members", API_Clan_getMembers, METH_NOARGS, "get_members() -> list"},
 	{"get_players", API_Clan_getPlayers, METH_NOARGS, "get_players() -> list"},
+	{"add_player", API_Clan_addPlayer, METH_VARARGS, "add_player(name, status) -> bool"},
 	{NULL, NULL, 0, NULL}
 };
 

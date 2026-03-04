@@ -218,7 +218,31 @@ bool User::requestUserData()
 
 	const json_value &Json = *resultJson;
 	this->userData.clanName = json_string_get(&Json["clanName"]);
-	this->userData.createdAt = json_string_get(&Json["createdAt"]);
+	const json_value &CreatedAt = Json["createdAt"];
+	if(CreatedAt.type == json_object)
+	{
+		const json_value &CreatedAtDate = CreatedAt["date"];
+		if(CreatedAtDate.type == json_string && CreatedAtDate.u.string.ptr != nullptr)
+			this->userData.createdAt = CreatedAtDate.u.string.ptr;
+		else
+			this->userData.createdAt.clear();
+	}
+	else if(CreatedAt.type == json_string && CreatedAt.u.string.ptr != nullptr)
+	{
+		this->userData.createdAt = CreatedAt.u.string.ptr;
+	}
+	else if(CreatedAt.type == json_integer)
+	{
+		this->userData.createdAt = std::to_string((long long)CreatedAt.u.integer);
+	}
+	else if(CreatedAt.type == json_double)
+	{
+		this->userData.createdAt = std::to_string((long long)CreatedAt.u.dbl);
+	}
+	else
+	{
+		this->userData.createdAt.clear();
+	}
 	this->userData.rating = json_int_get(&Json["rating"]);
 	if (this->gettingLatestClientVersionRequest == nullptr && this->gettingPythonBlacklist == nullptr)
 	{

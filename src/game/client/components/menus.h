@@ -191,6 +191,7 @@ protected:
 	bool m_JoinTutorial = false;
 	bool m_CreateDefaultFavoriteCommunities = false;
 	bool m_ForceRefreshLanPage = false;
+	bool m_DthPlayersModalOpen = false;
 
 	char m_aNextServer[256];
 
@@ -637,6 +638,7 @@ protected:
 	void RenderDTH(CUIRect MainView);
 	void RenderDTHProfile(CUIRect MainView);
 	void RenderDTHPlayer(CUIRect &MainView, CTeeRenderInfo TeeRenderInfo, bool withBlink = false, bool withWatchToCursor = false, std::string name = "", std::string role = "");
+	void RenderDTHPlayers(CUIRect MainView);
 	void RenderDTHMembers(CUIRect MainView);
 	void RenderDTHTasks(CUIRect MainView);
 	void RenderDTHPython(CUIRect MainView);

@@ -505,6 +505,9 @@ void CUi::UpdateClipping()
 
 int CUi::DoButtonLogic(const void *pId, int Checked, const CUIRect *pRect, const unsigned Flags)
 {
+	if(!Enabled())
+		return 0;
+
 	int ReturnValue = 0;
 	const bool Inside = MouseHovered(pRect);
 
@@ -542,6 +545,9 @@ int CUi::DoButtonLogic(const void *pId, int Checked, const CUIRect *pRect, const
 
 int CUi::DoDraggableButtonLogic(const void *pId, int Checked, const CUIRect *pRect, bool *pClicked, bool *pAbrupted)
 {
+	if(!Enabled())
+		return 0;
+
 	// logic
 	int ReturnValue = 0;
 	const bool Inside = MouseHovered(pRect);
