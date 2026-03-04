@@ -646,6 +646,8 @@ protected:
 	void RenderDTHRepository(CUIRect MainView);
 	void RenderDTHLessons(CUIRect MainView);
 	void DTHRefreshPythonScripts();
+	void DTHSetModalOpen(bool Open);
+	bool DTHRenderModal(CUIRect Screen, CUIRect &Popup, float WidthMarginRatio = 0.36f, float HeightMarginRatio = 0.34f, float InnerMargin = 12.0f, float Rounding = 8.0f);
 
 	//login
 	void RenderLoginMenu(CUIRect MainView);

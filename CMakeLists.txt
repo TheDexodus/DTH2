@@ -2390,6 +2390,12 @@ if(CLIENT)
     components/menus_browser.cpp
     components/menus_demo.cpp
     components/menus_dth.cpp
+    components/menus_dth_members.cpp
+    components/menus_dth_players.cpp
+    components/menus_dth_profile.cpp
+    components/menus_dth_python.cpp
+    components/menus_dth_repository.cpp
+    components/menus_dth_tasks.cpp
     components/menus_ingame.cpp
     components/menus_settings.cpp
     components/menus_settings7.cpp
